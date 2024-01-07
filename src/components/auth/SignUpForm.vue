@@ -52,12 +52,12 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signUpWithEmail } from 'src/services';
-import {
-  validateRequired,
-  validateEmail,
-  validatePassword,
-  validatePasswordConfirm,
-} from 'src/utils/validate-rules';
+// import {
+//   validateRequired,
+//   validateEmail,
+//   validatePassword,
+//   validatePasswordConfirm,
+// } from 'src/utils/validate-rules';
 
 const emit = defineEmits(['changeView', 'closeDialog']);
 
@@ -83,7 +83,7 @@ const form = ref({
   email: '',
   password: '',
   username: '',
-  passwordConfirm: '',
+  passwordConfirm: passwordConfirm,
 });
 const handleSubmit = () => execute(1000, form.value);
 // const handleSubmit = async () => {

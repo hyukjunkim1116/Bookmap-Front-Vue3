@@ -51,7 +51,7 @@ import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
 
-import DisplayError from '../DisplayError.vue';
+// import DisplayError from '../DisplayError.vue';
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();
