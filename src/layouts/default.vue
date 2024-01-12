@@ -17,6 +17,7 @@
         <q-space />
         <!-- 홈 버튼 -->
         <q-btn stretch flat label="Home" to="/home" />
+
         <!-- 로그인/회원가입 버튼 -->
         <q-separator class="q-my-md q-mr-md" vertical />
         <q-btn
@@ -26,6 +27,7 @@
           label="로그인 / 회원가입"
           @click="openAuthDialog"
         />
+
         <!-- 사용자 프로필 및 메뉴 -->
         <q-btn round flat>
           <q-avatar>
@@ -42,6 +44,7 @@
             </q-list>
           </q-menu>
         </q-btn>
+        <q-btn flat round dense :icon="darkModeIcon" @click="toggleDarkMode" />
       </q-toolbar>
     </q-header>
 
@@ -57,9 +60,10 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-
+import { useQuasar } from 'quasar';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
+const $q = useQuasar();
 const route = useRoute();
 // 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
 const pageContainerStyles = computed(() => ({
@@ -71,4 +75,12 @@ const pageContainerStyles = computed(() => ({
 const authDialog = ref(false);
 // 인증 다이얼로그를 열기 위한 함수
 const openAuthDialog = () => (authDialog.value = true);
+
+const darkModeIcon = computed(() =>
+  $q.dark.isActive ? 'dark_mode' : 'light_mode',
+);
+const toggleDarkMode = () => {
+  $q.dark.toggle();
+  $q.localStorage.set('darkMode', $q.dark.isActive);
+};
 </script>
