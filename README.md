@@ -48,8 +48,7 @@ $ npm run dev
 ### Development
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=Javascript&logoColor=white)
-![Vue3](https://img.shields.io/badge/Vue3-050A14?style=for-the-badge&logo=vue&logoColor=61DAFB)
-![Vue](https://img.shields.io/badge/vue3-444444?style=for-the-badge&logo=vue)
+![Vue3](https://img.shields.io/badge/vue3-444444?style=for-the-badge&logo=vue.js)
 ![Quasar](https://img.shields.io/badge/quasar-444444?style=for-the-badge&logo=quasar)
 
 ### Communication
