@@ -68,4 +68,4 @@ $ npm run dev
 
 ## API 명세
 
-https://www.notion.so/8f4514ba8eca491bba5f0240c3a5da85?v=a57d89409e1440f59b5c4879a1a22709&pvs=4
+### [API 명세](https://www.notion.so/8f4514ba8eca491bba5f0240c3a5da85?v=a57d89409e1440f59b5c4879a1a22709&pvs=4)
