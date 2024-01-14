@@ -15,8 +15,6 @@
         </q-btn>
         <!-- 툴바 우측 공간 -->
         <q-space />
-        <!-- 홈 버튼 -->
-        <q-btn stretch flat label="Home" to="/home" />
 
         <!-- 로그인/회원가입 버튼 -->
         <q-separator class="q-my-md q-mr-md" vertical />
@@ -29,7 +27,7 @@
         />
 
         <!-- 사용자 프로필 및 메뉴 -->
-        <q-btn round flat>
+        <q-btn round flat class="q-ml-md">
           <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar.png" />
           </q-avatar>
@@ -44,7 +42,14 @@
             </q-list>
           </q-menu>
         </q-btn>
-        <q-btn flat round dense :icon="darkModeIcon" @click="toggleDarkMode" />
+        <q-btn
+          class="q-ml-md"
+          flat
+          round
+          dense
+          :icon="darkModeIcon"
+          @click="toggleDarkMode"
+        />
       </q-toolbar>
     </q-header>
 

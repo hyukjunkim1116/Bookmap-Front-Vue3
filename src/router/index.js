@@ -6,10 +6,7 @@ import {
   createWebHashHistory,
 } from 'vue-router/auto';
 import { setupLayouts } from 'virtual:generated-layouts';
-
-// import routes from './routes';
-
-export default route(function (/* { store, ssrContext } */) {
+export default route(function () {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -23,12 +20,12 @@ export default route(function (/* { store, ssrContext } */) {
     extendRoutes: routes => {
       return setupLayouts(
         routes.map(route => {
-          if (route.path.includes('admin')) {
+          if (route.path.includes('api')) {
             route = {
               ...route,
               meta: {
                 ...route.meta,
-                layout: 'admin',
+                layout: 'default',
               },
             };
           }
