@@ -1,5 +1,7 @@
-import { api } from 'src/boot/axios';
+import { api } from 'src/boot/init';
+import { useAuthStore } from 'src/stores/auth';
 
+const authStore = useAuthStore();
 // 기본 프로필 이미지 URL
 const DEFAULT_PHOTO_URL =
   'https://api.dicebear.com/6.x/adventurer-neutral/svg?seed=';
@@ -13,13 +15,11 @@ export function generateDefaultPhotoURL(uid) {
   return `${DEFAULT_PHOTO_URL}${uid}`;
 }
 
-/**
- * 로그아웃 요청을 서버에 전송
- * @param {Object} data - 로그아웃 요청에 필요한 데이터
- * @returns {Promise} - 서버 응답
- */
-export async function logout(data) {
-  return await api.post('logout/', data);
+// 로그아웃
+export function logout() {
+  user.value.removeItem('access');
+  user.value.removeItem('refresh');
+  user.value.removeItem('payload');
 }
 
 /**

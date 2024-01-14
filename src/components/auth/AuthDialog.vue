@@ -20,6 +20,7 @@
         <component
           :is="authViewComponents[viewMode]"
           @change-view="changeViewMode"
+          @close-dialog="closeDialog"
         />
       </q-card-section>
     </q-card>
@@ -28,6 +29,7 @@
 
 <script setup>
 import { defineAsyncComponent, ref } from 'vue';
+
 // 다이얼로그의 표시 여부와 관련된 prop 정의
 defineProps({
   modelValue: {
@@ -39,8 +41,10 @@ defineEmits(['update:modelValue']);
 
 // 현재 활성화된 뷰 모드 (로그인, 회원가입, 비밀번호 찾기)
 const viewMode = ref('SignInForm');
+
 // 뷰 모드 변경 함수
 const changeViewMode = mode => (viewMode.value = mode);
+
 // 인증 관련 컴포넌트를 비동기적으로 로드하는 객체
 const authViewComponents = {
   SignInForm: defineAsyncComponent(() => import('./SignInForm.vue')),
@@ -48,6 +52,10 @@ const authViewComponents = {
   FindPasswordForm: defineAsyncComponent(() =>
     import('./FindPasswordForm.vue'),
   ),
+};
+
+const closeDialog = () => {
+  emit('update:modelValue', false);
 };
 </script>
 

@@ -27,7 +27,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ['init'],
+    boot: ['init', 'navigation-guard', 'error-handler'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -80,12 +80,12 @@ module.exports = configure(function (/* ctx */) {
               {
                 src: 'src/pages',
               },
-              {
-                src: 'src/docs',
-                path: 'docs/',
-              },
+              // {
+              //   src: 'src/docs',
+              //   path: 'docs/',
+              // },
             ],
-            exclude: ['**/error/**'],
+            // exclude: ['**/error/**'],
           },
         ],
         ['vite-plugin-vue-layouts', {}],
@@ -113,7 +113,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage'],
+      plugins: ['LocalStorage', 'Cookies'],
     },
 
     // animations: 'all', // --- includes all animations

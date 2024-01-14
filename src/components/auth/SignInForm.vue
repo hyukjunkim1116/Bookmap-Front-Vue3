@@ -16,8 +16,6 @@
         outlined
         dense
       />
-      <!-- 오류 메시지를 표시하는 컴포넌트 -->
-      <DisplayError :code="error?.code" />
       <div>
         <!-- 로그인 버튼 -->
         <q-btn
@@ -61,6 +59,9 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
+import { useAuthStore } from 'src/stores/auth';
+
+const authStore = useAuthStore();
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();
@@ -72,6 +73,7 @@ const { isLoading, error, execute } = useAsyncState(signInWithEmail, null, {
   onSuccess: () => {
     // 로그인 성공 시 알림
     $q.notify('환영합니다 :)');
+    authStore.setUser();
     emit('closeDialog');
   },
   // onError 주석은 오류 처리 관련 주석입니다.
@@ -82,6 +84,23 @@ const { isLoading, error, execute } = useAsyncState(signInWithEmail, null, {
   //   });
   // },
 });
+
+// const handleSignInEmail = async () => {
+//   try {
+//     isLoading.value = true;
+//     await signInWithEmail(form.value);
+//     $q.notify('환영합니다 :)');
+//     emit('closeDialog');
+//   } catch (err) {
+//     error.value = err;
+//     $q.notify({
+//       type: 'negative',
+//       message: getErrorMessage(err.code),
+//     });
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
 
 // 로그인 폼 데이터 모델
 const form = ref({

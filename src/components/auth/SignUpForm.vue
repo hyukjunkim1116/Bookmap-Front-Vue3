@@ -73,8 +73,7 @@ const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
   onSuccess: () => {
     // 회원가입 성공 시 알림
     $q.notify('가입을 환영합니다 :)');
-    $q.notify('이메일에서 인증 링크를 확인해주세요.');
-    emit('closeDialog');
+    emit('changeView', 'SignInForm');
   },
   // onError 주석은 오류 처리 관련 주석입니다.
   // onError: err => {

@@ -57,6 +57,7 @@
     <q-page-container :style="pageContainerStyles">
       <router-view />
     </q-page-container>
+
     <!-- 인증 관련 다이얼로그 컴포넌트 -->
     <AuthDialog v-model="authDialog" />
   </q-layout>
@@ -67,7 +68,8 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
-
+// import { useAuthStore } from 'src/stores/auth';
+// const authStore = useAuthStore();
 const $q = useQuasar();
 const route = useRoute();
 // 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
