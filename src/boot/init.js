@@ -4,4 +4,5 @@ import { LocalStorage, Dark } from 'quasar';
 export default boot(({ app }) => {
   const darkMode = LocalStorage.getItem('darkMode');
   Dark.set(darkMode);
+  console.log(darkMode);
 });

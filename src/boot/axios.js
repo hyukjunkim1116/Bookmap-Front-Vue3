@@ -10,9 +10,9 @@ const api = axios.create({ baseURL: 'http://localhost:8080/api' });
  * @param {Object} param - Quasar 앱 인스턴스와 관련 정보
  */
 export default boot(({ app }) => {
-
   // 전역 axios 인스턴스를 설정하여, 앱의 모든 곳에서 사용 가능하게 함
   app.config.globalProperties.$axios = api;
+  console.log(api);
 });
 
 // axios 인스턴스를 내보내어 다른 곳에서도 사용할 수 있게 함

@@ -1,13 +1,6 @@
 # FoodMap
 
-<div align="center">
-<!-- <img width="329" alt="image" src="https://user-images.githubusercontent.com/50205887/207568862-cdc9e2c0-b03c-43ff-bf46-3ba79a110d0c.png"> -->
-</div>
-
 ## 배포 주소
-
-<!--
-> **개발 버전** : [http://voluntain.cs.skku.edu/](http://voluntain.cs.skku.edu/) <br> > **프론트 서버** : [http://voluntain.cs.skku.edu:33307/](http://voluntain.cs.skku.edu:33307/)<br> > **백엔드 서버** : [http://voluntain.cs.skku.edu:2223/](http://voluntain.cs.skku.edu:2223/)<br> -->
 
 ## 팀 소개
 
@@ -59,12 +52,6 @@ $ npm run dev
 
 ## 화면 구성 📺
 
-<!-- | 메인 페이지  |  소개 페이지   |
-| :-------------------------------------------: | :------------: |
-|  <img width="329" src="https://user-images.githubusercontent.com/50205887/208036155-a57900f7-c68a-470d-923c-ff3c296ea635.png"/> |  <img width="329" src="https://user-images.githubusercontent.com/50205887/208036645-a76cf400-85bc-4fa2-af72-86d2abf61366.png"/>|
-| 강좌 소개 페이지   |  강의 영상 페이지   |
-| <img width="329" src="https://user-images.githubusercontent.com/50205887/208038737-2b32b7d2-25f4-4949-baf5-83b5c02915a3.png"/>   |  <img width="329" src="https://user-images.githubusercontent.com/50205887/208038965-43a6318a-7b05-44bb-97c8-b08b0495fba7.png"/>     | -->
-
 ---
 
 ## 주요 기능 📦
@@ -78,3 +65,7 @@ $ npm run dev
 ```
 
 ```
+
+## API 명세
+
+https://www.notion.so/8f4514ba8eca491bba5f0240c3a5da85?v=a57d89409e1440f59b5c4879a1a22709&pvs=4
