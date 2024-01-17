@@ -36,7 +36,7 @@ import { useRouter } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
 
-// import { createPost } from 'src/services';
+import { createPost } from 'src/services';
 import PostForm from 'src/components/apps/post/PostForm.vue';
 
 const emit = defineEmits(['complete']);
@@ -49,14 +49,14 @@ const onHide = () => {
   form.value = getInitialForm();
 };
 
-// const { isLoading, execute } = useAsyncState(createPost, null, {
-//   immediate: false,
-//   throwError: true,
-//   onSuccess: postId => {
-//     console.log('postId: ', postId);
-//     emit('complete');
-//   },
-// });
+const { isLoading, execute } = useAsyncState(createPost, null, {
+  immediate: false,
+  throwError: true,
+  onSuccess: postId => {
+    console.log('postId: ', postId);
+    emit('complete');
+  },
+});
 </script>
 
 <style lang="scss" scoped></style>
