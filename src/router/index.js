@@ -20,7 +20,7 @@ export default route(function () {
     extendRoutes: routes => {
       return setupLayouts(
         routes.map(route => {
-          if (route.path.includes('api')) {
+          if (route.path.includes('*')) {
             route = {
               ...route,
               meta: {

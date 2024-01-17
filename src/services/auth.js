@@ -1,7 +1,5 @@
 import { api } from 'src/boot/init';
-import { useAuthStore } from 'src/stores/auth';
 
-const authStore = useAuthStore();
 // 기본 프로필 이미지 URL
 const DEFAULT_PHOTO_URL =
   'https://api.dicebear.com/6.x/adventurer-neutral/svg?seed=';
