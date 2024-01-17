@@ -12,7 +12,7 @@
 
 설치 요구 사항:
 
-- [Node.js 20.10.0](https://nodejs.org/ca/blog/release/v20.10.0/)
+- [Node.js 20.10.0](https://nodejs.org/en/download)
 - [Npm 10.2.3](https://www.npmjs.com/package/npm/v/10.2.3)
 
 ### Installation
