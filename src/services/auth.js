@@ -1,4 +1,4 @@
-import { api } from 'src/boot/init';
+import { api } from 'boot/init';
 
 // 기본 프로필 이미지 URL
 const DEFAULT_PHOTO_URL =
@@ -20,12 +20,8 @@ export function logout() {
   user.value.removeItem('payload');
 }
 
-/**
- * 이메일을 통한 회원가입 요청을 서버에 전송
- * @param {Object} data - 회원가입 요청에 필요한 데이터
- * @returns {Promise} - 서버 응답
- */
 export async function signUpWithEmail(data) {
+  console.log(api);
   return await api.post('signup/', data);
 }
 

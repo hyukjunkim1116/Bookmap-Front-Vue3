@@ -27,13 +27,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: [
-      'init',
-      'navigation-guard',
-      'error-handler',
-      'interceptor',
-      'darkmode',
-    ],
+    boot: ['init', 'navigation-guard', 'error-handler', 'darkmode'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -119,7 +113,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage', 'Cookies'],
+      plugins: ['LocalStorage', 'Cookies', 'Notify'],
     },
 
     // animations: 'all', // --- includes all animations

@@ -61,12 +61,20 @@
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
+import { getErrorMessage } from 'src/utils/errors/error-message';
 import { signUpWithEmail } from 'src/services';
-
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();
-
+/**
+ * 이메일을 통한 회원가입 요청을 서버에 전송
+ * @param {Object} data - 회원가입 요청에 필요한 데이터
+ * @returns {Promise} - 서버 응답
+ */
+// const signUpWithEmail = async data => {
+//   console.log(axios);
+//   return await axios.post('signup/', data);
+// };
 // 회원가입 비동기 처리와 상태 관리
 const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
   immediate: false,
@@ -76,12 +84,13 @@ const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
     emit('changeView', 'SignInForm');
   },
   // onError 주석은 오류 처리 관련 주석입니다.
-  // onError: err => {
-  //   $q.notify({
-  //     type: 'negative',
-  //     message: getErrorMessage(err.code),
-  //   });
-  // },
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err),
+    });
+  },
 });
 
 // 비밀번호 확인을 위한 ref
@@ -94,7 +103,7 @@ const form = ref({
   passwordConfirm: passwordConfirm,
 });
 // 폼 제출 처리 함수
-const handleSubmit = () => execute(1000, form.value);
+const handleSubmit = () => execute(form.value);
 </script>
 
 <style lang="scss" scoped></style>
