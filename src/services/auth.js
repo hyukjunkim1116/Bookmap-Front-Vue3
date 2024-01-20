@@ -21,8 +21,7 @@ export function logout() {
 }
 
 export async function signUpWithEmail(data) {
-  console.log(api);
-  return await api.post('signup/', data);
+  return await api.post('users/', data);
 }
 
 /**
