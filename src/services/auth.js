@@ -28,6 +28,7 @@ export async function signInWithEmail(data) {
     username,
     uid: payload.value.user_id,
   });
+  // loginStore.setAuthentication(true);
   return response.data;
 }
 export function logout() {

@@ -17,19 +17,22 @@
         <!-- 로그인/회원가입 버튼 -->
         <q-separator class="q-my-md q-mr-md" vertical />
         <q-btn
-          v-if="!isLogin"
+          v-if="!loginStore.isLogin"
           unelevated
           rounded
           color="primary"
           label="로그인 / 회원가입"
           @click="openAuthDialog"
         />
-
+        <span v-if="loginStore.isLogin"
+          >{{ authStore.user.payload.username }}님 안녕하세요!</span
+        >
         <!-- 사용자 프로필 및 메뉴 -->
-        <q-btn v-if="isLogin" round flat class="q-ml-md">
+        <q-btn v-if="loginStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar.png" />
           </q-avatar>
+
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup to="/mypage/profile">
@@ -66,14 +69,15 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { useLoginStore } from 'src/stores/isLogin';
 import { useAuthStore } from 'src/stores/auth';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 import { logout } from 'src/services';
 
 const $q = useQuasar();
 const route = useRoute();
+const loginStore = useLoginStore();
 const authStore = useAuthStore();
-const isLogin = ref(authStore.isAuthenticated);
 // 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
@@ -86,7 +90,9 @@ const openAuthDialog = () => (authDialog.value = true);
 
 const handleLogout = async () => {
   logout();
-  isLogin.value = false;
+  // isLogin.value = false;
+  loginStore.setAuthentication(false);
+
   $q.notify('로그아웃 되었습니다.');
 };
 const darkModeIcon = computed(() =>

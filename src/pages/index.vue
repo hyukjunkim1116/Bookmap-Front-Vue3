@@ -16,12 +16,14 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 import PostRightBar from 'src/components/base/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
+import { useLoginStore } from 'src/stores/isLogin';
 
-const router = useRouter();
+const $q = useQuasar();
+const loginStore = useLoginStore();
 // 포스트 목록 데이터 생성
 const posts = Array.from(Array(20), (_, index) => ({
   id: 'A' + index,
@@ -38,10 +40,10 @@ const posts = Array.from(Array(20), (_, index) => ({
 }));
 const postDialog = ref(false);
 const openWriteDialog = () => {
-  // if (!authStore.isAuthenticated) {
-  //   alert('로그인 후 이용 가능합니다.');
-  //   return;
-  // }
+  if (!loginStore.isLogin) {
+    $q.notify('로그인 후 이용 가능합니다!');
+    return;
+  }
   postDialog.value = true;
 };
 const completeRegistrationPost = () => {

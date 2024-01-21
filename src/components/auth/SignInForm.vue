@@ -59,14 +59,10 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
-import { useAuthStore } from 'src/stores/auth';
-
-const authStore = useAuthStore();
-const isLogin = ref(authStore.isAuthenticated);
-const emit = defineEmits(['changeView', 'closeDialog', 'isLogin']);
-
+import { useLoginStore } from 'src/stores/isLogin';
+const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
-
+const loginStore = useLoginStore();
 // 로그인 비동기 처리와 상태 관리
 const { isLoading, error, execute } = useAsyncState(
   async () => {
@@ -79,9 +75,9 @@ const { isLoading, error, execute } = useAsyncState(
     throwError: true,
     onSuccess: () => {
       // 로그인 성공 시 알림
+      loginStore.setAuthentication(true);
       $q.notify('환영합니다 :)');
-      isLogin.value = true;
-      emit('closeDialog', 'isLogin');
+      emit('closeDialog');
     },
     // onError 주석은 오류 처리 관련 주석입니다.
     onError: err => {

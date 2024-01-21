@@ -13,6 +13,11 @@ export const useAuthStore = defineStore('auth', () => {
   const user = useLocalStorage('auth/user', null, {
     serializer: StorageSerializers.object,
   });
+  // 사용자가 인증되어 있는지 여부를 계산하는 computed 속성을 정의합니다.
+  // const isAuthenticated = computed(
+  //   () => Cookies.has('access'),
+  //   console.log('Coo:', Cookies.has('access')),
+  // );
   const isAuthenticated = computed(() => !!Cookies.has('access'));
   // 사용자의 UID를 반환하는 computed 속성을 정의합니다.
   const uid = computed(() => user.value?.uid || null);
