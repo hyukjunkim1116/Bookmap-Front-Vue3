@@ -14,6 +14,13 @@
         dense
         hide-bottom-space
       />
+      <q-input
+        v-model="form.username"
+        placeholder="닉네임"
+        outlined
+        dense
+        hide-bottom-space
+      />
       <!-- 비밀번호 입력 필드 -->
       <q-input
         v-model="form.password"
@@ -61,7 +68,6 @@
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
-import { getErrorMessage } from 'src/utils/errors/error-message';
 import { signUpWithEmail } from 'src/services';
 const emit = defineEmits(['changeView', 'closeDialog']);
 
@@ -71,27 +77,29 @@ const $q = useQuasar();
  * @param {Object} data - 회원가입 요청에 필요한 데이터
  * @returns {Promise} - 서버 응답
  */
-// const signUpWithEmail = async data => {
-//   console.log(axios);
-//   return await axios.post('signup/', data);
-// };
-// 회원가입 비동기 처리와 상태 관리
-const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
-  immediate: false,
-  onSuccess: () => {
-    // 회원가입 성공 시 알림
-    $q.notify('가입을 환영합니다 :)');
-    emit('changeView', 'SignInForm');
+const { isLoading, execute } = useAsyncState(
+  async () => {
+    // signUpWithEmail 함수에 form 데이터를 전달
+    await signUpWithEmail(form.value);
   },
-  // onError 주석은 오류 처리 관련 주석입니다.
-  onError: err => {
-    console.log(err);
-    $q.notify({
-      type: 'negative',
-      message: getErrorMessage(err),
-    });
+  null,
+  {
+    immediate: false,
+    onSuccess: () => {
+      // 회원가입 성공 시 알림
+      $q.notify('가입을 환영합니다 :)');
+      emit('changeView', 'SignInForm');
+    },
+    // onError 주석은 오류 처리 관련 주석입니다.
+    onError: err => {
+      console.log(err);
+      $q.notify({
+        type: 'negative',
+        message: `${err.response.data.error}`,
+      });
+    },
   },
-});
+);
 
 // 비밀번호 확인을 위한 ref
 const passwordConfirm = ref('');

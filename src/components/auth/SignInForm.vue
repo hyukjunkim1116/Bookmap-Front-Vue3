@@ -62,45 +62,36 @@ import { signInWithEmail } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 
 const authStore = useAuthStore();
-const emit = defineEmits(['changeView', 'closeDialog']);
+const isLogin = ref(authStore.isAuthenticated);
+const emit = defineEmits(['changeView', 'closeDialog', 'isLogin']);
 
 const $q = useQuasar();
 
 // 로그인 비동기 처리와 상태 관리
-const { isLoading, error, execute } = useAsyncState(signInWithEmail, null, {
-  immediate: false,
-  throwError: true,
-  onSuccess: () => {
-    // 로그인 성공 시 알림
-    $q.notify('환영합니다 :)');
-    authStore.setUser();
-    emit('closeDialog');
+const { isLoading, error, execute } = useAsyncState(
+  async () => {
+    // signUpWithEmail 함수에 form 데이터를 전달
+    await signInWithEmail(form.value);
   },
-  // onError 주석은 오류 처리 관련 주석입니다.
-  // onError: err => {
-  //   $q.notify({
-  //     type: 'negative',
-  //     message: getErrorMessage(err.code),
-  //   });
-  // },
-});
-
-// const handleSignInEmail = async () => {
-//   try {
-//     isLoading.value = true;
-//     await signInWithEmail(form.value);
-//     $q.notify('환영합니다 :)');
-//     emit('closeDialog');
-//   } catch (err) {
-//     error.value = err;
-//     $q.notify({
-//       type: 'negative',
-//       message: getErrorMessage(err.code),
-//     });
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
+  null,
+  {
+    immediate: false,
+    throwError: true,
+    onSuccess: () => {
+      // 로그인 성공 시 알림
+      $q.notify('환영합니다 :)');
+      isLogin.value = true;
+      emit('closeDialog', 'isLogin');
+    },
+    // onError 주석은 오류 처리 관련 주석입니다.
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: `${err.response?.data?.error}`,
+      });
+    },
+  },
+);
 
 // 로그인 폼 데이터 모델
 const form = ref({
@@ -110,7 +101,7 @@ const form = ref({
   passwordConfirm: null,
 });
 // 로그인 처리 함수
-const handleSignInEmail = () => execute(1000, form.value);
+const handleSignInEmail = () => execute(form.value);
 </script>
 
 <style lang="scss" scoped></style>

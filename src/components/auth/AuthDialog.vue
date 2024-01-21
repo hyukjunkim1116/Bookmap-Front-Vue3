@@ -37,7 +37,7 @@ defineProps({
     default: false,
   },
 });
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 // 현재 활성화된 뷰 모드 (로그인, 회원가입, 비밀번호 찾기)
 const viewMode = ref('SignInForm');

@@ -1,6 +1,8 @@
 // Vue 및 Pinia에서 사용할 컴포지션 API를 import 합니다.
 import { computed } from 'vue';
+import { Cookies } from 'quasar';
 import { defineStore } from 'pinia';
+import { useCookies } from '@vueuse/integrations/useCookies';
 // @vueuse/core에서 제공하는 useLocalStorage 및 StorageSerializers를 import 합니다.
 import { useLocalStorage, StorageSerializers } from '@vueuse/core';
 
@@ -11,35 +13,34 @@ export const useAuthStore = defineStore('auth', () => {
   const user = useLocalStorage('auth/user', null, {
     serializer: StorageSerializers.object,
   });
-
-  // 사용자가 인증되어 있는지 여부를 계산하는 computed 속성을 정의합니다.
-  const isAuthenticated = computed(
-    () => !!(user.value.access && user.value.refresh),
-  );
-
+  const isAuthenticated = computed(() => !!Cookies.has('access'));
   // 사용자의 UID를 반환하는 computed 속성을 정의합니다.
   const uid = computed(() => user.value?.uid || null);
 
   // 사용자 정보를 설정하는 setUser 메서드를 정의합니다.
-  const setUser = userData => {
+  const setUserData = userData => {
     if (userData) {
       // 사용자 데이터가 전달되면 해당 데이터로 사용자 정보를 설정합니다.
       user.value = {
         payload: {
           uid: userData.uid,
-          photoURL: userData.photoURL,
           username: userData.username,
           email: userData.email,
         },
-        access: userData.access,
-        refresh: userData.refresh,
       };
     } else {
       // 사용자 데이터가 없으면 사용자 정보를 null로 설정합니다.
       user.value = null;
     }
   };
-
+  const setUserToken = (access, refresh) => {
+    try {
+      Cookies.set('access', access);
+      Cookies.set('refresh', refresh);
+    } catch {
+      return null;
+    }
+  };
   // 특정 컨텐츠의 소유자인지 여부를 확인하는 메서드를 정의합니다.
   const hasOwnContent = contentUid => {
     // 사용자가 인증되어 있지 않으면 소유자가 아니라고 판단합니다.
@@ -55,7 +56,8 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     uid,
     isAuthenticated,
-    setUser,
+    setUserData,
+    setUserToken,
     hasOwnContent,
   };
 });
