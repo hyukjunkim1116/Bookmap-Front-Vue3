@@ -17,6 +17,7 @@ export async function createPost(data) {
 
   try {
     const response = await api.post('posts/', data);
+    console.log('data', data); // TODO: 여기서 데이터 안들어옴
     return response.data;
   } catch (error) {
     console.error('에러 발생:', error);
