@@ -13,14 +13,9 @@ export const useAuthStore = defineStore('auth', () => {
   const user = useLocalStorage('auth/user', null, {
     serializer: StorageSerializers.object,
   });
-  // 사용자가 인증되어 있는지 여부를 계산하는 computed 속성을 정의합니다.
-  // const isAuthenticated = computed(
-  //   () => Cookies.has('access'),
-  //   console.log('Coo:', Cookies.has('access')),
-  // );
   const isAuthenticated = computed(() => !!Cookies.has('access'));
   // 사용자의 UID를 반환하는 computed 속성을 정의합니다.
-  const uid = computed(() => user.value?.uid || null);
+  const uid = computed(() => user.value?.payload.uid || null);
 
   // 사용자 정보를 설정하는 setUser 메서드를 정의합니다.
   const setUserData = userData => {
@@ -46,6 +41,14 @@ export const useAuthStore = defineStore('auth', () => {
       return null;
     }
   };
+  const getUserData = computed(() => {
+    const storedData = useLocalStorage('auth/user').value;
+    const parsedData = JSON.parse(storedData);
+    const uid = parsedData.payload.uid;
+    const username = parsedData.payload.username;
+    const email = parsedData.payload.email;
+    return { uid, username, email };
+  });
   // 특정 컨텐츠의 소유자인지 여부를 확인하는 메서드를 정의합니다.
   const hasOwnContent = contentUid => {
     // 사용자가 인증되어 있지 않으면 소유자가 아니라고 판단합니다.
@@ -64,5 +67,6 @@ export const useAuthStore = defineStore('auth', () => {
     setUserData,
     setUserToken,
     hasOwnContent,
+    getUserData,
   };
 });

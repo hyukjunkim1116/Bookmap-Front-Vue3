@@ -4,7 +4,10 @@
     <!-- 포스트 관련 주요 세 컬럼 레이아웃 -->
     <div class="row q-col-gutter-x-lg">
       <!-- 중앙 포스트 리스트 섹션 -->
-      <section class="col-7"></section>
+      <section class="col-7">
+        <PostList :items="items" escapeHTML />
+        <!-- <div v-intersection-observer="handleIntersectionObserver"></div> -->
+      </section>
       <!-- 오른쪽 사이드바 컴포넌트 -->
       <PostRightBar class="col-3" @open-write-dialog="openWriteDialog" />
     </div>
@@ -16,28 +19,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { getPosts } from 'src/services';
+import { useLoginStore } from 'src/stores/isLogin';
+import { useAsyncState } from '@vueuse/core';
 import PostRightBar from 'src/components/base/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
-import { useLoginStore } from 'src/stores/isLogin';
-
+import PostList from 'src/components/apps/post/PostList.vue';
 const $q = useQuasar();
 const loginStore = useLoginStore();
-// 포스트 목록 데이터 생성
-const posts = Array.from(Array(20), (_, index) => ({
-  id: 'A' + index,
-  title: 'Vue3 Firebase 강의 ' + index,
-  // 기타 포스트 관련 데이터
-  content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit...',
-  readCount: 1,
-  commentCount: 2,
-  likeCount: 3,
-  bookmarkCount: 4,
-  tags: ['html', 'css', 'javascript'],
-  uid: 'uid',
-  category: '카테고리' + index,
-}));
+const items = ref([]);
+const { execute, isLoading } = useAsyncState(getPosts, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: result => {
+    console.log('results:', result);
+    console.log(items.value, result.data);
+    items.value = result.data;
+    console.log('items', items);
+  },
+});
 const postDialog = ref(false);
 const openWriteDialog = () => {
   if (!loginStore.isLogin) {
@@ -48,9 +50,11 @@ const openWriteDialog = () => {
 };
 const completeRegistrationPost = () => {
   postDialog.value = false;
-  start.value = null;
-  execute(0, params.value);
+  execute();
 };
+onMounted(items => {
+  execute();
+});
 </script>
 
 <style lang="scss" scoped></style>

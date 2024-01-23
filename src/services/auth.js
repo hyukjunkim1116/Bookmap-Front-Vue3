@@ -31,6 +31,10 @@ export async function signInWithEmail(data) {
   // loginStore.setAuthentication(true);
   return response.data;
 }
+export async function getUserById(uid) {
+  return await api.get(`users/${uid}`);
+}
+
 export function logout() {
   Cookies.remove('access'),
     Cookies.remove('refresh'),
