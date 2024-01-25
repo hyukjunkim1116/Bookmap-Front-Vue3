@@ -68,4 +68,4 @@ $ npm run dev
 
 ## API 명세
 
-### [API 명세](https://www.notion.so/API-1eb50b6bac224bfbacfa0cce3a5aa391?pvs=4)
+### [API 명세](https://denim-knot-470.notion.site/API-1eb50b6bac224bfbacfa0cce3a5aa391?pvs=4)
