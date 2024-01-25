@@ -1,31 +1,13 @@
-import { api } from 'boot/init';
-import { useAuthStore } from 'src/stores/auth';
-import { Cookies } from 'quasar';
+import { api } from 'src/boot/1_init';
 export async function getPosts() {
   return await api.get('posts/');
 }
 export async function createPost(data) {
-  const authStore = useAuthStore();
-  api.interceptors.request.use(config => {
-    const token = Cookies.get('access', '123');
-    console.log(token);
-    config.headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    return config;
-  });
-
-  try {
-    const response = await api.post('posts/', data);
-    console.log('data', data); // TODO: 여기서 데이터 안들어옴
-    return response.data;
-  } catch (error) {
-    console.error('에러 발생:', error);
-    throw error;
-  }
+  const response = await api.post('posts/', data);
+  return response;
 }
 export async function getPostDetails(postId) {
-  return await api.post(`posts/${postId}`);
+  return await api.get(`posts/${postId}`);
 }
 export async function updatePost(postId, data) {
   return await api.put(`posts/${postId}`, data);

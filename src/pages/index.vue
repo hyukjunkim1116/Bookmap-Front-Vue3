@@ -30,16 +30,27 @@ import PostList from 'src/components/apps/post/PostList.vue';
 const $q = useQuasar();
 const loginStore = useLoginStore();
 const items = ref([]);
-const { execute, isLoading } = useAsyncState(getPosts, [], {
-  immediate: false,
-  throwError: true,
-  onSuccess: result => {
-    console.log('results:', result);
-    console.log(items.value, result.data);
-    items.value = result.data;
-    console.log('items', items);
+const { execute, isLoading } = useAsyncState(
+  async () => {
+    // signUpWithEmail 함수에 form 데이터를 전달
+    const response = await getPosts();
+    return response;
   },
-});
+  [],
+  {
+    immediate: false,
+    throwError: true,
+    onSuccess: response => {
+      console.log('responses:', response);
+      console.log(items.value, 'asdasd', response.data);
+      items.value = response.data;
+      console.log('items', items);
+    },
+    onError: error => {
+      console.log('errorerrror:', error);
+    },
+  },
+);
 const postDialog = ref(false);
 const openWriteDialog = () => {
   if (!loginStore.isLogin) {

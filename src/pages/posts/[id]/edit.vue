@@ -27,42 +27,50 @@
 <script>
 const getInitialForm = () => ({
   title: '',
-
   content: '',
 });
 </script>
 <script setup>
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { getPost, updatePost } from 'src/services';
+import { getPostDetails, updatePost } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import PostForm from 'src/components/apps/post/PostForm.vue';
-
+const router = useRouter();
 const route = useRoute();
+console.log(route.params.id);
 const $q = useQuasar();
 const form = ref(getInitialForm());
 useAsyncState(
-  () => getPost(route.params.id),
+  async () => {
+    const response = await getPostDetails(route.params.id);
+    return response;
+  },
   {},
   {
-    onSuccess: post => {
-      form.value.title = post.title;
-
-      form.value.content = post.content;
+    onSuccess: response => {
+      console.log('ASdasd');
+      console.log(response);
+      form.value.title = response.data.title;
+      form.value.content = response.data.content;
     },
   },
 );
 
 const { isLoading, execute: executeUpdatePost } = useAsyncState(
-  updatePost,
+  async () => {
+    const response = await updatePost(route.params.id, form.value);
+    return response;
+  },
   null,
   {
     immediate: false,
     throwError: true,
     onSuccess: () => {
       $q.notify('수정완료!');
+      router.back();
     },
   },
 );
@@ -71,7 +79,7 @@ const handleSubmit = async () => {
   if (confirm('수정 하시겠어요?') === false) {
     return;
   }
-  await executeUpdatePost(0, route.params.id, form.value);
+  await executeUpdatePost(route.params.id, form.value);
 };
 </script>
 

@@ -1,4 +1,4 @@
-import { api } from 'boot/init';
+import { api } from 'src/boot/1_init';
 import { useJwt } from '@vueuse/integrations/useJwt';
 import { useAuthStore } from 'src/stores/auth';
 import { Cookies } from 'quasar';
@@ -31,14 +31,12 @@ export async function signInWithEmail(data) {
   // loginStore.setAuthentication(true);
   return response.data;
 }
-export async function getUserById(uid) {
-  return await api.get(`users/${uid}`);
-}
+
 
 export function logout() {
-  Cookies.remove('access'),
-    Cookies.remove('refresh'),
-    localStorage.removeItem('auth/user');
+  Cookies.remove('access');
+  Cookies.remove('refresh');
+  localStorage.removeItem('auth/user');
 }
 
 /**
