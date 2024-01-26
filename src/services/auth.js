@@ -32,13 +32,18 @@ export async function signInWithEmail(data) {
   return response.data;
 }
 
-
 export function logout() {
   Cookies.remove('access');
   Cookies.remove('refresh');
   localStorage.removeItem('auth/user');
 }
 
+export async function updateUserPassword(data) {
+  return await api.put(`users/change-password/`, data);
+}
+export async function updateUserProfile(data, uid) {
+  return await api.put(`users/${uid}/`, data);
+}
 /**
  * 사용자 식별자를 기반으로 기본 프로필 사진 URL 생성
  * @param {string} uid - 사용자 고유 식별자

@@ -24,9 +24,7 @@
           label="로그인 / 회원가입"
           @click="openAuthDialog"
         />
-        <span v-if="loginStore.isLogin"
-          >{{ authStore.user.payload.username }}님 안녕하세요!</span
-        >
+        <span v-if="loginStore.isLogin">{{ displayName }}님 안녕하세요!</span>
         <!-- 사용자 프로필 및 메뉴 -->
         <q-btn v-if="loginStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
@@ -66,7 +64,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useLoginStore } from 'src/stores/isLogin';
@@ -87,11 +85,11 @@ const pageContainerStyles = computed(() => ({
 const authDialog = ref(false);
 // 인증 다이얼로그를 열기 위한 함수
 const openAuthDialog = () => (authDialog.value = true);
-
+const displayName = ref('');
 const handleLogout = async () => {
-  logout();
+  await logout();
   // isLogin.value = false;
-  loginStore.setAuthentication(false);
+  await loginStore.setAuthentication(false);
 
   $q.notify('로그아웃 되었습니다.');
 };
@@ -102,4 +100,8 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
+console.log(loginStore.isLogin);
+watchEffect(() => {
+  displayName.value = authStore.user?.payload.username;
+});
 </script>

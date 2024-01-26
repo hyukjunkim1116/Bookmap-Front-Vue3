@@ -16,12 +16,6 @@
               </q-item-section>
               <q-item-section>비밀번호 변경</q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/mypage/bookmark">
-              <q-item-section avatar>
-                <q-icon name="sym_o_bookmark" />
-              </q-item-section>
-              <q-item-section>북마크</q-item-section>
-            </q-item>
           </q-list>
         </BaseCard>
       </div>
@@ -37,3 +31,7 @@ import BaseCard from 'src/components/base/BaseCard.vue';
 </script>
 
 <style lang="scss" scoped></style>
+<route lang="yaml">
+meta:
+  requiresAuth: true
+</route>

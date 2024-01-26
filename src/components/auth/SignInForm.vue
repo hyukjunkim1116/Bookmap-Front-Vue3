@@ -73,9 +73,9 @@ const { isLoading, error, execute } = useAsyncState(
   {
     immediate: false,
     throwError: true,
-    onSuccess: () => {
+    onSuccess: async () => {
       // 로그인 성공 시 알림
-      loginStore.setAuthentication(true);
+      await loginStore.setAuthentication(true);
       $q.notify('환영합니다 :)');
       emit('closeDialog');
     },
