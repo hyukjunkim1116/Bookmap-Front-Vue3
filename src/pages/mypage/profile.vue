@@ -20,6 +20,16 @@
         </q-card-actions>
       </q-form>
     </BaseCard>
+    <BaseCard>
+      <q-form @submit.prevent="handleDeleteUser">
+        <q-card-section class="q-gutter-y-md">
+          <div class="text-h6">회원 탈퇴 하기</div>
+        </q-card-section>
+        <q-card-actions>
+          <q-btn type="submit" label="삭제하기" flat color="primary" />
+        </q-card-actions>
+      </q-form>
+    </BaseCard>
   </div>
 </template>
 
@@ -27,10 +37,11 @@
 import { ref, watchEffect } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
-import { updateUserProfile } from 'src/services';
+import { updateUserProfile, deleteUser, logout } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import BaseCard from 'src/components/base/BaseCard.vue';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const authStore = useAuthStore();
 const $q = useQuasar();
 const displayName = ref('');
@@ -65,13 +76,42 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
     },
   },
 );
-
+const { execute: executeDeleteUser } = useAsyncState(
+  async () => {
+    const response = await deleteUser(uid);
+    return response;
+  },
+  null,
+  {
+    immediate: false,
+    onSuccess: async () => {
+      await logout();
+      // router.push('/');
+      window.location.replace('/');
+      $q.notify('삭제 완료!');
+    },
+    onError: response => {
+      console.log(response);
+      console.log(response.err);
+      $q.notify({
+        type: 'negative',
+        message: `${response.err}`,
+      });
+    },
+  },
+);
+const handleDeleteUser = async () => {
+  if (confirm('수정 하시겠어요?') === false) {
+    return;
+  }
+  await executeDeleteUser(uid);
+};
 const handleSubmitProfile = () =>
   executeProfile({ username: displayName.value, email: email.value }, uid);
-// watchEffect(() => {
-//   displayName.value = authStore.user?.payload.username;
-//   email.value = authStore.user?.payload.email;
-// });
+watchEffect(() => {
+  displayName.value = authStore.user?.payload.username;
+  email.value = authStore.user?.payload.email;
+});
 </script>
 
 <style lang="scss" scoped></style>

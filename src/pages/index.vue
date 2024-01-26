@@ -41,9 +41,7 @@ const { execute, isLoading } = useAsyncState(
     immediate: false,
     throwError: true,
     onSuccess: response => {
-      console.log('responses:', response);
-      console.log(items.value, 'asdasd', response.data);
-      items.value = response.data;
+      items.value = response?.data;
       console.log('items', items);
     },
     onError: error => {

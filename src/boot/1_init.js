@@ -41,7 +41,12 @@ const setupApi = async () => {
   if (!api) {
     api = await isServerRunning();
   }
-
+  return api;
+  // 만료된 access 토큰이면 refresh 토큰을 사용하여 갱신
+};
+export default boot(async ({ app }) => {
+  // 전역 axios 인스턴스를 설정하여, 앱의 모든 곳에서 사용 가능하게 함
+  app.config.globalProperties.api = await setupApi();
   api.interceptors.request.use(async config => {
     const accessToken = Cookies.get('access');
     if (accessToken) {
@@ -52,12 +57,15 @@ const setupApi = async () => {
   api.interceptors.response.use(
     response => response,
     async error => {
+      console.log('useerror', error);
+
       const originalRequest = error.config;
+      console.log('originalRequest', originalRequest);
       // AccessToken이 만료되었을 경우 재발급 후 다시 요청
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         const refreshToken = Cookies.get('refresh');
-        const { error } = useAsyncState(
+        const { error, state } = useAsyncState(
           async () => {
             const response = await api.post('users/token/refresh/', {
               refresh: refreshToken,
@@ -66,31 +74,29 @@ const setupApi = async () => {
           },
           {},
           {
-            onSuccess: response => {
-              const authStore = useAuthStore();
-              const newAccessToken = response.data.access;
-              authStore.setUserToken(newAccessToken, refreshToken);
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-              return api(originalRequest);
+            onSuccess: async response => {
+              try {
+                console.log('state');
+                console.log('response');
+                const authStore = useAuthStore();
+                const newAccessToken = response.data.access;
+                authStore.setUserToken(newAccessToken, refreshToken);
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                console.log('api(originalRequest)', api(originalRequest));
+                return await api(originalRequest);
+              } catch (err) {
+                await logout();
+                console.log('Register err : ', err.response);
+                alert('다시 로그인 하세용');
+                window.location.replace('/');
+              }
             },
-            onError: err => {
-              logout();
-              const router = useRouter();
-              console.log('Register err : ', err.response);
-              alert('다시 로그인 하세용');
-              router.push('/');
-            },
+            onError: async err => {},
           },
         );
       }
     },
   );
-  return api;
-  // 만료된 access 토큰이면 refresh 토큰을 사용하여 갱신
-};
-export default boot(async ({ app }) => {
-  // 전역 axios 인스턴스를 설정하여, 앱의 모든 곳에서 사용 가능하게 함
-  app.config.globalProperties.api = await setupApi();
 });
 
 export { api };
