@@ -95,6 +95,9 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       // https: true
+      // https 디폴트값 false
+      //port 번호 재설정
+      port: 9030,
       open: true, // opens browser window automatically
     },
 
