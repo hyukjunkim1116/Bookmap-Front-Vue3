@@ -88,9 +88,7 @@ const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const handleLogout = async () => {
   await logout();
-  // isLogin.value = false;
   await loginStore.setAuthentication(false);
-
   $q.notify('로그아웃 되었습니다.');
 };
 const darkModeIcon = computed(() =>

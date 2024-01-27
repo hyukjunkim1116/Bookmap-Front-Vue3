@@ -5,6 +5,7 @@
     <div class="row q-col-gutter-x-lg">
       <!-- 중앙 포스트 리스트 섹션 -->
       <section class="col-7">
+        <PostListSkeleton v-if="isLoading" />
         <PostList :items="items" escapeHTML />
         <!-- <div v-intersection-observer="handleIntersectionObserver"></div> -->
       </section>
@@ -27,6 +28,7 @@ import { useAsyncState } from '@vueuse/core';
 import PostRightBar from 'src/components/base/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
+import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const $q = useQuasar();
 const loginStore = useLoginStore();
 const items = ref([]);

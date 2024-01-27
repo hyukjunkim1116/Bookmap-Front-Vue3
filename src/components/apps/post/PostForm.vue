@@ -6,6 +6,7 @@
         outlined
         placeholder="제목"
         counter
+        :rules="[validateRequired]"
         maxlength="40"
       />
 
@@ -30,7 +31,7 @@
 <script setup>
 import { ref, computed, toRef } from 'vue';
 import { useQuasar } from 'quasar';
-
+import { validateRequired } from 'src/utils/validate-rules';
 import TiptapEditor from 'src/components/tiptap/TiptapEditor.vue';
 
 const props = defineProps({

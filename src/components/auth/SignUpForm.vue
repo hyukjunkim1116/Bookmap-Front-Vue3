@@ -13,6 +13,7 @@
         outlined
         dense
         hide-bottom-space
+        :rules="[validateRequired, validateEmail]"
       />
       <q-input
         v-model="form.username"
@@ -20,6 +21,7 @@
         outlined
         dense
         hide-bottom-space
+        :rules="[validateRequired]"
       />
       <!-- 비밀번호 입력 필드 -->
       <q-input
@@ -29,6 +31,7 @@
         outlined
         dense
         hide-bottom-space
+        :rules="[validateRequired, validatePassword]"
       />
       <!-- 비밀번호 확인 입력 필드 -->
       <q-input
@@ -38,6 +41,10 @@
         outlined
         dense
         hide-bottom-space
+        :rules="[
+          validateRequired,
+          val => validatePasswordConfirm(form.password, val),
+        ]"
       />
 
       <!-- 제출 버튼 -->
@@ -69,6 +76,12 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signUpWithEmail } from 'src/services';
+import {
+  validateRequired,
+  validateEmail,
+  validatePassword,
+  validatePasswordConfirm,
+} from 'src/utils/validate-rules';
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();

@@ -1,4 +1,4 @@
-import { api } from 'src/boot/1_init';
+import { api } from 'src/boot/axios-config';
 import { useJwt } from '@vueuse/integrations/useJwt';
 import { useAuthStore } from 'src/stores/auth';
 import { Cookies } from 'quasar';

@@ -46,14 +46,15 @@ import { useAsyncState } from '@vueuse/core';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import { updateUserPassword } from 'src/services';
 import { ref } from 'vue';
-
+import { getErrorMessage } from 'src/utils/error-message';
 const $q = useQuasar();
-
+const form = ref({
+  oldPassword: '',
+  newPassword: '',
+  newPasswordConfirm: '',
+});
 const { isLoading, execute } = useAsyncState(
-  async () => {
-    const response = await updateUserPassword(form.value);
-    return response;
-  },
+  async () => await updateUserPassword(form.value),
   null,
   {
     immediate: false,
@@ -64,19 +65,14 @@ const { isLoading, execute } = useAsyncState(
       form.value.newPassword = '';
       form.value.newPasswordConfirm = '';
     },
-    onError: response => {
+    onError: error => {
       $q.notify({
         type: 'negative',
-        message: `${response.error}`,
+        message: getErrorMessage(error.response.data),
       });
     },
   },
 );
-const form = ref({
-  oldPassword: '',
-  newPassword: '',
-  newPasswordConfirm: '',
-});
 const handleSubmit = () => execute(form.value);
 // const handleSubmit = async () => {
 //   await updateUserPassword(form.value.newPassword);
