@@ -9,7 +9,6 @@
         :rules="[validateRequired]"
         maxlength="40"
       />
-
       <TiptapEditor v-model="contentModel" />
     </q-card-section>
     <q-separator />
@@ -48,21 +47,16 @@ const props = defineProps({
     default: false,
   },
 });
-
 const emit = defineEmits(['update:title', 'update:content', 'submit']);
-
 const $q = useQuasar();
-
 const titleModel = computed({
   get: () => props.title,
   set: val => emit('update:title', val),
 });
-
 const contentModel = computed({
   get: () => props.content,
   set: val => emit('update:content', val),
 });
-
 const handleSubmit = () => {
   if (!contentModel.value) {
     $q.notify('내용을 작성하세요.');

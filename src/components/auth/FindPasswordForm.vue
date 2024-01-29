@@ -1,21 +1,18 @@
 <template>
-  <!-- 비밀번호 찾기 폼의 메인 컨테이너 -->
-  <div>
-    <!-- 비밀번호 찾기 폼의 제목 -->
+  <div v-if="!isFind">
     <div class="text-h5 text-center text-weight-bold q-mb-xl">
       비밀번호 찾기
     </div>
-
-    <!-- 비밀번호 찾기 폼 -->
-    <q-form class="q-gutter-y-md">
-      <!-- 가입한 이메일을 입력받는 필드 -->
-      <q-input placeholder="가입한 이메일" outlined dense />
-      <!-- 확인 버튼 -->
-      <q-btn label="확인" class="full-width" unelevated color="primary" />
-
-      <!-- 구분선 -->
+    <q-form class="q-gutter-y-md" @submit.prevent="handleSubmit">
+      <q-input v-model="email" placeholder="가입한 이메일" outlined dense />
+      <q-btn
+        type="submit"
+        label="비밀번호 재설정"
+        class="full-width"
+        unelevated
+        color="primary"
+      />
       <q-separator />
-      <!-- 로그인 화면으로 돌아가는 버튼 -->
       <q-btn
         label="로그인 하기"
         class="full-width"
@@ -25,11 +22,48 @@
       />
     </q-form>
   </div>
+  <SuccessFindPassword
+    v-else
+    :newRandomPassword="newPassword"
+    @changeView="handleChangeView"
+  />
 </template>
-
 <script setup>
-// 'changeView' 이벤트를 정의함으로써, 부모 컴포넌트에서 화면 변경을 처리할 수 있습니다.
-defineEmits(['changeView']);
+import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useAsyncState } from '@vueuse/core';
+import { findPasswordWithEmail } from 'src/services';
+import { getErrorMessage } from 'src/utils/error-message';
+import SuccessFindPassword from './SuccessFindPassword.vue';
+const newPassword = ref('');
+const emit = defineEmits(['changeView']);
+const $q = useQuasar();
+const email = ref('');
+const isFind = ref(false);
+const { isLoading, execute } = useAsyncState(
+  async () => await findPasswordWithEmail(email.value),
+  null,
+  {
+    immediate: false,
+    throwError: true,
+    onSuccess: async response => {
+      $q.notify('비밀번호를 확인하세요!');
+      newPassword.value = response.data.password;
+      isFind.value = true;
+    },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
+    },
+  },
+);
+const handleSubmit = () => execute(email.value);
+const handleChangeView = view => {
+  console.log('Event received from ChildComponent:', view);
+  emit('changeView', view);
+};
 </script>
 
 <style lang="scss" scoped></style>

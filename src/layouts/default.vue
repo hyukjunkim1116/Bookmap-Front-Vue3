@@ -76,6 +76,7 @@ const $q = useQuasar();
 const route = useRoute();
 const loginStore = useLoginStore();
 const authStore = useAuthStore();
+console.log(authStore.isABC, 'gfgf');
 // 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
@@ -88,7 +89,7 @@ const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const handleLogout = async () => {
   await logout();
-  await loginStore.setAuthentication(false);
+  loginStore.setAuthentication(false);
   $q.notify('로그아웃 되었습니다.');
 };
 const darkModeIcon = computed(() =>
@@ -98,8 +99,8 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
-console.log(loginStore.isLogin);
+console.log('asdasd', loginStore.getUserData(), 'asd');
 watchEffect(() => {
-  displayName.value = authStore.user?.payload.username;
+  displayName.value = loginStore.loginUser?.payload.username;
 });
 </script>

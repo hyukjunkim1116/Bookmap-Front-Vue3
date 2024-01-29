@@ -16,17 +16,8 @@
   </StickySideBar>
 </template>
 <script setup>
-// import { ref } from 'vue';
 import StickySideBar from 'src/components/StickySideBar.vue';
-
 const emit = defineEmits(['openWriteDialog']);
-// const tags = ref([
-//   { name: 'vuejs', count: 10 },
-//   { name: 'react', count: 8 },
-//   { name: 'angular', count: 7 },
-//   { name: 'html', count: 1 },
-//   { name: 'css', count: 3 },
-// ]);
 </script>
 
 <style lang="scss" scoped></style>

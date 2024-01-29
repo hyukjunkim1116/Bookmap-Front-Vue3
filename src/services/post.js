@@ -1,4 +1,4 @@
-import { api } from 'src/boot/axios-config';
+import { api } from 'src/boot/2_axios-config';
 export async function getPosts() {
   return await api.get('posts/');
 }

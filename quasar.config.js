@@ -27,7 +27,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ['axios-config', 'navigation-guard', 'darkmode'],
+    boot: ['2_axios-config', 'navigation-guard', 'darkmode'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -80,12 +80,8 @@ module.exports = configure(function (/* ctx */) {
               {
                 src: 'src/pages',
               },
-              // {
-              //   src: 'src/docs',
-              //   path: 'docs/',
-              // },
             ],
-            // exclude: ['**/error/**'],
+            exclude: ['**/components/**'],
           },
         ],
         ['vite-plugin-vue-layouts', {}],

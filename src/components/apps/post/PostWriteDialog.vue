@@ -42,9 +42,8 @@ const onHide = () => {
   form.value = getInitialForm();
 };
 
-const { isLoading, execute, error } = useAsyncState(
+const { isLoading, execute } = useAsyncState(
   async () => {
-    // signUpWithEmail 함수에 form 데이터를 전달
     await createPost(form.value);
   },
   null,

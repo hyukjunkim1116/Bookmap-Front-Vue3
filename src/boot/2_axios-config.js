@@ -3,14 +3,13 @@ import { boot } from 'quasar/wrappers';
 import { useAuthStore } from 'src/stores/auth';
 import { Cookies } from 'quasar';
 import { logout } from 'src/services';
-
 const djangoApi = 'http://127.0.0.1:8000';
 const springApi = 'http://localhost:8080';
 const isServerRunning = async () => {
   try {
     const response = await axios.get(`${djangoApi}/health-check`);
     if (response.status === 200) {
-      console.log('Django 서버 설정. 서버 응답:', response.data);
+      console.log('Django 서버 설정. 서버 응답:', response.status);
       const axiosInstance = axios.create({
         baseURL: `${djangoApi}/api/`,
         headers: {
@@ -22,7 +21,7 @@ const isServerRunning = async () => {
   } catch (error) {
     console.error(
       'Django 서버가 응답하지 않으므로 스프링 서버로 연결됩니다. 서버 응답:',
-      error.response ? error.response.data : error.message,
+      error.status || '200',
     );
     const axiosInstance = axios.create({
       baseURL: `${springApi}/api/`,
@@ -40,11 +39,10 @@ const setupApi = async () => {
     api = await isServerRunning();
   }
   return api;
-  // 만료된 access 토큰이면 refresh 토큰을 사용하여 갱신
 };
 export default boot(async ({ app }) => {
-  // 전역 axios 인스턴스를 설정하여, 앱의 모든 곳에서 사용 가능하게 함
   app.config.globalProperties.api = await setupApi();
+
   api.interceptors.request.use(async config => {
     if (!config.headers) return config;
     const accessToken = Cookies.get('access');
@@ -53,7 +51,9 @@ export default boot(async ({ app }) => {
     }
     return config;
   });
+
   let refreshing = false;
+
   api.interceptors.response.use(
     response => response,
     async error => {
@@ -84,14 +84,12 @@ export default boot(async ({ app }) => {
 
             return api(originalRequest);
           } catch (err) {
-            console.log('Refresh token renewal failed:', err);
-            window.location.replace('/');
             await logout();
-            console.log('Logout successful');
             alert('다시 로그인 하세요');
+            window.location.replace('/');
           }
         } else {
-          console.log('Refresh token renewal is already in progress');
+          console.log('관리자에게 문의하세요!');
         }
       }
       return Promise.reject(error);

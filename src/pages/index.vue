@@ -25,16 +25,18 @@ import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useLoginStore } from 'src/stores/isLogin';
 import { useAsyncState } from '@vueuse/core';
-import PostRightBar from 'src/components/base/PostRightBar.vue';
+import { useAuthStore } from 'src/stores/auth';
+import { vIntersectionObserver } from '@vueuse/components';
+import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const $q = useQuasar();
 const loginStore = useLoginStore();
+const authStore = useAuthStore();
 const items = ref([]);
 const { execute, isLoading } = useAsyncState(
   async () => {
-    // signUpWithEmail 함수에 form 데이터를 전달
     const response = await getPosts();
     return response;
   },

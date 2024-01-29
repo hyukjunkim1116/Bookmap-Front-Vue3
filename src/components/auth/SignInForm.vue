@@ -60,13 +60,13 @@ import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
 import { useLoginStore } from 'src/stores/isLogin';
+import { useAuthStore } from 'src/stores/auth';
 const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
 const loginStore = useLoginStore();
-// 로그인 비동기 처리와 상태 관리
+const authStore = useAuthStore();
 const { isLoading, error, execute } = useAsyncState(
   async () => {
-    // signUpWithEmail 함수에 form 데이터를 전달
     await signInWithEmail(form.value);
   },
   null,
@@ -74,12 +74,10 @@ const { isLoading, error, execute } = useAsyncState(
     immediate: false,
     throwError: true,
     onSuccess: async () => {
-      // 로그인 성공 시 알림
-      await loginStore.setAuthentication(true);
+      loginStore.setAuthentication(true);
       $q.notify('환영합니다 :)');
       emit('closeDialog');
     },
-    // onError 주석은 오류 처리 관련 주석입니다.
     onError: err => {
       $q.notify({
         type: 'negative',

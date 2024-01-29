@@ -6,6 +6,7 @@ import {
   createWebHashHistory,
 } from 'vue-router/auto';
 import { setupLayouts } from 'virtual:generated-layouts';
+import { LoadingBar } from 'quasar';
 export default route(function () {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
@@ -33,6 +34,13 @@ export default route(function () {
         }),
       );
     },
+  });
+  Router.beforeEach(() => {
+    LoadingBar.start();
+  });
+
+  Router.afterEach(() => {
+    LoadingBar.stop();
   });
 
   return Router;
