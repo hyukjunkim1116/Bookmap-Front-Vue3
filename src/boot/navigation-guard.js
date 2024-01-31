@@ -3,13 +3,12 @@ import { boot } from 'quasar/wrappers';
 import { useAuthStore } from 'src/stores/auth';
 
 function requiresAuth(to) {
-  const { isAuthenticated } = storeToRefs(useAuthStore());
+  const authStore = storeToRefs(useAuthStore());
 
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
-    !isAuthenticated.value
+    !authStore.isLogin.value
   ) {
-    alert('로그인이 필요한 페이지입니다.');
     return '/';
   }
   return true;

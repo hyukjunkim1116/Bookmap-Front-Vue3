@@ -60,10 +60,7 @@ const { isLoading, execute } = useAsyncState(
   },
 );
 const handleSubmit = () => execute(email.value);
-const handleChangeView = view => {
-  console.log('Event received from ChildComponent:', view);
-  emit('changeView', view);
-};
+const handleChangeView = view => emit('changeView', view);
 </script>
 
 <style lang="scss" scoped></style>

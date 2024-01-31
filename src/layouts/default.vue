@@ -17,16 +17,16 @@
         <!-- 로그인/회원가입 버튼 -->
         <q-separator class="q-my-md q-mr-md" vertical />
         <q-btn
-          v-if="!loginStore.isLogin"
+          v-if="!authStore.isLogin"
           unelevated
           rounded
           color="primary"
           label="로그인 / 회원가입"
           @click="openAuthDialog"
         />
-        <span v-if="loginStore.isLogin">{{ displayName }}님 안녕하세요!</span>
+        <span v-if="authStore.isLogin">{{ displayName }}님 안녕하세요!</span>
         <!-- 사용자 프로필 및 메뉴 -->
-        <q-btn v-if="loginStore.isLogin" round flat class="q-ml-md">
+        <q-btn v-if="authStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar.png" />
           </q-avatar>
@@ -67,21 +67,18 @@
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useLoginStore } from 'src/stores/isLogin';
 import { useAuthStore } from 'src/stores/auth';
-import AuthDialog from 'src/components/auth/AuthDialog.vue';
 import { logout } from 'src/services';
+import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
-const $q = useQuasar();
-const route = useRoute();
-const loginStore = useLoginStore();
-const authStore = useAuthStore();
-console.log(authStore.isABC, 'gfgf');
-// 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
+const $q = useQuasar();
+const route = useRoute();
+const authStore = useAuthStore();
+// 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
 // 인증 다이얼로그 상태 관리
 const authDialog = ref(false);
 // 인증 다이얼로그를 열기 위한 함수
@@ -89,7 +86,7 @@ const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const handleLogout = async () => {
   await logout();
-  loginStore.setAuthentication(false);
+  authStore.setAuthentication(false);
   $q.notify('로그아웃 되었습니다.');
 };
 const darkModeIcon = computed(() =>
@@ -99,8 +96,7 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
-console.log('asdasd', loginStore.getUserData(), 'asd');
 watchEffect(() => {
-  displayName.value = loginStore.loginUser?.payload.username;
+  displayName.value = authStore.loginUser?.username;
 });
 </script>

@@ -24,7 +24,7 @@
       </div>
       <q-space />
       <q-btn
-        v-if="hasOwnContent(post.author?.uid)"
+        v-if="authStore.hasOwnContent(post.author?.uid)"
         icon="more_horiz"
         round
         flat
@@ -55,6 +55,7 @@ import { date, useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from 'stores/auth';
 import { useAsyncState } from '@vueuse/core';
+import { getErrorMessage } from 'src/utils/error-message';
 import { deletePost, getPostDetails } from 'src/services';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import TiptapViewer from 'src/components/tiptap/TiptapViewer.vue';
@@ -62,8 +63,9 @@ import TiptapViewer from 'src/components/tiptap/TiptapViewer.vue';
 const route = useRoute();
 const router = useRouter();
 const $q = useQuasar();
-const { hasOwnContent } = useAuthStore();
+const authStore = useAuthStore();
 const post = ref({});
+
 const { error } = useAsyncState(
   async () => {
     const response = await getPostDetails(route.params.id);
@@ -72,8 +74,13 @@ const { error } = useAsyncState(
   {},
   {
     onSuccess: response => {
-      console.log(response.data);
       post.value = response.data;
+    },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
     },
   },
 );
@@ -86,13 +93,30 @@ const { execute: executeDeletePost } = useAsyncState(
       $q.notify('삭제완료!');
       router.push('/');
     },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
+    },
   },
 );
 const handleDeletePost = async () => {
-  if (confirm('삭제 하시겠어요?') === false) {
-    return;
-  }
-  await executeDeletePost(route.params.id);
+  $q.dialog({
+    title: '알림',
+    message: '삭제 하시겠어요?',
+    persistent: true,
+    cancel: true,
+    ok: {
+      push: true,
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+    },
+  }).onOk(async () => {
+    await executeDeletePost(route.params.id);
+  });
 };
 </script>
 

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import PostDetails from 'src/components/apps/post/PostDetails.vue';
+import PostDetails from 'src/pages/posts/[id]/components/PostDetails.vue';
 </script>
 
 <style lang="scss" scoped></style>

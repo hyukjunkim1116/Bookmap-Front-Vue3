@@ -2,7 +2,7 @@
   <q-page padding>
     <BaseCard>
       <q-toolbar>
-        <q-toolbar-title>글쓰기</q-toolbar-title>
+        <q-toolbar-title>수정하기</q-toolbar-title>
       </q-toolbar>
       <q-separator />
       <PostForm
@@ -11,7 +11,7 @@
         @submit="handleSubmit"
       >
         <template #actions>
-          <q-btn flat label="취소" v-close-popup />
+          <q-btn flat label="취소" @click="$router.back()" />
           <q-btn
             type="submit"
             flat
@@ -36,25 +36,26 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getPostDetails, updatePost } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
+import { getErrorMessage } from 'src/utils/error-message';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import PostForm from 'src/components/apps/post/PostForm.vue';
 const router = useRouter();
 const route = useRoute();
-console.log(route.params.id);
 const $q = useQuasar();
 const form = ref(getInitialForm());
 useAsyncState(
-  async () => {
-    const response = await getPostDetails(route.params.id);
-    return response;
-  },
+  async () => await getPostDetails(route.params.id),
   {},
   {
     onSuccess: response => {
-      console.log('ASdasd');
-      console.log(response);
       form.value.title = response.data.title;
       form.value.content = response.data.content;
+    },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
     },
   },
 );
@@ -72,14 +73,31 @@ const { isLoading, execute: executeUpdatePost } = useAsyncState(
       $q.notify('수정완료!');
       router.back();
     },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
+    },
   },
 );
 
 const handleSubmit = async () => {
-  if (confirm('수정 하시겠어요?') === false) {
-    return;
-  }
-  await executeUpdatePost(route.params.id, form.value);
+  $q.dialog({
+    title: '알림',
+    message: '수정 하시겠어요?',
+    persistent: true,
+    cancel: true,
+    ok: {
+      push: true,
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+    },
+  }).onOk(async () => {
+    await executeUpdatePost(route.params.id, form.value);
+  });
 };
 </script>
 

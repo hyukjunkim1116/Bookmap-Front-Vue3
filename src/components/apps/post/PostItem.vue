@@ -9,6 +9,7 @@
       <div class="flex items-center">
         <span>{{ item.author.username }}</span>
         <span class="q-mx-xs">&middot;</span>
+        <span>{{ formatRelativeTime(new Date(item?.updated_at)) }}</span>
       </div>
       <div class="text-h6 q-mt-sm">{{ item.title }}</div>
       <div v-if="escapeHTML" class="text-grey-6 q-my-sm ellipsis-2-lines">
@@ -24,6 +25,7 @@
 </template>
 
 <script setup>
+import { formatRelativeTime } from 'src/utils/relative-time-format';
 const props = defineProps({
   item: {
     type: Object,

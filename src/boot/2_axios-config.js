@@ -89,7 +89,7 @@ export default boot(async ({ app }) => {
             window.location.replace('/');
           }
         } else {
-          console.log('관리자에게 문의하세요!');
+          alert('관리자에게 문의하세요!');
         }
       }
       return Promise.reject(error);

@@ -76,6 +76,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signUpWithEmail } from 'src/services';
+import { getErrorMessage } from 'src/utils/error-message';
 import {
   validateRequired,
   validateEmail,
@@ -85,6 +86,15 @@ import {
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();
+// 비밀번호 확인을 위한 ref
+const passwordConfirm = ref('');
+// 폼 데이터 모델
+const form = ref({
+  email: '',
+  password: '',
+  username: '',
+  passwordConfirm: passwordConfirm,
+});
 /**
  * 이메일을 통한 회원가입 요청을 서버에 전송
  * @param {Object} data - 회원가입 요청에 필요한 데이터
@@ -105,24 +115,14 @@ const { isLoading, execute } = useAsyncState(
     },
     // onError 주석은 오류 처리 관련 주석입니다.
     onError: err => {
-      console.log(err);
       $q.notify({
         type: 'negative',
-        message: `${err.response.data.error}`,
+        message: getErrorMessage(err.response.data),
       });
     },
   },
 );
 
-// 비밀번호 확인을 위한 ref
-const passwordConfirm = ref('');
-// 폼 데이터 모델
-const form = ref({
-  email: '',
-  password: '',
-  username: '',
-  passwordConfirm: passwordConfirm,
-});
 // 폼 제출 처리 함수
 const handleSubmit = () => execute(form.value);
 </script>

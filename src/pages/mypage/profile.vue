@@ -39,22 +39,19 @@ import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { updateUserProfile, deleteUser, logout } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
+import { getErrorMessage } from 'src/utils/error-message';
 import BaseCard from 'src/components/base/BaseCard.vue';
-import { useRouter } from 'vue-router';
-const router = useRouter();
 const authStore = useAuthStore();
 const $q = useQuasar();
 const displayName = ref('');
 const email = ref('');
-const uid = authStore.user?.payload.uid || null;
+const uid = authStore.loginUser?.uid || null;
 const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
-  async () => {
-    const response = await updateUserProfile(
+  async () =>
+    await updateUserProfile(
       { username: displayName.value, email: email.value },
       uid,
-    );
-    return response;
-  },
+    ),
   null,
   {
     immediate: false,
@@ -63,24 +60,19 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
       authStore.setUserData({
         username: displayName.value,
         email: email.value,
-        uid: authStore.getUserData.uid,
+        uid: uid,
       });
     },
     onError: err => {
-      console.log(err);
-      console.log(err.message);
       $q.notify({
         type: 'negative',
-        message: `${err.message}`,
+        message: getErrorMessage(err.response.data),
       });
     },
   },
 );
 const { execute: executeDeleteUser } = useAsyncState(
-  async () => {
-    const response = await deleteUser(uid);
-    return response;
-  },
+  async () => await deleteUser(uid),
   null,
   {
     immediate: false,
@@ -90,27 +82,36 @@ const { execute: executeDeleteUser } = useAsyncState(
       window.location.replace('/');
       $q.notify('삭제 완료!');
     },
-    onError: response => {
-      console.log(response);
-      console.log(response.err);
+    onError: err => {
       $q.notify({
         type: 'negative',
-        message: `${response.err}`,
+        message: getErrorMessage(err.response.data),
       });
     },
   },
 );
 const handleDeleteUser = async () => {
-  if (confirm('수정 하시겠어요?') === false) {
-    return;
-  }
-  await executeDeleteUser(uid);
+  $q.dialog({
+    title: '알림',
+    message: '삭제 하시겠어요?',
+    persistent: true,
+    cancel: true,
+    ok: {
+      push: true,
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+    },
+  }).onOk(async () => {
+    await executeDeleteUser(uid);
+  });
 };
 const handleSubmitProfile = () =>
   executeProfile({ username: displayName.value, email: email.value }, uid);
 watchEffect(() => {
-  displayName.value = authStore.user?.payload.username;
-  email.value = authStore.user?.payload.email;
+  displayName.value = authStore.loginUser?.username;
+  email.value = authStore.loginUser?.email;
 });
 </script>
 

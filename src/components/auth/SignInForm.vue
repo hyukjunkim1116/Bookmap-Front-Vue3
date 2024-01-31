@@ -59,11 +59,10 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
-import { useLoginStore } from 'src/stores/isLogin';
+import { getErrorMessage } from 'src/utils/error-message';
 import { useAuthStore } from 'src/stores/auth';
 const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
-const loginStore = useLoginStore();
 const authStore = useAuthStore();
 const { isLoading, error, execute } = useAsyncState(
   async () => {
@@ -74,14 +73,14 @@ const { isLoading, error, execute } = useAsyncState(
     immediate: false,
     throwError: true,
     onSuccess: async () => {
-      loginStore.setAuthentication(true);
+      authStore.setAuthentication(true);
       $q.notify('환영합니다 :)');
       emit('closeDialog');
     },
     onError: err => {
       $q.notify({
         type: 'negative',
-        message: `${err.response?.data?.error}`,
+        message: getErrorMessage(err.response.data),
       });
     },
   },

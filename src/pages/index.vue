@@ -23,39 +23,33 @@
 import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
-import { useLoginStore } from 'src/stores/isLogin';
-import { useAsyncState } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
+import { useAsyncState } from '@vueuse/core';
+import { getErrorMessage } from 'src/utils/error-message';
 import { vIntersectionObserver } from '@vueuse/components';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const $q = useQuasar();
-const loginStore = useLoginStore();
 const authStore = useAuthStore();
 const items = ref([]);
-const { execute, isLoading } = useAsyncState(
-  async () => {
-    const response = await getPosts();
-    return response;
+const { execute, isLoading } = useAsyncState(async () => await getPosts(), [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {
+    items.value = response?.data;
   },
-  [],
-  {
-    immediate: false,
-    throwError: true,
-    onSuccess: response => {
-      items.value = response?.data;
-      console.log('items', items);
-    },
-    onError: error => {
-      console.log('errorerrror:', error);
-    },
+  onError: err => {
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
   },
-);
+});
 const postDialog = ref(false);
 const openWriteDialog = () => {
-  if (!loginStore.isLogin) {
+  if (!authStore.isLogin) {
     $q.notify('로그인 후 이용 가능합니다!');
     return;
   }
@@ -65,7 +59,7 @@ const completeRegistrationPost = () => {
   postDialog.value = false;
   execute();
 };
-onMounted(items => {
+onMounted(() => {
   execute();
 });
 </script>

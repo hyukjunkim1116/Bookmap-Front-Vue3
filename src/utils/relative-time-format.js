@@ -1,4 +1,4 @@
-export function formatRelativeTime(targetTime = new Date('2023-08-28')) {
+export function formatRelativeTime(targetTime) {
   const rtf = new Intl.RelativeTimeFormat('ko', {
     numeric: 'auto',
   });
@@ -11,11 +11,6 @@ export function formatRelativeTime(targetTime = new Date('2023-08-28')) {
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   const years = Math.floor(days / 365);
-  console.log('seconds: ', seconds);
-  console.log('minutes: ', minutes);
-  console.log('hours: ', hours);
-  console.log('days: ', days);
-  console.log('years: ', years);
   if (years > 0) {
     return rtf.format(-1 * years, 'year');
   } else if (days > 0) {

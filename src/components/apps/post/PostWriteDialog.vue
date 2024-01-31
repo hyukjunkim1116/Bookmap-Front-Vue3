@@ -27,6 +27,7 @@ import { ref } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
 import { createPost } from 'src/services';
+import { getErrorMessage } from 'src/utils/error-message';
 import PostForm from 'src/components/apps/post/PostForm.vue';
 
 const emit = defineEmits(['complete']);
@@ -52,6 +53,12 @@ const { isLoading, execute } = useAsyncState(
     throwError: true,
     onSuccess: () => {
       emit('complete');
+    },
+    onError: err => {
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
     },
   },
 );
