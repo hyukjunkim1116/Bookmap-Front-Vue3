@@ -4,7 +4,7 @@
       v-for="item in items"
       :key="item.id"
       v-bind="item"
-      @delete="handleDeleteComment"
+      @delete="handleDeleteComment(item.id)"
     />
   </q-list>
 </template>
@@ -12,7 +12,9 @@
 <script setup>
 import { useAsyncState } from '@vueuse/core';
 import { deleteComment } from 'src/services';
+import { useQuasar } from 'quasar';
 import CommentItem from './CommentItem.vue';
+const $q = useQuasar();
 defineProps({
   items: {
     type: Array,
@@ -20,17 +22,34 @@ defineProps({
   },
 });
 const emit = defineEmits(['deleted']);
-const { execute } = useAsyncState(async () => await deleteComment(), null, {
-  immediate: false,
-  onSuccess: () => {
-    emit('deleted');
+const { execute } = useAsyncState(
+  async () => await deleteComment(commentId),
+  null,
+  {
+    immediate: false,
+    onSuccess: () => {
+      emit('deleted');
+    },
   },
-});
-const handleDeleteComment = async commentId => {
-  if (confirm('삭제 하시겠어요?') === false) {
-    return;
-  }
-  await execute(commentId);
+);
+const handleDeleteComment = commentId => {
+  console.log(commentId, '123');
+  $q.dialog({
+    title: '알림',
+    message: '삭제 하시겠어요?',
+    persistent: true,
+    cancel: true,
+    ok: {
+      push: true,
+    },
+    cancel: {
+      push: true,
+      color: 'negative',
+    },
+  }).onOk(async () => {
+    console.log(commentId);
+    await execute(commentId);
+  });
 };
 </script>
 

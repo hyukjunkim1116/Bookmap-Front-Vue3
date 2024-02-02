@@ -9,5 +9,6 @@ export async function editComment(commentId, data) {
   return await api.put(`posts/comment/${commentId}`, data);
 }
 export async function deleteComment(commentId) {
+  console.log(commentId, 'commentId');
   return await api.delete(`posts/comment/${commentId}`);
 }

@@ -34,14 +34,14 @@
 
     <CommentList
       :post-id="$route.params.id"
-      :items="commentData.items"
+      :items="items"
       @deleted="deletedComment"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
@@ -51,10 +51,7 @@ import BaseCard from 'src/components/base/BaseCard.vue';
 import CommentList from 'src/components/apps/comment/CommentList.vue';
 import { validateRequired } from 'src/utils/validate-rules';
 
-// 예제 데이터
-const commentData = {
-  items: reactive([]),
-};
+const items = ref([]);
 const route = useRoute();
 const authStore = useAuthStore();
 const $q = useQuasar();
@@ -75,10 +72,10 @@ const { execute: executeGetComments } = useAsyncState(
   async () => await getComments(route.params.id),
   [],
   {
-    resetOnExecute: false,
-    onSuccess: async response => {
-      commentData.items = response?.data;
-      console.log(commentData.items, '123213213');
+    immediate: false,
+    throwError: true,
+    onSuccess: response => {
+      items.value = response?.data;
     },
   },
 );
@@ -102,11 +99,19 @@ const { isLoading, execute: executeAddComment } = useAsyncState(
 );
 const handleAddComment = async () => {
   executeAddComment(route.params.id, {
-    comment: message.value,
+    message: message.value,
     uid: authStore.getUserData.uid,
   });
 };
-const deletedComment = () => executeGetComments(route.params.id);
+const deletedComment = () => {
+  $q.notify({
+    message: '삭제 되었습니다.',
+  });
+  executeGetComments(route.params.id);
+};
+onMounted(() => {
+  executeGetComments(route.params.id);
+});
 </script>
 
 <style lang="scss" scoped></style>

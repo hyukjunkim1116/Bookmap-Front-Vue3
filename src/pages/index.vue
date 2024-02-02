@@ -26,7 +26,6 @@ import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { useAsyncState } from '@vueuse/core';
 import { getErrorMessage } from 'src/utils/error-message';
-import { vIntersectionObserver } from '@vueuse/components';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
