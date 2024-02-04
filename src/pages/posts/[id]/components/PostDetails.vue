@@ -84,23 +84,19 @@ const { error } = useAsyncState(
     },
   },
 );
-const { execute: executeDeletePost } = useAsyncState(
-  async () => await deletePost(post.value.id),
-  null,
-  {
-    immediate: false,
-    onSuccess: () => {
-      $q.notify('삭제완료!');
-      router.push('/');
-    },
-    onError: err => {
-      $q.notify({
-        type: 'negative',
-        message: getErrorMessage(err.response.data),
-      });
-    },
+const { execute: executeDeletePost } = useAsyncState(deletePost, null, {
+  immediate: false,
+  onSuccess: () => {
+    $q.notify('삭제완료!');
+    router.push('/');
   },
-);
+  onError: err => {
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
+  },
+});
 const handleDeletePost = async () => {
   $q.dialog({
     title: '알림',
@@ -115,7 +111,7 @@ const handleDeletePost = async () => {
       color: 'negative',
     },
   }).onOk(async () => {
-    await executeDeletePost(route.params.id);
+    await executeDeletePost(deletePost, route.params.id);
   });
 };
 </script>

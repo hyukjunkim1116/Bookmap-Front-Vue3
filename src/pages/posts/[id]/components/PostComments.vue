@@ -36,6 +36,7 @@
       :post-id="$route.params.id"
       :items="items"
       @deleted="deletedComment"
+      @edited="editedComment"
     />
   </div>
 </template>
@@ -68,17 +69,14 @@ const toggleActive = () => {
   isActive.value = !isActive.value;
 };
 
-const { execute: executeGetComments } = useAsyncState(
-  async () => await getComments(route.params.id),
-  [],
-  {
-    immediate: false,
-    throwError: true,
-    onSuccess: response => {
-      items.value = response?.data;
-    },
+const { execute: executeGetComments } = useAsyncState(getComments, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {
+    console.log(response.data);
+    items.value = response?.data;
   },
-);
+});
 
 const { isLoading, execute: executeAddComment } = useAsyncState(
   async () =>
@@ -93,7 +91,7 @@ const { isLoading, execute: executeAddComment } = useAsyncState(
     onSuccess: () => {
       message.value = '';
       isActive.value = false;
-      executeGetComments(route.params.id);
+      executeGetComments(getComments, route.params.id);
     },
   },
 );
@@ -107,10 +105,16 @@ const deletedComment = () => {
   $q.notify({
     message: '삭제 되었습니다.',
   });
-  executeGetComments(route.params.id);
+  executeGetComments(getComments, route.params.id);
+};
+const editedComment = () => {
+  $q.notify({
+    message: '수정 되었습니다.',
+  });
+  executeGetComments(getComments, route.params.id);
 };
 onMounted(() => {
-  executeGetComments(route.params.id);
+  executeGetComments(getComments, route.params.id);
 });
 </script>
 
