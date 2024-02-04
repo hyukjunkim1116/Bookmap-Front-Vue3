@@ -5,6 +5,7 @@
     <div class="row q-col-gutter-x-lg">
       <!-- 중앙 포스트 리스트 섹션 -->
       <section class="col-7">
+        <PostHeader v-model:sort="sort" />
         <PostListSkeleton v-if="isLoading" />
         <PostList :items="items" escapeHTML />
         <!-- <div v-intersection-observer="handleIntersectionObserver"></div> -->
@@ -20,29 +21,36 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { useAsyncState } from '@vueuse/core';
 import { getErrorMessage } from 'src/utils/error-message';
+import { usePostQuery } from 'src/composables/usePostQuery';
+import PostHeader from './components/PostHeader.vue';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
+const { sort, search } = usePostQuery();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const items = ref([]);
-const { execute, isLoading } = useAsyncState(async () => await getPosts(), [], {
+
+const params = computed(() => ({
+  sort: sort.value,
+}));
+const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    items.value = response?.data;
+    items.value = response?.data.results;
   },
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: getErrorMessage(err.response?.data),
     });
   },
 });
@@ -56,11 +64,22 @@ const openWriteDialog = () => {
 };
 const completeRegistrationPost = () => {
   postDialog.value = false;
-  execute();
+  execute(getPosts, params.value);
+  // execute(0, params.value);
 };
 onMounted(() => {
-  execute();
+  execute(getPosts, params.value);
 });
+watch(
+  params,
+  () => {
+    execute(getPosts, params.value);
+  },
+  {
+    deep: true,
+    // immediate: true,
+  },
+);
 </script>
 
 <style lang="scss" scoped></style>

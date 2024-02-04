@@ -28,7 +28,7 @@
         <!-- 사용자 프로필 및 메뉴 -->
         <q-btn v-if="authStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar.png" />
+            <img :src="generateDefaultPhotoURL(authStore.loginUser.uid)" />
           </q-avatar>
 
           <q-menu>
@@ -68,7 +68,7 @@ import { computed, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
-import { logout } from 'src/services';
+import { logout, generateDefaultPhotoURL } from 'src/services';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
 const pageContainerStyles = computed(() => ({

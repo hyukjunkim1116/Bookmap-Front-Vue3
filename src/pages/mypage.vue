@@ -16,6 +16,12 @@
               </q-item-section>
               <q-item-section>비밀번호 변경</q-item-section>
             </q-item>
+            <q-item clickable v-ripple to="/mypage/bookmark">
+              <q-item-section avatar>
+                <q-icon name="sym_o_bookmark" />
+              </q-item-section>
+              <q-item-section>북마크한 글 보기</q-item-section>
+            </q-item>
           </q-list>
         </BaseCard>
       </div>
