@@ -9,8 +9,8 @@ export const usePostQuery = () => {
     set: val => router.push({ query: { ...route.query, sort: val } }),
   });
   const search = computed({
-    get: () => route.query.sort || 'createdAt',
-    set: val => router.push({ query: { ...route.query, sort: val } }),
+    get: () => route.query.search || '',
+    set: val => router.push({ query: { ...route.query, search: val } }),
   });
   return {
     sort,

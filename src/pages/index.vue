@@ -5,7 +5,7 @@
     <div class="row q-col-gutter-x-lg">
       <!-- 중앙 포스트 리스트 섹션 -->
       <section class="col-7">
-        <PostHeader v-model:sort="sort" />
+        <PostHeader v-model:sort="sort" v-model:search="search" />
         <PostListSkeleton v-if="isLoading" />
         <PostList :items="items" escapeHTML />
         <!-- <div v-intersection-observer="handleIntersectionObserver"></div> -->
@@ -34,27 +34,30 @@ import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const { sort, search } = usePostQuery();
+const postDialog = ref(false);
 const $q = useQuasar();
 const authStore = useAuthStore();
 const items = ref([]);
-
 const params = computed(() => ({
   sort: sort.value,
+  search: search.value,
 }));
 const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    console.log(response);
     items.value = response?.data.results;
   },
   onError: err => {
+    console.log(err);
     $q.notify({
       type: 'negative',
       message: getErrorMessage(err.response?.data),
     });
   },
 });
-const postDialog = ref(false);
+
 const openWriteDialog = () => {
   if (!authStore.isLogin) {
     $q.notify('로그인 후 이용 가능합니다!');
@@ -65,7 +68,6 @@ const openWriteDialog = () => {
 const completeRegistrationPost = () => {
   postDialog.value = false;
   execute(getPosts, params.value);
-  // execute(0, params.value);
 };
 onMounted(() => {
   execute(getPosts, params.value);

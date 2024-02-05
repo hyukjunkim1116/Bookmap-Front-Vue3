@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="text-subtitle1 text-weight-bold q-mb-lg">댓글 6</div>
+    <div class="text-subtitle1 text-weight-bold q-mb-lg">
+      댓글 수 {{ commentCount }}
+    </div>
     <div v-if="isActive">
       <q-form @submit.prevent="handleAddComment">
         <q-input
@@ -53,6 +55,7 @@ import CommentList from 'src/components/apps/comment/CommentList.vue';
 import { validateRequired } from 'src/utils/validate-rules';
 
 const items = ref([]);
+const commentCount = ref();
 const route = useRoute();
 const authStore = useAuthStore();
 const $q = useQuasar();
@@ -75,6 +78,7 @@ const { execute: executeGetComments } = useAsyncState(getComments, [], {
   onSuccess: response => {
     console.log(response.data);
     items.value = response?.data;
+    commentCount.value = response.data[0]?.comment_count || 0;
   },
 });
 

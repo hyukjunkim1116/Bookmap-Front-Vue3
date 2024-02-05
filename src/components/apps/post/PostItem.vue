@@ -34,16 +34,21 @@
           <div class="flex flex-center items-center">
             <PostIcon
               name="sym_o_sms"
-              :label="item.comment_count"
+              :label="item.comments_count"
               tooltip="댓글수"
             />
           </div>
         </div>
         <div class="col-2">
           <div class="flex flex-center items-center">
-            <q-btn class="full-width" flat dense @click.prevent="toggleLike">
+            <q-btn
+              class="full-width"
+              flat
+              dense
+              @click.prevent="executeHandleLike(handleLike, item.id)"
+            >
               <PostIcon
-                :name="isLike ? 'favorite' : 'sym_o_favorite'"
+                :name="item.is_liked ? 'favorite' : 'sym_o_favorite'"
                 :label="item.like_count"
                 tooltip="좋아요"
               />
@@ -52,9 +57,14 @@
         </div>
         <div class="col-2">
           <div class="flex flex-center items-center">
-            <q-btn class="full-width" flat dense @click.prevent="toggleDislike">
+            <q-btn
+              class="full-width"
+              flat
+              dense
+              @click.prevent="executeHandleDislike(handleDislike, item.id)"
+            >
               <PostIcon
-                :name="isLike ? 'mood_bad' : 'sym_o_mood_bad'"
+                :name="item.is_disliked ? 'thumb_down' : 'sym_o_thumb_down'"
                 :label="item.dislike_count"
                 tooltip="싫어요"
               />
@@ -67,11 +77,10 @@
               class="full-width"
               flat
               dense
-              @click.prevent="toggleBookmark"
+              @click.prevent="executeHandleBookmark(handleBookmark, item.id)"
             >
               <PostIcon
-                :name="isBookmark ? 'bookmark' : 'sym_o_bookmark'"
-                :label="bookmarkCount"
+                :name="item.is_bookmarked ? 'bookmark' : 'sym_o_bookmark'"
                 tooltip="북마크"
               />
             </q-btn>
@@ -83,11 +92,19 @@
 </template>
 
 <script setup>
+import { watch } from 'vue';
 import { formatRelativeTime } from 'src/utils/relative-time-format';
-import { generateDefaultPhotoURL } from 'src/services';
+import {
+  generateDefaultPhotoURL,
+  handleLike,
+  handleDislike,
+  handleBookmark,
+} from 'src/services';
+import { useAsyncState } from '@vueuse/core';
+import { useQuasar } from 'quasar';
+import { getErrorMessage } from 'src/utils/error-message';
 import PostIcon from './PostIcon.vue';
-import { useLike } from 'src/composables/useLike';
-import { useBookmark } from 'src/composables/useBookmark';
+const $q = useQuasar();
 const props = defineProps({
   item: {
     type: Object,
@@ -96,6 +113,43 @@ const props = defineProps({
   escapeHTML: {
     type: Boolean,
     default: false,
+  },
+});
+
+const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
+const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
+const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
   },
 });
 </script>

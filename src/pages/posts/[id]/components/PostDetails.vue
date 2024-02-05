@@ -11,6 +11,33 @@
         @click="$router.back()"
       />
       <q-space />
+      <q-btn
+        :icon="post.is_liked ? 'favorite' : 'sym_o_favorite'"
+        flat
+        round
+        dense
+        color="red"
+        size="16px"
+        @click="executeHandleLike(handleLike, post.id)"
+      />
+      <q-btn
+        :icon="post.is_disliked ? 'thumb_down' : 'sym_o_thumb_down'"
+        flat
+        round
+        dense
+        color="black"
+        size="16px"
+        @click="executeHandleDislike(handleDislike, post.id)"
+      />
+      <q-btn
+        :icon="post.is_bookmarked ? 'bookmark' : 'sym_o_bookmark'"
+        flat
+        round
+        dense
+        color="blue"
+        size="16px"
+        @click="executeHandleBookmark(handleBookmark, post.id)"
+      />
     </div>
     <div class="flex items-center">
       <q-avatar>
@@ -56,7 +83,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from 'stores/auth';
 import { useAsyncState } from '@vueuse/core';
 import { getErrorMessage } from 'src/utils/error-message';
-import { deletePost, getPostDetails } from 'src/services';
+import {
+  deletePost,
+  getPostDetails,
+  generateDefaultPhotoURL,
+  handleLike,
+  handleDislike,
+  handleBookmark,
+} from 'src/services';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import TiptapViewer from 'src/components/tiptap/TiptapViewer.vue';
 
@@ -114,6 +148,43 @@ const handleDeletePost = async () => {
     await executeDeletePost(deletePost, route.params.id);
   });
 };
+
+const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
+const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
+const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {},
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
 </script>
 
 <style lang="scss" scoped></style>

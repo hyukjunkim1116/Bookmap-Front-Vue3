@@ -1,8 +1,6 @@
 import { api } from 'src/boot/2_axios-config';
 export async function getPosts(params) {
-  console.log(params, '123123');
-
-  return await api.get(`posts/?sort=${params.sort}`);
+  return await api.get(`posts/?sort=${params.sort}&search=${params.search}`);
 }
 export async function createPost(data) {
   const response = await api.post('posts/', data);
@@ -18,17 +16,12 @@ export async function deletePost(postId) {
   return await api.delete(`posts/${postId}`);
 }
 
-async function incrementReadCount(id) {}
-export async function addLike(uid, postId) {}
-
-export async function removeLike(uid, postId) {}
-
-export async function hasLike(uid, postId) {}
-
-export async function addBookmark(uid, postId) {}
-
-export async function removeBookmark(uid, postId) {}
-
-export async function hasBookmark(uid, postId) {}
-
-export async function getUserBookmarks(uid) {}
+export async function handleLike(postId) {
+  return await api.post(`posts/${postId}/like`);
+}
+export async function handleDislike(postId) {
+  return await api.post(`posts/${postId}/dislike`);
+}
+export async function handleBookmark(postId) {
+  return await api.post(`posts/${postId}/bookmark`);
+}

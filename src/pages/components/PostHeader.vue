@@ -4,7 +4,7 @@
     <q-space />
     <q-tabs
       :model-value="sort"
-      @update:model-value="value => $emit('update:sort', value)"
+      @update:model-value="updateSort"
       narrow-indicator
       dense
     >
@@ -14,7 +14,7 @@
     </q-tabs>
   </div>
   <div class="q-mt-md">
-    <q-form @submit.prevent="handleSearchPost" class="search-form">
+    <q-form class="search-form">
       <q-input
         v-model="searchText"
         type="text"
@@ -23,11 +23,12 @@
         class="search-input"
         placeholder="게시글 검색하기"
       ></q-input>
+
       <q-icon
-        clickable
+        type="button"
         name="sym_o_search"
         class="search-icon"
-        @click="handleSearchPost"
+        @click="emitSearchUpdate"
       >
         <q-tooltip :offset="[0, 5]">
           <div class="tooltip-content">검색</div>
@@ -38,9 +39,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-const searchText = ref('');
-const emit = defineEmits(['search', 'update:sort']);
+import { ref, defineProps, defineEmits } from 'vue';
+const emit = defineEmits(['update:search', 'update:sort']);
 defineProps({
   sort: {
     type: String,
@@ -48,13 +48,17 @@ defineProps({
   },
   search: {
     type: String,
+    default: 'notFound',
   },
 });
-const handleSearchPost = () => {
-  emit('search', searchText.value);
+const searchText = ref('');
+const updateSort = value => {
+  emit('update:sort', value);
+};
+const emitSearchUpdate = () => {
+  emit('update:search', searchText.value);
 };
 </script>
-
 <style lang="scss" scoped>
 .search-form {
   display: flex;
