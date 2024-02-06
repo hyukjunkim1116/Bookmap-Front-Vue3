@@ -99,14 +99,11 @@ const router = useRouter();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const post = ref({});
-
 const { error } = useAsyncState(
-  async () => {
-    const response = await getPostDetails(route.params.id);
-    return response;
-  },
+  getPostDetails(route.params.id),
   {},
   {
+    immediate: true,
     onSuccess: response => {
       post.value = response.data;
     },
@@ -152,7 +149,9 @@ const handleDeletePost = async () => {
 const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    post.value.is_liked = response.data.is_liked;
+  },
   onError: err => {
     console.log(err);
     $q.notify({
@@ -164,7 +163,9 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
 const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    post.value.is_disliked = response.data.is_disliked;
+  },
   onError: err => {
     console.log(err);
     $q.notify({
@@ -176,7 +177,9 @@ const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
 const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    post.value.is_bookmarked = response.data.is_bookmarked;
+  },
   onError: err => {
     console.log(err);
     $q.notify({

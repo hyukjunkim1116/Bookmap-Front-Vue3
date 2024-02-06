@@ -42,6 +42,9 @@ export async function updateUserPassword(data) {
 export async function updateUserProfile(data, uid) {
   return await api.put(`users/${uid}/`, data);
 }
+export async function updateUserImage(data, uid) {
+  return await api.patch(`users/${uid}/image`, data);
+}
 export async function deleteUser(uid) {
   return await api.delete(`users/${uid}/`);
 }

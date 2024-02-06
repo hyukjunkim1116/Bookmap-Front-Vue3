@@ -8,7 +8,7 @@
         <PostHeader v-model:sort="sort" v-model:search="search" />
         <PostListSkeleton v-if="isLoading" />
         <PostList :items="items" escapeHTML />
-        <!-- <div v-intersection-observer="handleIntersectionObserver"></div> -->
+        <div v-intersection-observer="handleIntersectionObserver"></div>
       </section>
       <!-- 오른쪽 사이드바 컴포넌트 -->
       <PostRightBar class="col-3" @open-write-dialog="openWriteDialog" />
@@ -26,6 +26,7 @@ import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { useAsyncState } from '@vueuse/core';
+import { vIntersectionObserver } from '@vueuse/components';
 import { getErrorMessage } from 'src/utils/error-message';
 import { usePostQuery } from 'src/composables/usePostQuery';
 import PostHeader from './components/PostHeader.vue';
@@ -34,7 +35,6 @@ import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const { sort, search } = usePostQuery();
-const postDialog = ref(false);
 const $q = useQuasar();
 const authStore = useAuthStore();
 const items = ref([]);
@@ -42,12 +42,26 @@ const params = computed(() => ({
   sort: sort.value,
   search: search.value,
 }));
+const page = ref(1);
+const postDialog = ref(false);
+const isParamsChanged = ref(false);
+const isLoadMore = ref(true);
 const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response);
-    items.value = response?.data.results;
+    console.log(response.data);
+    if (response.data.next) {
+      isLoadMore.value = true;
+      page.value += 1;
+    } else {
+      isLoadMore.value = false;
+    }
+    if (isParamsChanged.value) {
+      items.value = response?.data.results;
+    } else {
+      items.value = items.value.concat(response?.data.results);
+    }
   },
   onError: err => {
     console.log(err);
@@ -67,7 +81,10 @@ const openWriteDialog = () => {
 };
 const completeRegistrationPost = () => {
   postDialog.value = false;
-  execute(getPosts, params.value);
+  isParamsChanged.value = true;
+  page.value = 1;
+  items.value = [];
+  execute(getPosts, { ...params.value, page: page.value });
 };
 onMounted(() => {
   execute(getPosts, params.value);
@@ -75,13 +92,27 @@ onMounted(() => {
 watch(
   params,
   () => {
-    execute(getPosts, params.value);
+    console.log('paramsChanged');
+    isParamsChanged.value = true;
+    page.value = 1;
+    execute(getPosts, { ...params.value, page: page.value });
   },
   {
     deep: true,
     // immediate: true,
   },
 );
+const loadMore = () => {
+  isParamsChanged.value = false;
+  execute(getPosts, { ...params.value, page: page.value });
+};
+
+const handleIntersectionObserver = ([{ isIntersecting }]) => {
+  if (isIntersecting && isLoadMore.value) {
+    console.log('### handleIntersectionObserver ###');
+    loadMore();
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

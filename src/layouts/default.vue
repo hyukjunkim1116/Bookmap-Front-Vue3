@@ -28,7 +28,7 @@
         <!-- 사용자 프로필 및 메뉴 -->
         <q-btn v-if="authStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
-            <img :src="generateDefaultPhotoURL(authStore.loginUser.uid)" />
+            <img :src="generateDefaultPhotoURL(authStore.loginUser?.uid)" />
           </q-avatar>
 
           <q-menu>

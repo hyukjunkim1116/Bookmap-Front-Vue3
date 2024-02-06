@@ -48,8 +48,8 @@
               @click.prevent="executeHandleLike(handleLike, item.id)"
             >
               <PostIcon
-                :name="item.is_liked ? 'favorite' : 'sym_o_favorite'"
-                :label="item.like_count"
+                :name="isLiked ? 'favorite' : 'sym_o_favorite'"
+                :label="likeCount"
                 tooltip="좋아요"
               />
             </q-btn>
@@ -64,7 +64,7 @@
               @click.prevent="executeHandleDislike(handleDislike, item.id)"
             >
               <PostIcon
-                :name="item.is_disliked ? 'thumb_down' : 'sym_o_thumb_down'"
+                :name="disLiked ? 'thumb_down' : 'sym_o_thumb_down'"
                 :label="item.dislike_count"
                 tooltip="싫어요"
               />
@@ -80,7 +80,7 @@
               @click.prevent="executeHandleBookmark(handleBookmark, item.id)"
             >
               <PostIcon
-                :name="item.is_bookmarked ? 'bookmark' : 'sym_o_bookmark'"
+                :name="isBookmarked ? 'bookmark' : 'sym_o_bookmark'"
                 tooltip="북마크"
               />
             </q-btn>
@@ -92,7 +92,6 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
 import { formatRelativeTime } from 'src/utils/relative-time-format';
 import {
   generateDefaultPhotoURL,
@@ -104,6 +103,7 @@ import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
 import { getErrorMessage } from 'src/utils/error-message';
 import PostIcon from './PostIcon.vue';
+import { ref } from 'vue';
 const $q = useQuasar();
 const props = defineProps({
   item: {
@@ -115,11 +115,18 @@ const props = defineProps({
     default: false,
   },
 });
-
+const likeCount = ref(props.item.likes_count);
+const isLiked = ref(props.item.is_liked);
+const disLiked = ref(props.item.is_disliked);
+const isBookmarked = ref(props.item.is_bookmarked);
 const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    console.log(response);
+    isLiked.value = response.data.is_liked;
+    likeCount.value = response.data.likes_count;
+  },
   onError: err => {
     console.log(err);
     $q.notify({
@@ -131,7 +138,10 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
 const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    console.log(response);
+    disLiked.value = response.data.is_disliked;
+  },
   onError: err => {
     console.log(err);
     $q.notify({
@@ -143,7 +153,10 @@ const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
 const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {},
+  onSuccess: response => {
+    console.log(response);
+    isBookmarked.value = response.data.is_bookmarked;
+  },
   onError: err => {
     console.log(err);
     $q.notify({

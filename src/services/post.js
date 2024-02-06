@@ -1,10 +1,20 @@
 import { api } from 'src/boot/2_axios-config';
 export async function getPosts(params) {
-  return await api.get(`posts/?sort=${params.sort}&search=${params.search}`);
+  console.log(params);
+  let url = `posts/?`;
+  if (params.page) {
+    url += `page=${params.page}&`;
+  }
+  if (params.sort) {
+    url += `sort=${params.sort}&`;
+  }
+  if (params.search) {
+    url += `search=${params.search}`;
+  }
+  return await api.get(url);
 }
 export async function createPost(data) {
-  const response = await api.post('posts/', data);
-  return response;
+  return await api.post('posts/', data);
 }
 export async function getPostDetails(postId) {
   return await api.get(`posts/${postId}`);
