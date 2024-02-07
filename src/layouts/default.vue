@@ -28,7 +28,11 @@
         <!-- 사용자 프로필 및 메뉴 -->
         <q-btn v-if="authStore.isLogin" round flat class="q-ml-md">
           <q-avatar>
-            <img :src="generateDefaultPhotoURL(authStore.loginUser?.uid)" />
+            <img
+              :src="
+                userImage || generateDefaultPhotoURL(authStore.loginUser?.uid)
+              "
+            />
           </q-avatar>
 
           <q-menu>
@@ -84,6 +88,7 @@ const authDialog = ref(false);
 // 인증 다이얼로그를 열기 위한 함수
 const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
+const userImage = ref('');
 const handleLogout = async () => {
   await logout();
   authStore.setAuthentication(false);
@@ -96,7 +101,9 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
+console.log(authStore.loginUser?.image);
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
+  userImage.value = authStore.loginUser?.image;
 });
 </script>

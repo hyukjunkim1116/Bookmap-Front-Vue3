@@ -105,6 +105,7 @@ const { error } = useAsyncState(
   {
     immediate: true,
     onSuccess: response => {
+      console.log(response);
       post.value = response.data;
     },
     onError: err => {

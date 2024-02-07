@@ -23,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
           uid: userData.uid,
           username: userData.username,
           email: userData.email,
+          image: userData.image,
         };
       } else {
         this.loginUser = null;

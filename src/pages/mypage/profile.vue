@@ -22,21 +22,17 @@
     </BaseCard>
     <BaseCard>
       <q-card-section class="q-gutter-y-md">
-        <div class="text-h6">이미지 업로드</div>
-        <q-form @submit.prevent="handleSubmitImage" class="q-gutter-md">
-          <q-file
-            name="user_image"
-            v-model="file"
-            filled
-            accept=".jpg, .png, .jpeg"
-            label="이미지를 선택하세요"
-            max-files="1"
-            @rejected="onRejected"
-          />
-          <div>
-            <q-btn label="업로드" type="submit" color="primary" />
-          </div>
-        </q-form>
+        <div class="text-h6 center">이미지 업로드</div>
+        <q-uploader
+          ref="uploader"
+          style="max-width: 300px"
+          v-model="image"
+          max-files="1"
+          accept=".jpg, .png, .jpeg"
+          @rejected="onRejected"
+          :factory="uploadFactory"
+          @added="onImageAdded"
+        />
       </q-card-section>
       <q-separator />
     </BaseCard>
@@ -69,23 +65,10 @@ const authStore = useAuthStore();
 const $q = useQuasar();
 const displayName = ref('');
 const email = ref('');
-const file = ref(null);
-
+const image = ref(null);
+const uploader = ref(null);
 const uid = authStore.loginUser?.uid || null;
-//TODO : Content-type : application/json인데 이거 바꿔야함
-const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
-  immediate: false,
-  onSuccess: () => {
-    $q.notify('사진 업로드 완료!');
-  },
-  onError: err => {
-    console.log(err);
-    $q.notify({
-      type: 'negative',
-      message: getErrorMessage(err.response.data),
-    });
-  },
-});
+
 const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
   async () =>
     await updateUserProfile(
@@ -101,6 +84,7 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
         username: displayName.value,
         email: email.value,
         uid: uid,
+        image: authStore.loginUser.image,
       });
     },
     onError: err => {
@@ -118,7 +102,6 @@ const { execute: executeDeleteUser } = useAsyncState(
     immediate: false,
     onSuccess: async () => {
       await logout();
-      // router.push('/');
       window.location.replace('/');
       $q.notify('삭제 완료!');
     },
@@ -149,14 +132,51 @@ const handleDeleteUser = async () => {
 };
 const handleSubmitProfile = () =>
   executeProfile({ username: displayName.value, email: email.value }, uid);
+//TODO : Content-type : application/json인데 이거 바꿔야함
+const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
+  immediate: false,
+  onSuccess: response => {
+    console.log(image.value, response.data.image, '4545');
+    $q.notify('사진 업로드 완료!');
+    authStore.setUserData({
+      username: authStore.loginUser.username,
+      email: authStore.loginUser.email,
+      uid: uid,
+      image: response.data.image,
+    });
+    image.value = null;
+    uploader.value.reset();
+    console.log(image.value);
+  },
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
+    image.value = null;
+    uploader.value.reset();
+  },
+});
 const onRejected = () => {
   $q.notify({
     type: 'negative',
-    message: '`.jpg, .png, .jpeg` 파일만 업로드 가능합니다!',
+    message: '.jpg, .png, .jpeg 파일만 업로드 가능합니다!',
   });
 };
-const handleSubmitImage = () => {
-  executeUploadImage(updateUserImage, file.value, uid);
+const onImageAdded = newImage => {
+  console.log(newImage[0]);
+  image.value = newImage[0];
+};
+const uploadFactory = () => {
+  // const formData = new FormData();
+  // const blobUrl = URL.createObjectURL(image.value);
+  const blobUrl = new Blob([image.value]);
+  // , { type: 'multipart/form-data' }
+  console.log(blobUrl);
+  // const imageToBlob = image.value.slice(0, image.value.size, image.value.type);
+  // formData.append('image', image.value);
+  executeUploadImage(updateUserImage, { image: blobUrl }, uid);
 };
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;

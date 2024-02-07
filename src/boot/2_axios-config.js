@@ -15,6 +15,7 @@ const isServerRunning = async () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        withCredentials: true,
       });
       return axiosInstance;
     }
@@ -28,6 +29,7 @@ const isServerRunning = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
     });
     return axiosInstance;
   }

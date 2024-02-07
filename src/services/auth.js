@@ -14,16 +14,19 @@ export async function signUpWithEmail(data) {
 export async function signInWithEmail(data) {
   const authStore = useAuthStore();
   const response = await api.post('users/login/', data);
+  console.log(response.data);
   const access = response.data.access;
   const refresh = response.data.refresh;
   const email = response.data.email;
   const username = response.data.username;
+  const image = response.data?.image;
   authStore.setUserToken(access, refresh);
   const { payload } = useJwt(access);
   authStore.setUserData({
     email,
     username,
     uid: payload.value.user_id,
+    image,
   });
   return response.data;
 }
@@ -43,6 +46,12 @@ export async function updateUserProfile(data, uid) {
   return await api.put(`users/${uid}/`, data);
 }
 export async function updateUserImage(data, uid) {
+  api.interceptors.request.use(config => {
+    // 요청 헤더 설정
+    config.headers['Content-Type'] = 'multipart/form-data';
+    return config;
+  });
+  console.log(data, uid, '123');
   return await api.patch(`users/${uid}/image`, data);
 }
 export async function deleteUser(uid) {

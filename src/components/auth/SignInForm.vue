@@ -78,6 +78,7 @@ const { isLoading, error, execute } = useAsyncState(
       emit('closeDialog');
     },
     onError: err => {
+      console.log(err);
       $q.notify({
         type: 'negative',
         message: getErrorMessage(err.response.data),
