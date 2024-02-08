@@ -46,6 +46,15 @@
             @click="$emit('changeView', 'SignUpForm')"
           />
         </div>
+        <q-separator />
+        <q-btn
+          label="카카오 계정으로 로그인하기"
+          class="full-width"
+          unelevated
+          color="primary"
+          outline
+          @click="handleSignInKakao"
+        />
       </div>
 
       <!-- 구분선 -->
@@ -94,6 +103,11 @@ const form = ref({
   username: null,
   passwordConfirm: null,
 });
+const handleSignInKakao = async () => {
+  await signInWithKakao();
+  $q.notify('환영합니다~! :)');
+  emit('closeDialog');
+};
 // 로그인 처리 함수
 const handleSignInEmail = () => execute(form.value);
 </script>

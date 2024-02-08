@@ -30,6 +30,9 @@ export async function signInWithEmail(data) {
   });
   return response.data;
 }
+export async function signInWithKakao() {
+  return await api.post(`users/find-password/`, data);
+}
 
 export async function logout() {
   Cookies.remove('access');
@@ -47,11 +50,9 @@ export async function updateUserProfile(data, uid) {
 }
 export async function updateUserImage(data, uid) {
   api.interceptors.request.use(config => {
-    // 요청 헤더 설정
     config.headers['Content-Type'] = 'multipart/form-data';
     return config;
   });
-  console.log(data, uid, '123');
   return await api.patch(`users/${uid}/image`, data);
 }
 export async function deleteUser(uid) {

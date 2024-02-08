@@ -59,6 +59,7 @@ import {
   updateUserImage,
 } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
+import { compressImage } from 'src/services';
 import { getErrorMessage } from 'src/utils/error-message';
 import BaseCard from 'src/components/base/BaseCard.vue';
 const authStore = useAuthStore();
@@ -70,11 +71,7 @@ const uploader = ref(null);
 const uid = authStore.loginUser?.uid || null;
 
 const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
-  async () =>
-    await updateUserProfile(
-      { username: displayName.value, email: email.value },
-      uid,
-    ),
+  updateUserProfile,
   null,
   {
     immediate: false,
@@ -88,6 +85,7 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
       });
     },
     onError: err => {
+      console.log(err);
       $q.notify({
         type: 'negative',
         message: getErrorMessage(err.response.data),
@@ -95,24 +93,20 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
     },
   },
 );
-const { execute: executeDeleteUser } = useAsyncState(
-  async () => await deleteUser(uid),
-  null,
-  {
-    immediate: false,
-    onSuccess: async () => {
-      await logout();
-      window.location.replace('/');
-      $q.notify('삭제 완료!');
-    },
-    onError: err => {
-      $q.notify({
-        type: 'negative',
-        message: getErrorMessage(err.response.data),
-      });
-    },
+const { execute: executeDeleteUser } = useAsyncState(deleteUser, null, {
+  immediate: false,
+  onSuccess: async () => {
+    await logout();
+    window.location.replace('/');
+    $q.notify('삭제 완료!');
   },
-);
+  onError: err => {
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
+  },
+});
 const handleDeleteUser = async () => {
   $q.dialog({
     title: '알림',
@@ -127,16 +121,17 @@ const handleDeleteUser = async () => {
       color: 'negative',
     },
   }).onOk(async () => {
-    await executeDeleteUser(uid);
+    await executeDeleteUser(deleteUser, uid);
   });
 };
-const handleSubmitProfile = () =>
-  executeProfile({ username: displayName.value, email: email.value }, uid);
-//TODO : Content-type : application/json인데 이거 바꿔야함
+const handleSubmitProfile = () => {
+  const data = { username: displayName.value, email: email.value };
+  executeProfile(updateUserProfile, data, uid);
+};
+
 const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
   immediate: false,
   onSuccess: response => {
-    console.log(image.value, response.data.image, '4545');
     $q.notify('사진 업로드 완료!');
     authStore.setUserData({
       username: authStore.loginUser.username,
@@ -146,10 +141,8 @@ const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
     });
     image.value = null;
     uploader.value.reset();
-    console.log(image.value);
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: getErrorMessage(err.response.data),
@@ -158,6 +151,7 @@ const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
     uploader.value.reset();
   },
 });
+
 const onRejected = () => {
   $q.notify({
     type: 'negative',
@@ -165,18 +159,14 @@ const onRejected = () => {
   });
 };
 const onImageAdded = newImage => {
-  console.log(newImage[0]);
   image.value = newImage[0];
 };
-const uploadFactory = () => {
-  // const formData = new FormData();
-  // const blobUrl = URL.createObjectURL(image.value);
-  const blobUrl = new Blob([image.value]);
-  // , { type: 'multipart/form-data' }
-  console.log(blobUrl);
-  // const imageToBlob = image.value.slice(0, image.value.size, image.value.type);
-  // formData.append('image', image.value);
-  executeUploadImage(updateUserImage, { image: blobUrl }, uid);
+const uploadFactory = async () => {
+  const data = await compressImage(image.value);
+  const formData = new FormData();
+  formData.append('image', data);
+  console.log(formData);
+  executeUploadImage(updateUserImage, formData, uid);
 };
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;

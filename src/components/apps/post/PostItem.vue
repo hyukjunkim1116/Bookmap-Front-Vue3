@@ -2,7 +2,9 @@
   <q-item class="bg-white q-pt-md" clickable :to="`/posts/${item.id}`">
     <q-item-section avatar top>
       <q-avatar>
-        <img :src="generateDefaultPhotoURL(item.author.uid)" />
+        <img
+          :src="item.author.image || generateDefaultPhotoURL(item.author.uid)"
+        />
       </q-avatar>
     </q-item-section>
     <q-item-section class="post-content">

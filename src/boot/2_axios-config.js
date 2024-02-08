@@ -92,6 +92,8 @@ export default boot(async ({ app }) => {
           }
         } else {
           alert('관리자에게 문의하세요!');
+          await logout();
+          window.location.replace('/');
         }
       }
       return Promise.reject(error);

@@ -126,7 +126,12 @@
 
 <script setup>
 import { ref } from 'vue';
-// import { uploadImage } from 'src/services';
+import { uploadPostImage, compressImage } from 'src/services';
+import { useAsyncState } from '@vueuse/core';
+import { useQuasar } from 'quasar';
+import { getErrorMessage } from 'src/utils/error-message';
+const fileRef = ref(null);
+const $q = useQuasar();
 const props = defineProps({
   editor: {
     type: Object,
@@ -164,18 +169,35 @@ const handleLinkMenu = () => {
 
 const handleImageMenu = () => {
   const url = window.prompt('URL');
-
   if (url) {
     props.editor.chain().focus().setImage({ src: url }).run();
   }
 };
 
-const fileRef = ref(null);
+const { execute: executeUploadPostImage } = useAsyncState(
+  uploadPostImage,
+  null,
+  {
+    immediate: false,
+    onSuccess: response => {
+      console.log(response.data);
+      const downloadURL = response.data;
+      props.editor.chain().focus().setImage({ src: downloadURL }).run();
+    },
+    onError: err => {
+      console.log(err);
+      $q.notify({
+        type: 'negative',
+        message: getErrorMessage(err.response.data),
+      });
+    },
+  },
+);
 const handleChangeFile = async e => {
-  // e.target.files[0]
-  // 실제로 파일 업로드 URL
-  // const downloadURL = await uploadImage(e.target.files[0]);
-  props.editor.chain().focus().setImage({ src: downloadURL }).run();
+  const compressedImage = await compressImage(e.target.files[0]);
+  const formData = new FormData();
+  formData.append('image', compressedImage);
+  await executeUploadPostImage(uploadPostImage, formData);
   e.target.value = '';
 };
 </script>

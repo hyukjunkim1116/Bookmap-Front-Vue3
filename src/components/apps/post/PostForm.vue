@@ -14,7 +14,7 @@
     <q-separator />
     <q-card-actions align="right">
       <slot name="actions">
-        <q-btn flat label="취소하기" />
+        <q-btn flat label="취소하기" v-close-popup />
         <q-btn
           type="submit"
           flat
