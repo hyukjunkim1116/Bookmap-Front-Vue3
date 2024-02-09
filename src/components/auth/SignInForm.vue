@@ -53,10 +53,9 @@
           unelevated
           color="primary"
           outline
-          @click="handleSignInKakao"
+          :href="getKakaoLoginUrl()"
         />
       </div>
-
       <!-- 구분선 -->
       <q-separator />
     </q-form>
@@ -70,6 +69,8 @@ import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
 import { getErrorMessage } from 'src/utils/error-message';
 import { useAuthStore } from 'src/stores/auth';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const emit = defineEmits(['changeView', 'closeDialog']);
 const $q = useQuasar();
 const authStore = useAuthStore();
@@ -103,10 +104,16 @@ const form = ref({
   username: null,
   passwordConfirm: null,
 });
-const handleSignInKakao = async () => {
-  await signInWithKakao();
-  $q.notify('환영합니다~! :)');
-  emit('closeDialog');
+const getKakaoLoginUrl = () => {
+  const kakaoParams = {
+    client_id: 'f079d63a6ac2d6ce0971e8acfa3f0917',
+    redirect_uri: 'http://localhost:9030/social/kakao',
+    response_type: 'code',
+  };
+  const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?${new URLSearchParams(
+    kakaoParams,
+  ).toString()}`;
+  return kakaoUrl;
 };
 // 로그인 처리 함수
 const handleSignInEmail = () => execute(form.value);

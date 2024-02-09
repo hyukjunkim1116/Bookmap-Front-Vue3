@@ -4,6 +4,7 @@
       <q-card-section class="q-gutter-y-md">
         <div class="text-h6">비밀번호 변경</div>
         <q-input
+          v-bind:disable="isSocial"
           v-model="form.oldPassword"
           type="password"
           outlined
@@ -12,6 +13,7 @@
           :rules="[validateRequired]"
         />
         <q-input
+          v-bind:disable="isSocial"
           v-model="form.newPassword"
           type="password"
           outlined
@@ -20,6 +22,7 @@
           :rules="[validateRequired, validatePassword]"
         />
         <q-input
+          v-bind:disable="isSocial"
           v-model="form.newPasswordConfirm"
           type="password"
           outlined
@@ -68,6 +71,7 @@ const form = ref({
   newPassword: '',
   newPasswordConfirm: newPasswordConfirm,
 });
+const isSocial = authStore.loginUser?.social;
 const { isLoading, execute } = useAsyncState(
   async () => await updateUserPassword(form.value),
   null,

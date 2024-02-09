@@ -5,7 +5,13 @@
         <q-card-section class="q-gutter-y-md">
           <div class="text-h6">프로필 변경</div>
           <q-input v-model="displayName" outlined dense label="닉네임" />
-          <q-input v-model="email" outlined dense label="이메일" />
+          <q-input
+            v-model="email"
+            outlined
+            dense
+            label="이메일"
+            v-bind:disable="is_social"
+          />
         </q-card-section>
         <q-separator />
         <q-card-actions>
@@ -69,6 +75,7 @@ const email = ref('');
 const image = ref(null);
 const uploader = ref(null);
 const uid = authStore.loginUser?.uid || null;
+const is_social = authStore.loginUser?.social;
 
 const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
   updateUserProfile,
@@ -82,6 +89,7 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
         email: email.value,
         uid: uid,
         image: authStore.loginUser.image,
+        social: authStore.loginUser.social,
       });
     },
     onError: err => {
@@ -138,7 +146,9 @@ const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
       email: authStore.loginUser.email,
       uid: uid,
       image: response.data.image,
+      social: authStore.loginUser.social,
     });
+
     image.value = null;
     uploader.value.reset();
   },

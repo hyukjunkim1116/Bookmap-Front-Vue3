@@ -1,11 +1,12 @@
-import { Cookies } from 'quasar';
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core';
+import { useCookies } from 'vue3-cookies';
 // auth 상태 및 관련 로직을 다루는 Vue Pinia 스토어를 정의합니다.
+const { cookies } = useCookies();
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isLogin: ref(Cookies.has('access')),
+    isLogin: ref(cookies.get('access')),
     loginUser: useLocalStorage('auth/user', null, {
       serializer: StorageSerializers.object,
     }),
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore('auth', {
           username: userData.username,
           email: userData.email,
           image: userData.image,
+          social: userData.social,
         };
       } else {
         this.loginUser = null;
@@ -31,9 +33,10 @@ export const useAuthStore = defineStore('auth', {
     },
     setUserToken(access, refresh) {
       try {
-        Cookies.set('access', access);
-        Cookies.set('refresh', refresh);
-      } catch {
+        cookies.set('access', access);
+        cookies.set('refresh', refresh);
+      } catch (err) {
+        console.log(err);
         return null;
       }
     },
