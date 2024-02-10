@@ -10,7 +10,7 @@
         <span>{{ username }}</span>
         <span class="q-mx-xs">&middot;</span>
         <span class="text-grey-6">{{
-          date.formatDate(created_at, 'YYYY. MM. DD HH:mm:ss')
+          date.formatDate(updated_at, 'YYYY. MM. DD HH:mm:ss')
         }}</span>
       </div>
       <div class="q-mt-sm" v-if="!isActive">
@@ -67,7 +67,7 @@ const props = defineProps({
   comment: {
     type: String,
   },
-  created_at: {
+  updated_at: {
     type: String,
   },
   author: {
@@ -90,7 +90,6 @@ const toggleActive = () => {
   isActive.value = !isActive.value;
 };
 const handleEditComment = () => {
-  console.log('edit', props.id, editedComment.value);
   emit('edit', props.id, editedComment.value);
   toggleActive();
 };

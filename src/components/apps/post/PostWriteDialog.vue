@@ -56,9 +56,10 @@ const { isLoading, execute } = useAsyncState(
       emit('complete');
     },
     onError: err => {
+      console.log(err);
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: getErrorMessage(err),
       });
     },
   },

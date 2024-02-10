@@ -1,12 +1,22 @@
 import { v4 as uuidv4 } from 'uuid';
 import { api } from 'src/boot/2_axios-config';
+import { useCookies } from 'vue3-cookies';
 import { readAndCompressImage } from 'browser-image-resizer';
 
 export async function uploadPostImage(data) {
-  api.interceptors.request.use(config => {
-    config.headers['Content-Type'] = 'multipart/form-data';
+  api.interceptors.request.use(async config => {
+    if (!config.headers) return config;
+    const accessToken = cookies.get('access');
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers['Content-Type'] = 'multipart/form-data';
+    }
     return config;
   });
+  // api.interceptors.request.use(config => {
+
+  //   return config;
+  // });
   console.log(data, 'image');
   return await api.post(`posts/image`, data);
 }

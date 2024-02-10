@@ -14,11 +14,7 @@
         <span>{{ formatRelativeTime(new Date(item?.updated_at)) }}</span>
       </div>
       <div class="text-h6 q-mt-sm">{{ item.title }}</div>
-      <div v-if="escapeHTML" class="text-grey-6 q-my-sm ellipsis-2-lines">
-        {{ item.title }}
-      </div>
       <div
-        v-else
         class="text-grey-6 q-my-sm ellipsis-2-lines"
         v-html="item.content"
       ></div>

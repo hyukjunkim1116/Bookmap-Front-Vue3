@@ -38,6 +38,7 @@
       <q-card-actions>
         <q-space />
         <q-btn
+          v-bind:disable="isSocial"
           type="submit"
           label="저장하기"
           flat

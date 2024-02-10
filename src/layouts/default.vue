@@ -37,8 +37,18 @@
 
           <q-menu>
             <q-list style="min-width: 100px">
-              <q-item clickable v-close-popup to="/mypage/profile">
+              <q-item
+                v-if="authStore.loginUser.emailVerified"
+                clickable
+                v-close-popup
+                to="/mypage/profile"
+              >
                 <q-item-section>프로필</q-item-section>
+              </q-item>
+              <q-item v-else clickable v-close-popup>
+                <q-item-section class="text-red" @click="verifyEmail"
+                  >이메일을 인증해주세요.</q-item-section
+                >
               </q-item>
               <q-item clickable v-close-popup @click="handleLogout">
                 <q-item-section>로그아웃</q-item-section>
@@ -68,13 +78,16 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, ref, watch, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
-import { logout, generateDefaultPhotoURL } from 'src/services';
+import {
+  logout,
+  generateDefaultPhotoURL,
+  sendVerificationEmail,
+} from 'src/services';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
-
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
@@ -82,10 +95,7 @@ const pageContainerStyles = computed(() => ({
 const $q = useQuasar();
 const route = useRoute();
 const authStore = useAuthStore();
-// 페이지 컨테이너의 스타일을 라우트 메타 데이터를 기반으로 계산
-// 인증 다이얼로그 상태 관리
 const authDialog = ref(false);
-// 인증 다이얼로그를 열기 위한 함수
 const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const userImage = ref('');
@@ -94,6 +104,10 @@ const handleLogout = async () => {
   authStore.setAuthentication(false);
   $q.notify('로그아웃 되었습니다.');
 };
+const verifyEmail = async () => {
+  await sendVerificationEmail(authStore.loginUser.uid);
+  $q.notify('이메일을 확인해주세요!');
+};
 const darkModeIcon = computed(() =>
   $q.dark.isActive ? 'dark_mode' : 'light_mode',
 );
@@ -101,7 +115,6 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
-console.log(authStore.loginUser?.image);
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
   userImage.value = authStore.loginUser?.image;

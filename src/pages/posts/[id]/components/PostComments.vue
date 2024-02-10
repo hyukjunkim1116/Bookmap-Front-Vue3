@@ -40,6 +40,7 @@
       @deleted="deletedComment"
       @edited="editedComment"
     />
+    <div v-intersection-observer="handleIntersectionObserver"></div>
   </div>
 </template>
 
@@ -49,11 +50,13 @@ import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
+import { vIntersectionObserver } from '@vueuse/components';
 import { addComment, getComments } from 'src/services';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import CommentList from 'src/components/apps/comment/CommentList.vue';
 import { validateRequired } from 'src/utils/validate-rules';
-
+const page = ref(1);
+const isLoadMore = ref(true);
 const items = ref([]);
 const commentCount = ref();
 const route = useRoute();
@@ -72,22 +75,32 @@ const toggleActive = () => {
   isActive.value = !isActive.value;
 };
 
-const { execute: executeGetComments } = useAsyncState(getComments, [], {
+const { execute: executeGetComments, state } = useAsyncState(getComments, [], {
   immediate: false,
   throwError: true,
-  onSuccess: response => {
+  onSuccess: async response => {
+    const data = await response.data;
+    console.log(data, '43434');
+    if (page.value == 1) {
+      console.log('3443434');
+      items.value = data.results;
+    } else {
+      console.log(items.value, 'asdasd');
+      items.value = items.value.concat(data.results);
+    }
     console.log(response.data);
-    items.value = response?.data;
-    commentCount.value = response.data[0]?.comment_count || 0;
+    if (response.data.next) {
+      isLoadMore.value = true;
+      page.value += 1;
+    } else {
+      isLoadMore.value = false;
+    }
+    commentCount.value = response.data.count;
   },
 });
 
 const { isLoading, execute: executeAddComment } = useAsyncState(
-  async () =>
-    await addComment(route.params.id, {
-      comment: message.value,
-      uid: authStore.getUserData.uid,
-    }),
+  addComment,
   null,
   {
     immediate: false,
@@ -95,30 +108,42 @@ const { isLoading, execute: executeAddComment } = useAsyncState(
     onSuccess: () => {
       message.value = '';
       isActive.value = false;
-      executeGetComments(getComments, route.params.id);
+      page.value = 1;
+      console.log(page.value, 'dfvcv');
+      executeGetComments(getComments, route.params.id, page.value);
     },
   },
 );
 const handleAddComment = async () => {
-  executeAddComment(route.params.id, {
-    message: message.value,
-    uid: authStore.getUserData.uid,
+  executeAddComment(addComment, route.params.id, {
+    comment: message.value,
   });
 };
 const deletedComment = () => {
   $q.notify({
     message: '삭제 되었습니다.',
   });
-  executeGetComments(getComments, route.params.id);
+  page.value = 1;
+  executeGetComments(getComments, route.params.id, page.value);
 };
 const editedComment = () => {
   $q.notify({
     message: '수정 되었습니다.',
   });
-  executeGetComments(getComments, route.params.id);
+  page.value = 1;
+  executeGetComments(getComments, route.params.id, page.value);
+};
+const loadMore = async () => {
+  await executeGetComments(getComments, route.params.id, page.value);
+};
+const handleIntersectionObserver = async ([{ isIntersecting }]) => {
+  if (isIntersecting && isLoadMore.value) {
+    console.log('### handleIntersectionObserver ###');
+    await loadMore();
+  }
 };
 onMounted(() => {
-  executeGetComments(getComments, route.params.id);
+  executeGetComments(getComments, route.params.id, page.value);
 });
 </script>
 

@@ -34,6 +34,19 @@
 
 <script setup>
 import BaseCard from 'src/components/base/BaseCard.vue';
+import { ref, watchEffect } from 'vue';
+import { useAuthStore } from 'src/stores/auth';
+import { useRouter } from 'vue-router';
+const authStore = useAuthStore();
+const isLogin = ref(authStore.isLogin);
+console.log(isLogin.value);
+const router = useRouter();
+watchEffect(() => {
+  isLogin.value = authStore.isLogin;
+  if (isLogin.value == false) {
+    router.push('/');
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>

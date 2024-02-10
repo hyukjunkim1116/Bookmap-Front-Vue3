@@ -38,6 +38,14 @@
         size="16px"
         @click="executeHandleBookmark(handleBookmark, post.id)"
       />
+      <q-btn
+        :icon="post.is_bookmarked ? 'bookmark' : 'sym_o_bookmark'"
+        flat
+        round
+        dense
+        color="black"
+        size="16px"
+      />
     </div>
     <div class="flex items-center">
       <q-avatar>
@@ -70,6 +78,7 @@
     </div>
 
     <div class="q-mt-md text-h5 text-weight-bold">{{ post.title }}</div>
+
     <q-separator class="q-my-lg" />
 
     <TiptapViewer v-if="post.content" :content="post.content" />
@@ -93,6 +102,7 @@ import {
 } from 'src/services';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import TiptapViewer from 'src/components/tiptap/TiptapViewer.vue';
+import Bookmark from 'src/pages/mypage/bookmark.vue';
 
 const route = useRoute();
 const router = useRouter();

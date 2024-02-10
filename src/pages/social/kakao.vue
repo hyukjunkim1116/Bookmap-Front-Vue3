@@ -32,6 +32,8 @@ const { isLoading, error, execute } = useAsyncState(signInWithKakao, null, {
       type: 'negative',
       message: getErrorMessage(err.response.data),
     });
+    $q.loading.hide();
+    router.push('/');
   },
 });
 onMounted(() => {

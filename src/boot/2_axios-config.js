@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { boot } from 'quasar/wrappers';
 import { useAuthStore } from 'src/stores/auth';
-import { Cookies } from 'quasar';
+import { useCookies } from 'vue3-cookies';
 import { logout } from 'src/services';
-const djangoApi = 'http://127.0.0.1:8000';
+const djangoApi = 'http://localhost:8000';
 const springApi = 'http://localhost:8080';
 const isServerRunning = async () => {
   try {
@@ -43,61 +43,62 @@ const setupApi = async () => {
   return api;
 };
 export default boot(async ({ app }) => {
+  const { cookies } = useCookies();
   app.config.globalProperties.api = await setupApi();
 
-  api.interceptors.request.use(async config => {
-    if (!config.headers) return config;
-    const accessToken = Cookies.get('access');
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  });
+  // api.interceptors.request.use(async config => {
+  //   if (!config.headers) return config;
+  //   const accessToken = cookies.get('access');
+  //   if (accessToken && config.headers) {
+  //     config.headers.Authorization = `Bearer ${accessToken}`;
+  //   }
+  //   return config;
+  // });
 
-  let refreshing = false;
+  // let refreshing = false;
+  // api.interceptors.response.use(
+  //   response => response,
+  //   async error => {
+  //     if (error.config && error.response && error.response.status === 401) {
+  //       console.log(refreshing, 'res');
+  //       if (!refreshing) {
+  //         try {
+  //           console.log('here');
+  //           refreshing = true;
+  //           const originalRequest = error.config;
+  //           originalRequest._retry = true;
+  //           const refreshToken = cookies.get('refresh');
+  //           console.log(refreshToken, 'refreshtoken');
+  //           if (!refreshToken) {
+  //             throw new Error('Refresh token not found');
+  //           }
 
-  api.interceptors.response.use(
-    response => response,
-    async error => {
-      if (error.config && error.response && error.response.status === 401) {
-        if (!refreshing) {
-          try {
-            refreshing = true;
+  //           const response = await api.post('users/token/refresh/', {
+  //             refresh: refreshToken,
+  //           });
 
-            const originalRequest = error.config;
-            originalRequest._retry = true;
-            const refreshToken = Cookies.get('refresh');
-
-            if (!refreshToken) {
-              throw new Error('Refresh token not found');
-            }
-
-            const response = await api.post('users/token/refresh/', {
-              refresh: refreshToken,
-            });
-
-            const authStore = useAuthStore();
-            const newAccessToken = response.data.access;
-            authStore.setUserToken(newAccessToken, refreshToken);
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-            // Reset the refreshing flag before making the retry request
-            refreshing = false;
-
-            return api(originalRequest);
-          } catch (err) {
-            await logout();
-            alert('다시 로그인 하세요');
-            window.location.replace('/');
-          }
-        } else {
-          alert('관리자에게 문의하세요!');
-          await logout();
-          window.location.replace('/');
-        }
-      }
-      return Promise.reject(error);
-    },
-  );
+  //           const authStore = useAuthStore();
+  //           const newAccessToken = response.data.access;
+  //           authStore.setUserToken(newAccessToken, refreshToken);
+  //           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+  //           console.log(response, 'response');
+  //           // Reset the refreshing flag before making the retry request
+  //           refreshing = false;
+  //           console.log(refreshing, '3434');
+  //           return api(originalRequest);
+  //         } catch (err) {
+  //           await logout();
+  //           window.location.replace('/');
+  //           alert('다시 로그인 하세요');
+  //         }
+  //       } else {
+  //         alert('관리자에게 문의하세요!');
+  //         await logout();
+  //         window.location.replace('/');
+  //       }
+  //     }
+  //     return Promise.reject(error);
+  //   },
+  // );
 });
 export { api };
