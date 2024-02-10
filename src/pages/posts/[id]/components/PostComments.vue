@@ -28,7 +28,7 @@
     <BaseCard v-if="!isActive" @click="toggleActive" class="cursor-pointer">
       <q-card-section class="flex items-center">
         <q-avatar>
-          <img src="https://cdn.quasar.dev/img/avatar.png" />
+          <img :src="authStore.loginUser?.image || '/logo.png'" />
         </q-avatar>
         <div class="text-grey-6 q-ml-md">댓글을 작성해보세요.</div>
       </q-card-section>

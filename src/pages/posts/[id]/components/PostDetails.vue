@@ -39,17 +39,21 @@
         @click="executeHandleBookmark(handleBookmark, post.id)"
       />
       <q-btn
-        :icon="post.is_bookmarked ? 'bookmark' : 'sym_o_bookmark'"
+        v-if="!authStore.hasOwnContent(post.author?.uid)"
+        :icon="'sym_o_flag'"
         flat
         round
         dense
         color="black"
         size="16px"
+        @click="openReportForm"
       />
     </div>
     <div class="flex items-center">
       <q-avatar>
-        <img src="/logo.png" />
+        <img
+          :src="post.author?.image || generateDefaultPhotoURL(post.author?.uid)"
+        />
       </q-avatar>
       <div class="q-ml-md">
         <div>{{ post.author?.username }}</div>
@@ -83,6 +87,12 @@
 
     <TiptapViewer v-if="post.content" :content="post.content" />
   </BaseCard>
+  <!-- 인증 관련 다이얼로그 컴포넌트 -->
+  <ReportForm
+    v-model="reportForm"
+    :postId="post.id"
+    @close-dialog="reportForm = false"
+  />
 </template>
 
 <script setup>
@@ -102,13 +112,24 @@ import {
 } from 'src/services';
 import BaseCard from 'src/components/base/BaseCard.vue';
 import TiptapViewer from 'src/components/tiptap/TiptapViewer.vue';
-import Bookmark from 'src/pages/mypage/bookmark.vue';
+import ReportForm from 'src/components/report/ReportForm.vue';
 
 const route = useRoute();
 const router = useRouter();
 const $q = useQuasar();
 const authStore = useAuthStore();
 const post = ref({});
+const reportForm = ref(false);
+const openReportForm = () => {
+  if (!authStore.isLogin) {
+    $q.notify({
+      type: 'negative',
+      message: '로그인이 필요합니다!',
+    });
+  } else {
+    reportForm.value = true;
+  }
+};
 const { error } = useAsyncState(
   getPostDetails(route.params.id),
   {},

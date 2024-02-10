@@ -2,7 +2,7 @@
   <q-item class="q-py-md">
     <q-item-section side top>
       <q-avatar size="md">
-        <img src="https://cdn.quasar.dev/img/avatar.png" />
+        <img :src="image || generateDefaultPhotoURL(author)" />
       </q-avatar>
     </q-item-section>
     <q-item-section>
