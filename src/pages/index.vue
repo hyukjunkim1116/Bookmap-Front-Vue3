@@ -19,7 +19,16 @@
     />
   </q-page>
 </template>
-
+<!-- jQuery -->
+<script
+  type="text/javascript"
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+></script>
+<!-- iamport.payment.js -->
+<script
+  type="text/javascript"
+  src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
+></script>
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useQuasar } from 'quasar';
