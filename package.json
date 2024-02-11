@@ -16,6 +16,7 @@
     "@quasar/cli": "^2.3.0",
     "@quasar/extras": "^1.16.4",
     "@tiptap/extension-character-count": "^2.1.16",
+    "@tiptap/extension-history": "^2.2.2",
     "@tiptap/extension-image": "^2.1.16",
     "@tiptap/extension-link": "^2.1.16",
     "@tiptap/extension-placeholder": "^2.1.16",

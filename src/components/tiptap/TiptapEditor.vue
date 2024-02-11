@@ -22,6 +22,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { deletePostImage } from 'src/services';
+import { useAsyncState } from '@vueuse/core';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
@@ -29,7 +31,8 @@ import Image from '@tiptap/extension-image';
 
 import TiptapEditorMenu from 'components/tiptap/TiptapEditorMenu.vue';
 import CharacterCount from '@tiptap/extension-character-count';
-
+import { useQuasar } from 'quasar';
+const $q = useQuasar();
 const props = defineProps({
   modelValue: {
     type: String,
@@ -40,7 +43,19 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const limit = ref(240);
-
+const { execute } = useAsyncState(deletePostImage, null, {
+  immediate: false,
+  onSuccess: response => {
+    console.log(response);
+  },
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
+  },
+});
 const editor = useEditor({
   content: props.modelValue,
   extensions: [
@@ -54,8 +69,22 @@ const editor = useEditor({
       limit: limit.value,
     }),
   ],
-  onUpdate: () => {
+
+  onUpdate: ({ transaction }) => {
     emit('update:modelValue', editor.value.getHTML());
+    const nodeIds = new Set();
+    transaction.doc.content.forEach(node => {
+      if (node.attrs.src) {
+        nodeIds.add(node.attrs.src);
+      }
+    });
+    transaction.before.content.forEach(node => {
+      if (node.attrs.src) {
+        console.log(nodeIds.has(node.attrs.src));
+        console.log(node.attrs.src);
+        execute(deletePostImage, node.attrs.src);
+      }
+    });
   },
 });
 watch(

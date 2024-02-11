@@ -148,6 +148,7 @@ const handleLinkMenu = () => {
 
   // cancelled
   if (url === null) {
+    console.log('3434');
     return;
   }
 
@@ -180,7 +181,7 @@ const { execute: executeUploadPostImage } = useAsyncState(
   {
     immediate: false,
     onSuccess: response => {
-      console.log(response.data);
+      console.log(response.data, '2323');
       const downloadURL = response.data;
       props.editor.chain().focus().setImage({ src: downloadURL }).run();
     },
