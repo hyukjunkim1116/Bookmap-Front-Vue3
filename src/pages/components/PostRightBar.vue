@@ -19,19 +19,9 @@
       color="primary"
       text-color="white"
       class="full-width"
-      @click="execute"
-    >
-      <span class="text-weight-bold">카카오 페이 결제하기</span>
-    </q-btn>
-    <q-btn
-      padding="8px 12px 8px 8px"
-      unelevated
-      color="primary"
-      text-color="white"
-      class="full-width"
       to="/payments"
     >
-      <span class="text-weight-bold">아임포트 테스트</span>
+      <span class="text-weight-bold">결제하기</span>
     </q-btn>
   </StickySideBar>
 </template>
