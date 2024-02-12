@@ -1,74 +1,65 @@
 <template>
-  <div class="imp-container imp-result">
-    <a-icon
-      v-if="success"
-      type="check-circle"
-      :style="{ fontSize: '200px', color: '#52c41a' }"
-    />
-    <a-icon
-      v-else
-      type="exclamation-circle"
-      :style="{ fontSize: '200px', color: '#f5222d' }"
-    />
-    <h1>
+  <q-page class="imp-container imp-result q-pa-md">
+    <q-icon v-if="success" name="check-circle" size="200px" color="positive" />
+    <q-icon v-else name="exclamation-circle" size="200px" color="negative" />
+    <h1 class="q-mt-md">
       {{ type === 'payment' ? '결제' : '본인인증' }}에
       {{ success ? '성공' : '실패' }}하였습니다
     </h1>
-    <ul>
-      <li>
-        <span>아임포트 번호</span>
+    <ul class="q-mb-md">
+      <li v-if="impUid">
+        <span>아임포트 번호:</span>
         <span>{{ impUid }}</span>
       </li>
       <li>
-        <span>주문번호</span>
+        <span>주문번호:</span>
         <span>{{ merchantUid }}</span>
       </li>
-      <li v-if="!success">
-        <span>에러 메시지</span>
+      <li v-if="!success && errorMessage">
+        <span>에러 메시지:</span>
         <span>{{ errorMessage }}</span>
       </li>
     </ul>
-    <a-button size="large" @click="handleGoBack"> 뒤로가기 </a-button>
-  </div>
+    <q-btn size="lg" color="primary" @click="handleGoBack">뒤로가기</q-btn>
+  </q-page>
 </template>
-<script>
-export default {
-  data() {
-    const { query } = this.$router.history.current;
-    const { type } = query;
-    return {
-      type,
-      success: this.getSuccess(query),
-      impUid: query.imp_uid,
-      merchantUid: query.merchant_uid,
-      errorMessage: `[${query.error_code}] ${query.error_msg}`,
-    };
-  },
-  methods: {
-    getSuccess(query) {
-      const { success } = query;
-      const impSuccess = query.imp_success;
-      if (impSuccess === undefined) {
-        if (typeof success === 'string') {
-          return success === 'true';
-        }
-        return success;
-      }
-      if (typeof impSuccess === 'string') {
-        return impSuccess === 'true';
-      }
-      return impSuccess;
-    },
-    handleGoBack() {
-      this.$router.push(`/${this.type}`);
-    },
-  },
-};
+
+<script setup>
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+const type = ref(route.query.type);
+const impUid = ref(route.query.imp_uid);
+const merchantUid = ref(route.query.merchant_uid);
+const errorMessage = ref(`${route.query.error_msg}`);
+const success = ref(getSuccess(route.query));
+
+function getSuccess(query) {
+  const success = query.success;
+  const impSuccess = query.imp_success;
+  if (impSuccess === undefined) {
+    if (typeof success === 'string') {
+      return success === 'true';
+    }
+    return success;
+  }
+  if (typeof impSuccess === 'string') {
+    return impSuccess === 'true';
+  }
+  return impSuccess;
+}
+
+function handleGoBack() {
+  router.push(`/`);
+}
 </script>
 
-<style>
+<style scoped>
 .imp-container.imp-result {
-  .anticon {
+  .q-icon {
     margin-bottom: 20px;
   }
   ul {
@@ -93,7 +84,7 @@ export default {
       }
     }
   }
-  .ant-btn {
+  .q-btn {
     margin-top: 30px;
   }
 }

@@ -1,82 +1,93 @@
 <template>
-  <div class="imp-container">
-    <h1>아임포트 본인인증</h1>
-    <div
-      :form="form"
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 18 }"
-      :colon="false"
-      labelAlign="left"
-      @submit="handleSubmit"
-    >
-      <div label="주문번호">
-        <input v-model="merchantUid" size="large" />
-      </div>
-      <div label="회사명">
-        <input v-model="company" size="large" />
-      </div>
-      <div label="통신사">
-        <a-select v-model="carrier" size="large">
-          <a-select-option value="SKT"> SKT </a-select-option>
-          <a-select-option value="KTF"> KT </a-select-option>
-          <a-select-option value="LGT"> LGU+ </a-select-option>
-          <a-select-option value="MVNO"> 알뜰폰 </a-select-option>
-        </a-select>
-      </div>
-      <div label="이름">
-        <input v-model="name" size="large" />
-      </div>
-      <div label="전화번호">
-        <input v-model="phone" type="number" size="large" />
-      </div>
-      <div label="허용최소연령">
-        <input v-model="minAge" type="number" size="large" />
-      </div>
-      <q-btn size="large" @click="handleGoBack"> 뒤로가기 </q-btn>
-      <q-btn type="primary" html-type="submit" size="large"> 본인인증 </q-btn>
-    </div>
-  </div>
+  <q-page class="imp-container">
+    <q-card class="q-pa-md" style="max-width: 400px">
+      <div class="text-h6">아임포트 본인인증</div>
+      <q-form
+        v-model="form"
+        :label-col="{ span: 4 }"
+        :wrapper-col="{ span: 8 }"
+        :colon="false"
+        label-align="left"
+        @submit="handleSubmit"
+      >
+        <q-input v-model="form.merchantUid" label="주문번호" outlined dense />
+        <q-input v-model="form.company" label="회사명" outlined dense />
+        <q-select
+          color="blue"
+          filled
+          v-model="form.carrier"
+          :options="carriers"
+          label="통신사"
+        />
+        <q-input v-model="name" label="이름" outlined dense />
+        <q-input
+          v-model="form.phone"
+          label="전화번호"
+          type="number"
+          outlined
+          dense
+        />
+        <q-input
+          v-model="form.minAge"
+          label="허용최소연령"
+          type="number"
+          outlined
+          dense
+        />
+        <div class="q-mt-md">
+          <q-btn color="primary" label="본인인증" @click="handleSubmit" />
+          <q-btn label="뒤로가기" @click="handleGoBack" flat dense />
+        </div>
+      </q-form>
+    </q-card>
+  </q-page>
 </template>
+
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
-const form = useAntForm.createForm(this, { name: 'certification' });
+import { ref } from 'vue';
+const router = useRouter();
+const form = ref({
+  name: 'certification',
+  merchantUid: '',
+  company: '',
+  carrier: '',
+  phone: '',
+  minAge: '',
+});
 const initialMerchantUid = `mid_${new Date().getTime()}`;
-
-const handleSubmit = e => {
-  e.preventDefault();
-  form.value.validateFields((err, values) => {
-    if (!err) {
-      const { merchantUid, company, carrier, name, phone, minAge } = values;
-      const { IMP } = window;
-      IMP.init('imp10391932');
-      const data = {
-        merchant_uid: merchantUid,
-        company,
-        carrier,
-        name,
-        phone,
-        min_age: minAge,
-      };
-      IMP.certification(data, callback);
-    }
-  });
+const carriers = [
+  { label: 'SKT', value: 'SKT' },
+  { label: 'KT', value: 'KTF' },
+  { label: 'LGU+', value: 'LGT' },
+  { label: '알뜰폰', value: 'MVNO' },
+];
+console.log(carriers);
+const handleSubmit = () => {
+  const { merchantUid, company, carrier, name, phone, minAge } = form.value;
+  const { IMP } = window;
+  IMP.init('imp10391932');
+  const data = {
+    merchant_uid: merchantUid,
+    company,
+    carrier,
+    name,
+    phone,
+    min_age: minAge,
+  };
+  IMP.certification(data, callback);
 };
 
 const handleGoBack = () => {
-  const router = useRouter();
   router.push('/');
 };
 
 const callback = response => {
-  // 본인인증 종료 후 result 페이지로 이동
   const query = {
     ...response,
     type: 'certification',
   };
-  const router = useRouter();
-  router.push({ path: '/result', query });
+  router.push({ path: '/payments/result', query });
 };
 
 const merchantUid = ref(initialMerchantUid);
@@ -86,3 +97,9 @@ const name = ref('');
 const phone = ref('');
 const minAge = ref('');
 </script>
+
+<style scoped>
+.imp-container {
+  padding: 20px;
+}
+</style>
