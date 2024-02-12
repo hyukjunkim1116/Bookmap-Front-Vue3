@@ -1,22 +1,14 @@
 <template>
   <div>
-    <div class="exp-container">
-      <h1>아임포트 테스트</h1>
-      <h3>아임포트 뷰 테스트 화면입니다.</h3>
-      <h3>아래 버튼을 눌러 결제 또는 본인인증 테스트를 진행해주세요.</h3>
-    </div>
     <div class="imp-home">
       <div class="nav-container">
-        <q-btn to="/payments">
-          
-          결제
-        </q-btn>
-        <q-btn to="payments/certification">
-
-          본인인증
-        </q-btn>
+        <q-btn to="/payments/payment">결제</q-btn>
+        <q-btn to="/payments/certification">본인인증</q-btn>
       </div>
     </div>
+  </div>
+  <div class="col-8">
+    <router-view />
   </div>
 </template>
 
@@ -39,7 +31,7 @@
 
 .imp-home {
   position: absolute;
-  top: 50%;
+  top: 10%;
   left: 0;
   right: 0;
   bottom: 0;
@@ -49,10 +41,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: -75px;
-    left: 0;
-    right: 0;
+
     a {
       color: #344e81;
       box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.13);

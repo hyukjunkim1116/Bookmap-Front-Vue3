@@ -31,16 +31,6 @@
     <a-button size="large" @click="handleGoBack"> 뒤로가기 </a-button>
   </div>
 </template>
-<!-- jQuery -->
-<script
-  type="text/javascript"
-  src="https://code.jquery.com/jquery-1.12.4.min.js"
-></script>
-<!-- iamport.payment.js -->
-<script
-  type="text/javascript"
-  src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
-></script>
 <script>
 export default {
   data() {
