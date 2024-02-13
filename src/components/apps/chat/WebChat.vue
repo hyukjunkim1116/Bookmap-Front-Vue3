@@ -33,6 +33,12 @@
         label="서버열기"
         @click="openGuestChat"
       />
+      <q-btn
+        class="q-mt-md"
+        color="primary"
+        label="서버닫기"
+        @click="closeGuestChat"
+      />
     </q-card>
   </q-dialog>
 </template>
@@ -48,8 +54,15 @@ import { getErrorMessage } from 'src/utils/error-message';
 const authStore = useAuthStore();
 const uid = authStore.loginUser.uid || null;
 const guestChat = ref('');
-const { status, data, send, open, close } = useWebSocket(
+const { status, data, send, open, close, error } = useWebSocket(
   `ws://127.0.0.1:8000?uid=${uid}`,
+  {
+    heartbeat: {
+      message: 'ping',
+      interval: 1000,
+      pongTimeout: 1000,
+    },
+  },
 );
 const $q = useQuasar();
 const { execute, isLoading } = useAsyncState(getChats, [], {
@@ -74,10 +87,22 @@ const openGuestChat = () => {
 
   console.log('try');
 };
+const closeGuestChat = () => {
+  close();
+};
 const saveGuestChat = () => {
-  send(guestChat.value);
+  data.value = guestChat.value;
+  console.log(data.value, 'data');
+  console.log(guestChat.value);
+  // ({
+  //       type: "message",
+  //       guestChat.value,
+  //     });
+  send({
+    message: data.value,
+  });
   console.log('send!');
-  getChats.value = '';
+  getChats.value = null;
 };
 onMounted(() => {});
 </script>
