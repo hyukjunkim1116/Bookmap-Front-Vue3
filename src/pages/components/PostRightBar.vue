@@ -29,7 +29,7 @@
       color="primary"
       text-color="white"
       class="full-width"
-      @click.prevent="$emit('openChatDialog')"
+      @click.prevent="openChatViewDialog"
     >
       <span class="text-weight-bold">방명록남기기</span>
     </q-btn>
@@ -37,7 +37,23 @@
 </template>
 <script setup>
 import StickySideBar from 'src/components/StickySideBar.vue';
-const emit = defineEmits(['openWriteDialog', 'openChatDialog']);
+import { defineAsyncComponent, ref } from 'vue';
+const emit = defineEmits(['openWriteDialog', 'update:modelValue']);
+
+const viewMode = ref('SignInForm');
+const changeViewMode = mode => (viewMode.value = mode);
+const chatViewComponents = {
+  WebChatForm: defineAsyncComponent(() =>
+    import('src/components/chat/WebChat.vue'),
+  ),
+};
+const openChatViewDialog = () => {
+  console.log('3434');
+  defineAsyncComponent(() => import('src/components/chat/WebChat.vue'));
+};
+const closeDialog = () => {
+  emit('update:modelValue', false);
+};
 </script>
 
 <style lang="scss" scoped></style>

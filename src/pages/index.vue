@@ -11,17 +11,12 @@
         <div v-intersection-observer="handleIntersectionObserver"></div>
       </section>
       <!-- 오른쪽 사이드바 컴포넌트 -->
-      <PostRightBar
-        class="col-3"
-        @open-write-dialog="openWriteDialog"
-        @open-chat-dialog="openChatDialog"
-      />
+      <PostRightBar class="col-3" @open-write-dialog="openWriteDialog" />
     </div>
     <PostWriteDialog
       v-model="postDialog"
       @complete="completeRegistrationPost"
     />
-    <WebChat v-model="webChatDialog" />
   </q-page>
 </template>
 <script setup>
@@ -36,7 +31,6 @@ import { usePostQuery } from 'src/composables/usePostQuery';
 import PostHeader from './components/PostHeader.vue';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
-import WebChat from 'src/components/apps/chat/WebChat.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const { sort, search } = usePostQuery();
@@ -48,7 +42,6 @@ const params = computed(() => ({
   search: search.value,
 }));
 const page = ref(1);
-const webChatDialog = ref(false);
 const postDialog = ref(false);
 const isParamsChanged = ref(false);
 const isLoadMore = ref(true);
@@ -85,13 +78,7 @@ const openWriteDialog = () => {
   }
   postDialog.value = true;
 };
-const openChatDialog = () => {
-  if (!authStore.isLogin) {
-    $q.notify('로그인 후 이용 가능합니다!');
-    return;
-  }
-  webChatDialog.value = true;
-};
+
 const completeRegistrationPost = () => {
   postDialog.value = false;
   isParamsChanged.value = true;
