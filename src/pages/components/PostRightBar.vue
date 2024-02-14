@@ -29,7 +29,7 @@
       color="primary"
       text-color="white"
       class="full-width"
-      @click="$emit('openChatDialog')"
+      @click.prevent="$emit('openChatDialog')"
     >
       <span class="text-weight-bold">방명록남기기</span>
     </q-btn>

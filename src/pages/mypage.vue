@@ -22,6 +22,12 @@
               </q-item-section>
               <q-item-section>북마크한 글 보기</q-item-section>
             </q-item>
+            <q-item clickable v-ripple to="/mypage/payment">
+              <q-item-section avatar>
+                <q-icon name="sym_o_pay" />
+              </q-item-section>
+              <q-item-section>결제내역</q-item-section>
+            </q-item>
           </q-list>
         </BaseCard>
       </div>
@@ -31,16 +37,7 @@
     </div>
   </q-page>
 </template>
-<!-- jQuery -->
-<script
-  type="text/javascript"
-  src="https://code.jquery.com/jquery-1.12.4.min.js"
-></script>
-<!-- iamport.payment.js -->
-<script
-  type="text/javascript"
-  src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"
-></script>
+
 <script setup>
 import BaseCard from 'src/components/base/BaseCard.vue';
 import { ref, watchEffect } from 'vue';

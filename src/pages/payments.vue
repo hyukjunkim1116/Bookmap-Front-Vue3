@@ -168,6 +168,12 @@ import { PGS } from 'src/utils/payments/constants';
 import Utils from 'src/utils/payments/util';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/stores/auth';
+import { useAsyncState } from '@vueuse/core';
+import { payToPortOne } from 'src/services/payment';
+import { useQuasar } from 'quasar';
+const $q = useQuasar();
+const authStore = useAuthStore();
 const router = useRouter();
 const methods = Utils.getMethodsByPg();
 const pgs = PGS;
@@ -176,6 +182,22 @@ const quotas = Utils.getQuotaByPg();
 const vbankDueVisible = ref(false);
 const bizNumVisible = ref(false);
 const quotaVisible = ref(true);
+const { execute, isLoading } = useAsyncState(payToPortOne, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: response => {
+    $q.notify({
+      message: '결제완료',
+    });
+  },
+  onError: err => {
+    console.log(err);
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response?.data),
+    });
+  },
+});
 const formData = ref({
   pg: '',
   payMethod: 'card',
@@ -185,7 +207,7 @@ const formData = ref({
   quota: '0',
   merchantUid: initialMerchantUid,
   name: '아임포트 VueJS 테스트 결제',
-  amount: '1',
+  amount: '100',
   buyerName: '홍길동',
   buyerPhone: '01012341234',
   buyerEmail: 'example@example.com',
@@ -276,14 +298,23 @@ const handleGoBack = () => {
   router.push('/');
 };
 
-const callback = response => {
+const callback = async response => {
   // 본인인증 종료 후 result 페이지로 이동
   console.log(response, 'response');
   const query = {
     ...response,
     type: 'payment',
   };
-  router.push({ path: '/payments/result', query });
+  if (response['success'] == true) {
+    const data = {
+      buyer: authStore.loginUser.uid,
+      amount: response['paid_amount'],
+      imp: response['imp_uid'],
+      merchant: response['merchant_uid'],
+    };
+    execute(payToPortOne, data);
+  }
+  await router.push({ path: '/payments/result', query });
 };
 </script>
 <route lang="yaml">

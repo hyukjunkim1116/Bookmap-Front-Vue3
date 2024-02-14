@@ -38,6 +38,7 @@ const errorMessage = ref(`${route.query.error_msg}`);
 const success = ref(getSuccess(route.query));
 
 function getSuccess(query) {
+  console.log(query, 'query');
   const success = query.success;
   const impSuccess = query.imp_success;
   if (impSuccess === undefined) {
