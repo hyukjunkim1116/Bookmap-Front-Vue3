@@ -13,7 +13,6 @@ export async function getChats() {
     }
     return config;
   });
-  console.log('getChats');
   return await api.get('webchat/');
 }
 export async function connectWebChats(uid) {

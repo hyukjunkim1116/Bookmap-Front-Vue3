@@ -2,7 +2,7 @@
   <q-item class="q-py-md" v-if="!isYou">
     <q-item-section side top>
       <q-avatar size="md">
-        <img :src="sender_image || generateDefaultPhotoURL(author)" />
+        <img :src="sender_image || generateDefaultPhotoURL(sender_id)" />
       </q-avatar>
     </q-item-section>
     <q-item-section>
@@ -45,6 +45,7 @@
 import { computed, ref } from 'vue';
 import { date } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
+import { generateDefaultPhotoURL } from 'src/services';
 const authStore = useAuthStore();
 
 const props = defineProps({
@@ -70,7 +71,6 @@ const props = defineProps({
 const isYou = computed(() => {
   return authStore.loginUser.uid === props.sender_id;
 });
-const editedComment = ref(props.comment);
 const isActive = ref(false);
 const toggleActive = () => {
   if (!isActive.value && !authStore.isLogin) {
