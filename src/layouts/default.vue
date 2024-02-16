@@ -64,6 +64,34 @@
           :icon="darkModeIcon"
           @click="toggleDarkMode"
         />
+        <q-btn
+          v-if="authStore.isLogin"
+          round
+          flat
+          class="q-ml-md"
+          icon="notifications"
+        >
+          <!-- <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item
+                v-if="authStore.loginUser.emailVerified"
+                clickable
+                v-close-popup
+                to="/mypage/profile"
+              >
+                <q-item-section>프로필</q-item-section>
+              </q-item>
+              <q-item v-else clickable v-close-popup>
+                <q-item-section class="text-red" @click="verifyEmail"
+                  >이메일을 인증해주세요.</q-item-section
+                >
+              </q-item>
+              <q-item clickable v-close-popup @click="handleLogout">
+                <q-item-section>로그아웃</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu> -->
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -78,7 +106,8 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
+import { useNotification } from 'src/composables/useNotification';
+import { computed, ref, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
@@ -92,10 +121,12 @@ const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
+const isLogin = ref(false);
 const $q = useQuasar();
 const route = useRoute();
 const authStore = useAuthStore();
 const authDialog = ref(false);
+
 const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const userImage = ref('');
@@ -115,8 +146,22 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
+watch(
+  isLogin,
+  () => {
+    if (isLogin.value) {
+      const notification = useNotification();
+      notification.open();
+    }
+  },
+  {
+    deep: true,
+    // immediate: true,
+  },
+);
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
   userImage.value = authStore.loginUser?.image;
+  isLogin.value = authStore.isLogin;
 });
 </script>
