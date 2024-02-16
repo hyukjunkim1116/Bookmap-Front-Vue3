@@ -3,6 +3,7 @@ import { useJwt } from '@vueuse/integrations/useJwt';
 import { useAuthStore } from 'src/stores/auth';
 import { useCookies } from 'vue3-cookies';
 const { cookies } = useCookies();
+
 const DEFAULT_PHOTO_URL =
   'https://api.dicebear.com/6.x/adventurer-neutral/svg?seed=';
 export function generateDefaultPhotoURL(uid) {
@@ -25,7 +26,6 @@ export async function signUpWithEmail(data) {
 export async function signInWithEmail(data) {
   const authStore = useAuthStore();
   const response = await api.post('users/login/', data);
-  console.log(response.data);
   const access = response.data.access;
   const refresh = response.data.refresh;
   const email = response.data.email;
@@ -35,7 +35,6 @@ export async function signInWithEmail(data) {
   const emailVerified = response.data.is_verified;
   authStore.setUserToken(access, refresh);
   const { payload } = useJwt(access);
-  console.log(payload);
   authStore.setUserData({
     email,
     username,
@@ -44,6 +43,7 @@ export async function signInWithEmail(data) {
     social,
     emailVerified,
   });
+
   return response.data;
 }
 export async function signInWithKakao(data) {

@@ -37,7 +37,6 @@
 </template>
 <script setup>
 import StickySideBar from 'src/components/StickySideBar.vue';
-import { defineAsyncComponent, ref } from 'vue';
 const emit = defineEmits(['openWriteDialog', 'openChatViewDialog']);
 </script>
 

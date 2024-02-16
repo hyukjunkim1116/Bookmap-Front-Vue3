@@ -1,27 +1,37 @@
 import { useWebSocket } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { getChats } from 'src/services';
 const authStore = useAuthStore();
-const uid = authStore.loginUser?.uid || null;
 const { execute, isLoading } = useAsyncState(getChats, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {},
   onError: err => {},
 });
+
 export const useWebSocketQuery = () => {
-  if (uid) {
-    const messages = ref([]);
-    const { data, send, close, open, error } = useWebSocket(
-      `ws://127.0.0.1:8000?uid=${uid}`,
+  const messages = ref([]);
+  const uid = computed(() => {
+    return authStore.loginUser?.uid || null;
+  });
+  console.log(uid.value, 'uid123');
+  if (uid.value) {
+    console.log('websocket');
+    const { send, close, open, error, status } = useWebSocket(
+      `ws://127.0.0.1:8000?uid=${uid.value}`,
       {
+        autoReconnect: {
+          retries: 3,
+          delay: 1000,
+        },
+
         onConnected: async ws => {
           try {
             const chats = await execute();
-
             messages.value = chats.data;
+            // console.log(messages.value);
           } catch (error) {
             console.log(error);
           }
@@ -32,21 +42,19 @@ export const useWebSocketQuery = () => {
           }
         },
         onMessage: (ws, msg) => {
-          console.log('onmessage', msg.data, ws);
           const newData = JSON.parse(msg.data);
-          console.log(newData, 'newdata');
-          console.log(data.value, 'databeforevalue');
-          messages.value = messages.value.push(newData);
-          console.log(messages.value, 'datavalue');
+          messages.value = [...messages.value, newData.new_message];
         },
       },
     );
     return {
-      data,
+      status,
+      messages,
       send,
       open,
       close,
       error,
+      uid,
     };
   }
 };

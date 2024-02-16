@@ -78,8 +78,8 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import {

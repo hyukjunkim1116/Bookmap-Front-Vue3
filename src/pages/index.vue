@@ -25,7 +25,8 @@
   </q-page>
 </template>
 <script setup>
-import { ref, onMounted, computed, watch, defineAsyncComponent } from 'vue';
+import { ref, onMounted, computed, watch, watchEffect } from 'vue';
+import { useWebSocketQuery } from 'src/composables/useWebSocket';
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
@@ -42,6 +43,7 @@ import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const { sort, search } = usePostQuery();
 const $q = useQuasar();
 const authStore = useAuthStore();
+
 const items = ref([]);
 const params = computed(() => ({
   sort: sort.value,
@@ -52,6 +54,7 @@ const postDialog = ref(false);
 const chatDialog = ref(false);
 const isParamsChanged = ref(false);
 const isLoadMore = ref(true);
+
 const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
@@ -108,6 +111,13 @@ watch(
     deep: true,
     // immediate: true,
   },
+  authStore.loginUser?.uid,
+  () => {
+    console.log('uiduid');
+    const webSocket = useWebSocketQuery();
+    webSocket.open();
+  },
+  { deep: true },
 );
 const loadMore = () => {
   isParamsChanged.value = false;
@@ -118,7 +128,9 @@ const openChatViewDialog = () => {
     $q.notify('로그인 후 이용 가능합니다!');
     return;
   }
-  chatDialog.value = true;
+  if (authStore.loginUser.uid) {
+    chatDialog.value = true;
+  }
 };
 
 const handleIntersectionObserver = ([{ isIntersecting }]) => {

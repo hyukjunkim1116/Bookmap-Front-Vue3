@@ -35,7 +35,7 @@
     </q-item-section>
     <q-item-section side>
       <q-avatar size="md">
-        <img :src="sender_image || generateDefaultPhotoURL(author)" />
+        <img :src="sender_image || generateDefaultPhotoURL(sender_id)" />
       </q-avatar>
     </q-item-section>
   </q-item>
@@ -47,7 +47,6 @@ import { date } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import { generateDefaultPhotoURL } from 'src/services';
 const authStore = useAuthStore();
-
 const props = defineProps({
   id: {
     type: Number,
@@ -69,18 +68,7 @@ const props = defineProps({
   },
 });
 const isYou = computed(() => {
-  return authStore.loginUser.uid === props.sender_id;
+  return authStore.loginUser.uid == props.sender_id;
 });
-const isActive = ref(false);
-const toggleActive = () => {
-  if (!isActive.value && !authStore.isLogin) {
-    $q.notify({
-      type: 'negative',
-      message: '로그인 후 이용 가능합니다.',
-    });
-    return;
-  }
-  isActive.value = !isActive.value;
-};
 </script>
 <style lang="scss" scoped></style>
