@@ -15,7 +15,7 @@ export async function getChats() {
   });
   return await api.get('webchat/');
 }
-export async function connectWebChats(uid) {
+export async function getNotifications() {
   api.interceptors.request.use(async config => {
     if (!config.headers) return config;
     const accessToken = cookies.get('access');
@@ -24,5 +24,17 @@ export async function connectWebChats(uid) {
     }
     return config;
   });
-  return await api.delete(`users/${uid}/`);
+  return await api.get('notification/');
+}
+
+export async function putReadNotification(notId) {
+  api.interceptors.request.use(async config => {
+    if (!config.headers) return config;
+    const accessToken = cookies.get('access');
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  });
+  return await api.patch(`notification/${notId}`);
 }

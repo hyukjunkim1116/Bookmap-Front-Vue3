@@ -3,7 +3,7 @@ import { useAuthStore } from 'src/stores/auth';
 import { ref, computed } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { getChats } from 'src/services';
-const authStore = useAuthStore();
+
 const { execute, isLoading } = useAsyncState(getChats, [], {
   immediate: false,
   throwError: true,
@@ -12,6 +12,7 @@ const { execute, isLoading } = useAsyncState(getChats, [], {
 });
 
 export const useWebSocketQuery = () => {
+  const authStore = useAuthStore();
   const messages = ref([]);
   const uid = computed(() => {
     return authStore.loginUser?.uid || null;
@@ -20,13 +21,8 @@ export const useWebSocketQuery = () => {
   if (uid.value) {
     console.log('websocket');
     const { send, close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000?uid=${uid.value}`,
+      `ws://127.0.0.1:8000/webchat?uid=${uid.value}`,
       {
-        autoReconnect: {
-          retries: 3,
-          delay: 1000,
-        },
-
         onConnected: async ws => {
           try {
             const chats = await execute();
@@ -37,6 +33,7 @@ export const useWebSocketQuery = () => {
           }
         },
         onDisconnected: (ws, event) => {
+          console.log('websocketdisconnected');
           if (event.code == 4001) {
             console.log('Authentication Error');
           }

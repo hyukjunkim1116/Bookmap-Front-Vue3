@@ -26,7 +26,7 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, watch, watchEffect } from 'vue';
-import { useWebSocketQuery } from 'src/composables/useWebSocket';
+
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
@@ -111,13 +111,7 @@ watch(
     deep: true,
     // immediate: true,
   },
-  authStore.loginUser?.uid,
-  () => {
-    console.log('uiduid');
-    const webSocket = useWebSocketQuery();
-    webSocket.open();
-  },
-  { deep: true },
+  
 );
 const loadMore = () => {
   isParamsChanged.value = false;
