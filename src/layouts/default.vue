@@ -115,7 +115,7 @@ import { useNotification } from 'src/composables/useNotification';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useWebSocketQuery } from 'src/composables/useWebSocket';
+import { useWebChat } from 'src/composables/useWebChat';
 import { useAuthStore } from 'src/stores/auth';
 import {
   logout,
@@ -128,15 +128,19 @@ const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
-const notifications = useNotification();
-const webSocket = useWebSocketQuery();
+
 const isLogin = ref(false);
 const $q = useQuasar();
 const route = useRoute();
 const authStore = useAuthStore();
+const uid = computed(() => {
+  return authStore.loginUser?.uid || null;
+});
+const notifications = useNotification(uid.value);
+const webSocket = useWebChat(uid.value);
 const authDialog = ref(false);
 const isRead = computed(() => {
-  return notifications.messages.value.every(
+  return notifications.messages?.value.every(
     notification => notification.is_read,
   );
 });
@@ -175,11 +179,10 @@ watchEffect(() => {
 });
 watch(
   isLogin,
-  async () => {
+  () => {
     if (isLogin.value) {
-      await notifications.open();
-      await webSocket.open();
-      console.log(notifications.messages.value, '213');
+      notifications.open();
+      webSocket.open();
     }
   },
   {

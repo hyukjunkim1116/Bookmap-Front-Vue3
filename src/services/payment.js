@@ -1,26 +1,7 @@
-import { api } from 'src/boot/2_axios-config';
-import { useCookies } from 'vue3-cookies';
-const { cookies } = useCookies();
+import { jwtApi } from 'src/boot/axios-config';
 export async function payToPortOne(data) {
-  api.interceptors.request.use(async config => {
-    if (!config.headers) return config;
-    const accessToken = cookies.get('access');
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  });
-  console.log(data);
-  return await api.post(`payments/pay`, data);
+  return await jwtApi.post(`payments/pay`, data);
 }
 export async function getPaymentsHistory() {
-  api.interceptors.request.use(async config => {
-    if (!config.headers) return config;
-    const accessToken = cookies.get('access');
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  });
-  return await api.get(`payments/pay`);
+  return await jwtApi.get(`payments/pay`);
 }

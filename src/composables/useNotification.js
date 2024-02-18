@@ -11,17 +11,18 @@ const { execute, isLoading } = useAsyncState(getNotifications, [], {
   },
   onError: err => {},
 });
-export const useNotification = () => {
+export const useNotification = uid => {
   const authStore = useAuthStore();
   const messages = ref([]);
-  const uid = computed(() => {
-    return authStore.loginUser?.uid || null;
-  });
-  console.log(uid.value, 'uid123');
-  if (uid.value) {
+  // const uid = computed(() => {
+  //   return authStore.loginUser?.uid || null;
+  // });
+  // console.log(uid, 'uid');
+  console.log(uid, 'uid123');
+  if (uid) {
     console.log('useNotification');
     const { send, close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000/notification/${uid.value}?uid=${uid.value}`,
+      `ws://127.0.0.1:8000/notification/${uid}?uid=${uid}`,
       {
         onConnected: async ws => {
           console.log('onConnected');

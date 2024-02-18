@@ -11,21 +11,22 @@ const { execute, isLoading } = useAsyncState(getChats, [], {
   onError: err => {},
 });
 
-export const useWebSocketQuery = () => {
+export const useWebChat = uid => {
   const authStore = useAuthStore();
   const messages = ref([]);
-  const uid = computed(() => {
-    return authStore.loginUser?.uid || null;
-  });
-  console.log(uid.value, 'uid123');
-  if (uid.value) {
+  // const uid = computed(() => {
+  //   return authStore.loginUser?.uid || null;
+  // });
+  console.log(uid, 'vasd');
+  if (uid) {
     console.log('websocket');
     const { send, close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000/webchat?uid=${uid.value}`,
+      `ws://127.0.0.1:8000/webchat?uid=${uid}`,
       {
         onConnected: async ws => {
           try {
             const chats = await execute();
+            console.log(chats);
             messages.value = chats.data;
             // console.log(messages.value);
           } catch (error) {

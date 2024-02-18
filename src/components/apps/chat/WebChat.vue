@@ -28,14 +28,17 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
-import { useWebSocketQuery } from 'src/composables/useWebSocket';
+import { useWebChat } from 'src/composables/useWebChat';
 import WebChatItem from './WebChatItem.vue';
 const authStore = useAuthStore();
+const uid = computed(() => {
+  return authStore.loginUser?.uid || null;
+});
 const guestChat = ref('');
-const webSocket = useWebSocketQuery();
+const webSocket = useWebChat(uid.value);
 const $q = useQuasar();
 const saveGuestChat = () => {
   webSocket.send(
