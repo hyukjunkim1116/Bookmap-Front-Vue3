@@ -19,26 +19,29 @@ const { isLoading, error, execute } = useAsyncState(signInWithKakao, null, {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    router.push('/');
     authStore.setAuthentication(true);
     authStore.setUserToken(response.access, response.refresh);
     $q.notify('환영합니다 :)');
     $q.loading.hide();
-    router.push('/');
   },
   onError: err => {
     console.log(err);
-    $q.notify({
-      type: 'negative',
-      message: getErrorMessage(err.response.data),
-    });
+
+    // $q.notify({
+    //   type: 'negative',
+    //   message: 'Something went Wrong(요청 두번 보냄)',
+    // });
     $q.loading.hide();
     router.push('/');
   },
 });
-onMounted(() => {
+onMounted(async () => {
   $q.loading.show();
   const kakaoCode = route.query.code;
-  execute(signInWithKakao, kakaoCode);
+  console.log(kakaoCode, 'kakaocode');
+  await execute(signInWithKakao, kakaoCode);
+  router.push('/');
 });
 </script>
 

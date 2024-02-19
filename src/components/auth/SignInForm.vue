@@ -63,6 +63,7 @@
 </template>
 
 <script setup>
+import { api } from 'src/boot/axios-config';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
