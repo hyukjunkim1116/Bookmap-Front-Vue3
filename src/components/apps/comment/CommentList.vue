@@ -67,7 +67,7 @@ const handleDeleteComment = commentId => {
   });
 };
 const handleEditComment = (commentId, editedComment) => {
-  executeEditComment(editComment, commentId, editedComment);
+  executeEditComment(editComment, commentId, { comment: editedComment });
 };
 </script>
 

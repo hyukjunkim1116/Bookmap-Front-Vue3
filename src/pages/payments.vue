@@ -217,7 +217,7 @@ const formData = ref({
 
 const handleSubmit = e => {
   const values = formData.value;
-  console.log(values);
+
   const {
     pg,
     payMethod,
@@ -250,7 +250,7 @@ const handleSubmit = e => {
     buyer_postcode: buyerPostcode,
     niceMobileV2: true,
   };
-  console.log(payMethod.value, pg.value, 'asdsad');
+
   if (payMethod.value === 'vbank') {
     data.vbank_due = vbankDue;
     if (pg.value === 'danal_tpay') {
@@ -271,15 +271,14 @@ const changePg = val => {
   const [{ value }] = newMethods;
   methods.value = Utils.getMethodsByPg(pg);
   formData.value.payMethod = value;
-  console.log(formData.value.payMethod, value);
-  console.log(pg, value);
+
   setVisible(pg, value);
 };
 
 const changePayMethod = val => {
   const method = val.value;
   const pg = formData.value.pg.value;
-  console.log(pg, method, 'asdsad');
+
   setVisible(pg, method);
 };
 
@@ -300,7 +299,7 @@ const handleGoBack = () => {
 
 const callback = async response => {
   // 본인인증 종료 후 result 페이지로 이동
-  console.log(response, 'response');
+
   const query = {
     ...response,
     type: 'payment',

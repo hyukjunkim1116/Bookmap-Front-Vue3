@@ -3,6 +3,7 @@ import { boot } from 'quasar/wrappers';
 import { useCookies } from 'vue3-cookies';
 import { useAuthStore } from 'src/stores/auth';
 import { logout } from 'src/services';
+
 const djangoApi = 'http://localhost:8000';
 const springApi = 'http://localhost:8080';
 const isServerRunning = async () => {
@@ -42,9 +43,11 @@ const setupApi = async () => {
   }
   return api;
 };
+
 let jwtApi = null;
 const setupjwtApi = async () => {
   if (!jwtApi) {
+    const { cookies } = useCookies();
     jwtApi = await isServerRunning();
     jwtApi.interceptors.request.use(async config => {
       if (!config.headers) return config;
@@ -104,6 +107,7 @@ const setupjwtApi = async () => {
 let formApi = null;
 const setupformApi = async () => {
   if (!formApi) {
+    const { cookies } = useCookies();
     formApi = await isServerRunning();
     formApi.interceptors.request.use(async config => {
       if (!config.headers) return config;

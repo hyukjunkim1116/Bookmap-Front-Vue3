@@ -37,7 +37,6 @@ export const useAuthStore = defineStore('auth', {
         cookies.set('access', access);
         cookies.set('refresh', refresh);
       } catch (err) {
-        console.log(err);
         return null;
       }
     },

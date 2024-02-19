@@ -90,8 +90,7 @@
                       'YYYY. MM. DD HH:mm:ss',
                     )
                   }}
-                  | {{ notification.is_read }}</q-item-section
-                >
+                </q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -110,19 +109,20 @@
 </template>
 
 <script setup>
-import { date } from 'quasar';
-import { useNotification } from 'src/composables/useNotification';
+import { date, useQuasar } from 'quasar';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { useQuasar } from 'quasar';
-import { useWebChat } from 'src/composables/useWebChat';
-import { useAuthStore } from 'src/stores/auth';
 import {
+  getNotifications,
+  putReadNotification,
+  useNotification,
+  getChats,
+  useWebChat,
   logout,
   generateDefaultPhotoURL,
   sendVerificationEmail,
-  putReadNotification,
 } from 'src/services';
+import { useAuthStore } from 'src/stores/auth';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
@@ -140,7 +140,7 @@ const notifications = useNotification(uid.value);
 const webSocket = useWebChat(uid.value);
 const authDialog = ref(false);
 const isRead = computed(() => {
-  return notifications.messages?.value.every(
+  return notifications?.messages?.value.every(
     notification => notification.is_read,
   );
 });
@@ -165,10 +165,9 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
-const handleNotification = (notification, notId) => {
+const handleNotification = async (notification, notId) => {
   if (!notification.is_read) {
-    console.log('handleNot');
-    putReadNotification(notId);
+    await putReadNotification(notId);
     notification.is_read = true;
   }
 };
@@ -177,19 +176,12 @@ watchEffect(() => {
   userImage.value = authStore.loginUser?.image;
   isLogin.value = authStore.isLogin;
 });
-watch(
-  isLogin,
-  () => {
-    if (isLogin.value) {
-      notifications.open();
-      webSocket.open();
-    }
-  },
-  {
-    deep: true,
-    // immediate: true,
-  },
-);
+watch(isLogin, async () => {
+  if (isLogin.value) {
+    notifications.open();
+    webSocket.open();
+  }
+});
 </script>
 <style scoped>
 .is-read {

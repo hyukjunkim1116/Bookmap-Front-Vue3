@@ -121,7 +121,6 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response);
     isLiked.value = response.data.is_liked;
     likeCount.value = response.data.likes_count;
   },
@@ -137,11 +136,9 @@ const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response);
     disLiked.value = response.data.is_disliked;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: getErrorMessage(err.response?.data),
@@ -152,7 +149,6 @@ const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response);
     isBookmarked.value = response.data.is_bookmarked;
   },
   onError: err => {

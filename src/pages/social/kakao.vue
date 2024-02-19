@@ -19,7 +19,6 @@ const { isLoading, error, execute } = useAsyncState(signInWithKakao, null, {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response, 'res');
     authStore.setAuthentication(true);
     authStore.setUserToken(response.access, response.refresh);
     $q.notify('환영합니다 :)');
@@ -38,8 +37,6 @@ const { isLoading, error, execute } = useAsyncState(signInWithKakao, null, {
 });
 onMounted(() => {
   $q.loading.show();
-  console.log(route.query);
-  console.log(route.query.code);
   const kakaoCode = route.query.code;
   execute(signInWithKakao, kakaoCode);
 });

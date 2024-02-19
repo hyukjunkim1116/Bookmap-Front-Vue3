@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { date } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import { generateDefaultPhotoURL } from 'src/services';

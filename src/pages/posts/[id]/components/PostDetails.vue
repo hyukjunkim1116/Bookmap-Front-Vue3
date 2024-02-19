@@ -136,8 +136,8 @@ const { error } = useAsyncState(
   {
     immediate: true,
     onSuccess: response => {
-      console.log(response);
       post.value = response.data;
+      console.log(post.value, 'asd');
     },
     onError: err => {
       $q.notify({
@@ -182,6 +182,7 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    console.log(response.data, 'hLres');
     post.value.is_liked = response.data.is_liked;
   },
   onError: err => {

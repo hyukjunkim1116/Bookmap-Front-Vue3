@@ -175,7 +175,7 @@ const uploadFactory = async () => {
   const data = await compressImage(image.value);
   const formData = new FormData();
   formData.append('image', data);
-  console.log(formData);
+  console.log('upload');
   executeUploadImage(updateUserImage, formData, uid);
 };
 watchEffect(() => {

@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { date } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 const authStore = useAuthStore();

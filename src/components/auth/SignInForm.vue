@@ -69,12 +69,10 @@ import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
 import { getErrorMessage } from 'src/utils/error-message';
 import { useAuthStore } from 'src/stores/auth';
-import { useRouter } from 'vue-router';
-const router = useRouter();
-const emit = defineEmits(['changeView', 'closeDialog']);
+const emit = defineEmits(['changeView', 'closeDialog', 'openWebsocket']);
 const $q = useQuasar();
 const authStore = useAuthStore();
-const { isLoading, error, execute } = useAsyncState(
+const { isLoading, execute } = useAsyncState(
   async () => {
     await signInWithEmail(form.value);
   },

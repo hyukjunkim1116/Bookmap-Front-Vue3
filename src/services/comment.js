@@ -7,8 +7,7 @@ export async function addComment(postId, data) {
   return await jwtApi.post(`posts/${postId}/comment`, data);
 }
 export async function editComment(commentId, data) {
-  const requestData = { comment: data };
-  return await jwtApi.put(`posts/comment/${commentId}`, requestData);
+  return await jwtApi.put(`posts/comment/${commentId}`, data);
 }
 export async function deleteComment(commentId) {
   return await jwtApi.delete(`posts/comment/${commentId}`);

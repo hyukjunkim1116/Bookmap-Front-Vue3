@@ -45,9 +45,7 @@ const emit = defineEmits(['update:modelValue']);
 const limit = ref(240);
 const { execute } = useAsyncState(deletePostImage, null, {
   immediate: false,
-  onSuccess: response => {
-    console.log(response);
-  },
+  onSuccess: response => {},
   onError: err => {
     console.log(err);
     $q.notify({
@@ -80,8 +78,6 @@ const editor = useEditor({
     });
     transaction.before.content.forEach(node => {
       if (node.attrs.src) {
-        console.log(nodeIds.has(node.attrs.src));
-        console.log(node.attrs.src);
         execute(deletePostImage, node.attrs.src);
       }
     });

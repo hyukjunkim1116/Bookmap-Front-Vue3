@@ -62,7 +62,7 @@ const carriers = [
   { label: 'LGU+', value: 'LGT' },
   { label: '알뜰폰', value: 'MVNO' },
 ];
-console.log(carriers);
+
 const handleSubmit = () => {
   const { merchantUid, company, carrier, name, phone, minAge } = form.value;
   const { IMP } = window;

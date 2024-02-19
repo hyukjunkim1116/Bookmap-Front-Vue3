@@ -1,5 +1,4 @@
 import { api, jwtApi } from 'src/boot/axios-config';
-import { useCookies } from 'vue3-cookies';
 
 export async function getPosts(params) {
   let url = `posts/?`;
@@ -18,7 +17,7 @@ export async function createPost(data) {
   return await jwtApi.post('posts/', data);
 }
 export async function getPostDetails(postId) {
-  return await api.get(`posts/${postId}`);
+  return await jwtApi.get(`posts/${postId}`);
 }
 export async function updatePost(postId, data) {
   return await jwtApi.put(`posts/${postId}`, data);

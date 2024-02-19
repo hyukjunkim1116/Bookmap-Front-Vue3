@@ -80,15 +80,13 @@ const { execute: executeGetComments, state } = useAsyncState(getComments, [], {
   throwError: true,
   onSuccess: async response => {
     const data = await response.data;
-    console.log(data, '43434');
+
     if (page.value == 1) {
-      console.log('3443434');
       items.value = data.results;
     } else {
-      console.log(items.value, 'asdasd');
       items.value = items.value.concat(data.results);
     }
-    console.log(response.data);
+
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;
@@ -109,7 +107,7 @@ const { isLoading, execute: executeAddComment } = useAsyncState(
       message.value = '';
       isActive.value = false;
       page.value = 1;
-      console.log(page.value, 'dfvcv');
+
       executeGetComments(getComments, route.params.id, page.value);
     },
   },
@@ -138,7 +136,6 @@ const loadMore = async () => {
 };
 const handleIntersectionObserver = async ([{ isIntersecting }]) => {
   if (isIntersecting && isLoadMore.value) {
-    console.log('### handleIntersectionObserver ###');
     await loadMore();
   }
 };

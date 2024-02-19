@@ -6,16 +6,15 @@
         <q-btn v-close-popup flat round dense icon="close" />
       </q-toolbar>
       <q-separator />
-      <!-- 대화 목록 -->
       <div style="height: 300px; overflow-y: auto">
         <WebChatItem
           v-for="data in webSocket.messages?.value"
           :key="data.id"
           v-bind="data"
         />
+        <div ref="bottom"></div>
       </div>
       <q-separator />
-      <!-- 방명록 입력 -->
       <q-input v-model="guestChat" filled label="방명록 입력" />
       <q-btn
         class="q-mt-md"
@@ -23,23 +22,31 @@
         label="저장"
         @click="saveGuestChat"
       />
+      <q-btn
+        class="q-mt-md"
+        color="primary"
+        label="맨밑으로 내리기"
+        @click="scrollToBottom"
+      />
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
-import { useWebChat } from 'src/composables/useWebChat';
+import { useWebChat } from 'src/services';
 import WebChatItem from './WebChatItem.vue';
 const authStore = useAuthStore();
 const uid = computed(() => {
   return authStore.loginUser?.uid || null;
 });
+const bottom = ref(null);
+const scrollToBottom = () => {
+  bottom.value.scrollIntoView({ behavior: 'smooth' });
+};
 const guestChat = ref('');
 const webSocket = useWebChat(uid.value);
-const $q = useQuasar();
 const saveGuestChat = () => {
   webSocket.send(
     JSON.stringify({
@@ -47,6 +54,7 @@ const saveGuestChat = () => {
     }),
   );
   guestChat.value = '';
+  scrollToBottom();
 };
 </script>
 

@@ -24,7 +24,7 @@
             </q-item>
             <q-item clickable v-ripple to="/mypage/payment">
               <q-item-section avatar>
-                <q-icon name="sym_o_pay" />
+                <q-icon name="sym_o_receipt" />
               </q-item-section>
               <q-item-section>결제내역</q-item-section>
             </q-item>
@@ -45,7 +45,7 @@ import { useAuthStore } from 'src/stores/auth';
 import { useRouter } from 'vue-router';
 const authStore = useAuthStore();
 const isLogin = ref(authStore.isLogin);
-console.log(isLogin.value);
+
 const router = useRouter();
 watchEffect(() => {
   isLogin.value = authStore.isLogin;

@@ -17,6 +17,7 @@ export async function signUpWithEmail(data) {
 export async function signInWithEmail(data) {
   const authStore = useAuthStore();
   const response = await api.post('users/login/', data);
+  console.log(response.data, 'asdasd');
   const access = response.data.access;
   const refresh = response.data.refresh;
   const email = response.data.email;
@@ -39,6 +40,7 @@ export async function signInWithEmail(data) {
 export async function signInWithKakao(data) {
   const authStore = useAuthStore();
   const response = await api.post(`users/kakao/`, data);
+  console.log(response.data, 'kakaoresdata');
   const access = response.data.access;
   const refresh = response.data.refresh;
   const email = response.data.email;

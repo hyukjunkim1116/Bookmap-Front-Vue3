@@ -30,7 +30,7 @@ defineProps({
     default: false,
   },
 });
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'openWebsocket']);
 const viewMode = ref('SignInForm');
 const changeViewMode = mode => (viewMode.value = mode);
 const authViewComponents = {

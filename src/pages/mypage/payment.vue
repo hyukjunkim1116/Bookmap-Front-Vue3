@@ -23,7 +23,6 @@ const { execute, isLoading } = useAsyncState(getPaymentsHistory, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response.data, 'asdasd');
     items.value = response.data;
   },
   onError: err => {

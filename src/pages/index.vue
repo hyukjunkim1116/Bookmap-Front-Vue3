@@ -25,7 +25,7 @@
   </q-page>
 </template>
 <script setup>
-import { ref, onMounted, computed, watch, watchEffect } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
@@ -59,7 +59,6 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response.data);
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;
@@ -102,7 +101,6 @@ onMounted(() => {
 watch(
   params,
   () => {
-    console.log('paramsChanged');
     isParamsChanged.value = true;
     page.value = 1;
     execute(getPosts, { ...params.value, page: page.value });
@@ -111,7 +109,6 @@ watch(
     deep: true,
     // immediate: true,
   },
-  
 );
 const loadMore = () => {
   isParamsChanged.value = false;
@@ -129,7 +126,6 @@ const openChatViewDialog = () => {
 
 const handleIntersectionObserver = ([{ isIntersecting }]) => {
   if (isIntersecting && isLoadMore.value) {
-    console.log('### handleIntersectionObserver ###');
     loadMore();
   }
 };
