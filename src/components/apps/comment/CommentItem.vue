@@ -58,6 +58,7 @@ import { ref } from 'vue';
 import { date } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import { validateRequired } from 'src/utils/validate-rules';
+import { generateDefaultPhotoURL } from 'src/services';
 const authStore = useAuthStore();
 const emit = defineEmits(['edit', 'delete']);
 const props = defineProps({
@@ -74,6 +75,9 @@ const props = defineProps({
     type: Number,
   },
   username: {
+    type: String,
+  },
+  image: {
     type: String,
   },
 });

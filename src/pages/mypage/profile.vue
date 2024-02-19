@@ -87,9 +87,6 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
       authStore.setUserData({
         username: displayName.value,
         email: email.value,
-        uid: uid,
-        image: authStore.loginUser.image,
-        social: authStore.loginUser.social,
       });
     },
     onError: err => {
@@ -142,11 +139,7 @@ const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
   onSuccess: response => {
     $q.notify('사진 업로드 완료!');
     authStore.setUserData({
-      username: authStore.loginUser.username,
-      email: authStore.loginUser.email,
-      uid: uid,
       image: response.data.image,
-      social: authStore.loginUser.social,
     });
 
     image.value = null;

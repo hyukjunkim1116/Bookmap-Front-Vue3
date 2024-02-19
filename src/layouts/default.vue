@@ -113,10 +113,8 @@ import { date, useQuasar } from 'quasar';
 import { computed, ref, watchEffect, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
-  getNotifications,
   putReadNotification,
   useNotification,
-  getChats,
   useWebChat,
   logout,
   generateDefaultPhotoURL,
@@ -136,12 +134,14 @@ const authStore = useAuthStore();
 const uid = computed(() => {
   return authStore.loginUser?.uid || null;
 });
-const notifications = useNotification(uid.value);
-const webSocket = useWebChat(uid.value);
+const notifications = useNotification(uid?.value);
+const webSocket = useWebChat(uid?.value);
 const authDialog = ref(false);
 const isRead = computed(() => {
-  return notifications?.messages?.value.every(
-    notification => notification.is_read,
+  return (
+    notifications &&
+    notifications.messages &&
+    notifications.messages.value.every(notification => notification.is_read)
   );
 });
 const openAuthDialog = () => (authDialog.value = true);
@@ -178,8 +178,12 @@ watchEffect(() => {
 });
 watch(isLogin, async () => {
   if (isLogin.value) {
-    notifications.open();
-    webSocket.open();
+    try {
+      notifications.open();
+      webSocket.open();
+    } catch {
+      window.location.reload();
+    }
   }
 });
 </script>

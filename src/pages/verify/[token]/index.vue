@@ -13,11 +13,6 @@ const router = useRouter();
 const $q = useQuasar();
 const verify = async () => {
   authStore.setUserData({
-    email: authStore.loginUser.email,
-    username: authStore.loginUser.username,
-    uid: authStore.loginUser.uid,
-    image: authStore.loginUser.image,
-    social: authStore.loginUser.social,
     emailVerified: true,
   });
   console.log(route.params.token);

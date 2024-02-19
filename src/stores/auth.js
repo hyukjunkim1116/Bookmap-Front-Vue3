@@ -2,16 +2,18 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core';
 import { useCookies } from 'vue3-cookies';
-// auth 상태 및 관련 로직을 다루는 Vue Pinia 스토어를 정의합니다.
-const { cookies } = useCookies();
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isLogin: ref(cookies.get('access')),
+    isLogin: ref(!!useCookies().cookies.get('access')),
     loginUser: useLocalStorage('auth/user', null, {
       serializer: StorageSerializers.object,
     }),
   }),
   actions: {
+    getUid() {
+      return this.loginUser.uid || null;
+    },
     setAuthentication(value) {
       return (this.isLogin = value);
     },
@@ -20,41 +22,35 @@ export const useAuthStore = defineStore('auth', {
     },
     setUserData(userData) {
       if (userData) {
+        const { uid, username, email, image, social, emailVerified } = userData;
         this.loginUser = {
-          uid: userData.uid,
-          username: userData.username,
-          email: userData.email,
-          image: userData.image,
-          social: userData.social,
-          emailVerified: userData.emailVerified,
+          uid: uid ?? this.loginUser?.uid,
+          username: username ?? this.loginUser?.username,
+          email: email ?? this.loginUser?.email,
+          image: image ?? this.loginUser?.image,
+          social: social ?? this.loginUser?.social,
+          emailVerified: emailVerified ?? this.loginUser?.emailVerified,
         };
       } else {
         this.loginUser = null;
       }
     },
     setUserToken(access, refresh) {
-      try {
-        cookies.set('access', access);
-        cookies.set('refresh', refresh);
-      } catch (err) {
-        return null;
-      }
+      const { cookies } = useCookies();
+      cookies.set('access', access);
+      cookies.set('refresh', refresh);
     },
+
     getUserData() {
       const storedData = useLocalStorage('auth/user').value;
-      const parsedData = JSON.parse(storedData);
-      const uid = parsedData.payload.uid;
-      const username = parsedData.payload.username;
-      const email = parsedData.payload.email;
-      return { uid, username, email };
+      if (storedData) {
+        const { uid, username, email } = JSON.parse(storedData);
+        return { uid, username, email };
+      }
+      return null;
     },
     hasOwnContent(contentUid) {
-      // 사용자가 인증되어 있지 않으면 소유자가 아니라고 판단합니다.
-      if (!this.isLogin) {
-        return false;
-      }
-      // 사용자의 UID와 컨텐츠의 UID를 비교하여 소유자 여부를 판단합니다.
-      return this.loginUser.uid === contentUid;
+      return !!this.isLogin && this.loginUser?.uid === contentUid;
     },
   },
 });

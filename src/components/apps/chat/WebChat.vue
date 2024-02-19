@@ -8,7 +8,7 @@
       <q-separator />
       <div style="height: 300px; overflow-y: auto">
         <WebChatItem
-          v-for="data in webSocket.messages?.value"
+          v-for="data in webSocket?.messages?.value"
           :key="data.id"
           v-bind="data"
         />

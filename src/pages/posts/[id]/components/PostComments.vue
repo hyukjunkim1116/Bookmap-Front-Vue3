@@ -80,7 +80,7 @@ const { execute: executeGetComments, state } = useAsyncState(getComments, [], {
   throwError: true,
   onSuccess: async response => {
     const data = await response.data;
-
+    console.log(response.data, 'commentresdata');
     if (page.value == 1) {
       items.value = data.results;
     } else {

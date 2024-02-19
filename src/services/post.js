@@ -11,7 +11,7 @@ export async function getPosts(params) {
   if (params.search) {
     url += `search=${params.search}`;
   }
-  return await api.get(url);
+  return await jwtApi.get(url);
 }
 export async function createPost(data) {
   return await jwtApi.post('posts/', data);
