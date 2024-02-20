@@ -16,49 +16,42 @@ export async function signUpWithEmail(data) {
 }
 export async function signInWithEmail(data) {
   const authStore = useAuthStore();
+
   const response = await api.post('users/login/', data);
-  console.log(response.data, 'asdasd');
-  const access = response.data.access;
-  const refresh = response.data.refresh;
-  const email = response.data.email;
-  const username = response.data.username;
-  const image = response.data?.image;
-  const social = response.data.social;
-  const emailVerified = response.data.is_verified;
+  const { access, refresh, email, username, image, social, is_verified } =
+    response.data;
+  console.log(response.data);
   authStore.setUserToken(access, refresh);
-  const { payload } = useJwt(access);
-  authStore.setUserData({
+  const { user_id } = useJwt(access).payload.value;
+  const userData = {
+    uid: user_id,
     email,
     username,
-    uid: payload.value.user_id,
-    image,
+    image: image || generateDefaultPhotoURL(user_id),
     social,
-    emailVerified,
-  });
+    emailVerified: is_verified,
+  };
+  authStore.setUserData(userData);
   return response.data;
 }
 export async function signInWithKakao(data) {
   const authStore = useAuthStore();
   const response = await api.post(`users/kakao/`, data);
-  console.log(response.data, 'kakaoresdata');
-  const access = response.data.access;
-  const refresh = response.data.refresh;
-  const email = response.data.email;
-  const username = response.data.username;
-  const image = response.data?.image;
-  const social = response.data.social;
-  const emailVerified = response.data.is_verified;
+  const { access, refresh, email, username, image, social, is_verified } =
+    response.data;
   authStore.setUserToken(access, refresh);
-  const { payload } = useJwt(access);
-  authStore.setUserData({
+  const { user_id } = useJwt(access).payload.value;
+  console.log(response.data);
+  const userData = {
+    uid: user_id,
     email,
     username,
-    uid: payload.value.user_id,
-    image,
+    image: image || generateDefaultPhotoURL(user_id),
     social,
-    emailVerified,
-  });
-  return response.data;
+    emailVerified: is_verified,
+  };
+  authStore.setUserData(userData);
+  // return response.data;
 }
 
 export async function logout() {

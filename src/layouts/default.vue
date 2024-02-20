@@ -69,36 +69,14 @@
           round
           flat
           class="q-ml-md"
-          :icon="isRead ? 'notifications' : 'notifications_active'"
+          :icon="
+            !isNotificationsRead ? 'notifications_active' : 'notifications'
+          "
         >
-          <q-menu>
-            <q-list style="min-width: 200px">
-              <q-item
-                clickable
-                v-for="notification in notifications.messages.value"
-                :key="notification.id"
-              >
-                <q-item-section
-                  :class="{ 'is-read': notification.is_read }"
-                  @click.prevent="
-                    handleNotification(notification, notification.id)
-                  "
-                  >{{ notification.message }} |
-                  {{
-                    date.formatDate(
-                      notification.created_at,
-                      'YYYY. MM. DD HH:mm:ss',
-                    )
-                  }}
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
+          <NotificationList @isread="receiveDataFromChild" />
         </q-btn>
       </q-toolbar>
     </q-header>
-
-    <!-- 페이지 컨테이너: 여기에 라우터 뷰가 위치함 -->
     <q-page-container :style="pageContainerStyles">
       <router-view />
     </q-page-container>
@@ -109,51 +87,45 @@
 </template>
 
 <script setup>
-import { date, useQuasar } from 'quasar';
-import { computed, ref, watchEffect, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useQuasar } from 'quasar';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
-  putReadNotification,
-  useNotification,
-  useWebChat,
   logout,
   generateDefaultPhotoURL,
   sendVerificationEmail,
 } from 'src/services';
+import { useNotification, useWebChat } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
+import NotificationList from 'src/components/apps/chat/NotificationList.vue';
 const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
-
-const isLogin = ref(false);
+const isNotificationsRead = ref(true);
+const receiveDataFromChild = bool => {
+  console.log(bool, 'bool');
+  isNotificationsRead.value = bool;
+  console.log(isNotificationsRead.value, 'inoredvadlue');
+};
 const $q = useQuasar();
 const route = useRoute();
 const authStore = useAuthStore();
-const uid = computed(() => {
-  return authStore.loginUser?.uid || null;
-});
-const notifications = useNotification(uid?.value);
-const webSocket = useWebChat(uid?.value);
 const authDialog = ref(false);
-const isRead = computed(() => {
-  return (
-    notifications &&
-    notifications.messages &&
-    notifications.messages.value.every(notification => notification.is_read)
-  );
-});
 const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const userImage = ref('');
 const handleLogout = async () => {
+  const notifications = useNotification();
+  const webSocket = useWebChat();
   notifications.close();
   webSocket.close();
   await logout();
   authStore.setAuthentication(false);
   $q.notify('로그아웃 되었습니다.');
 };
+
 const verifyEmail = async () => {
   await sendVerificationEmail(authStore.loginUser.uid);
   $q.notify('이메일을 확인해주세요!');
@@ -165,30 +137,8 @@ const toggleDarkMode = () => {
   $q.dark.toggle();
   $q.localStorage.set('darkMode', $q.dark.isActive);
 };
-const handleNotification = async (notification, notId) => {
-  if (!notification.is_read) {
-    await putReadNotification(notId);
-    notification.is_read = true;
-  }
-};
 watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
   userImage.value = authStore.loginUser?.image;
-  isLogin.value = authStore.isLogin;
-});
-watch(isLogin, async () => {
-  if (isLogin.value) {
-    try {
-      notifications.open();
-      webSocket.open();
-    } catch {
-      window.location.reload();
-    }
-  }
 });
 </script>
-<style scoped>
-.is-read {
-  color: #9b9b9b; /* 회색 배경색 */
-}
-</style>

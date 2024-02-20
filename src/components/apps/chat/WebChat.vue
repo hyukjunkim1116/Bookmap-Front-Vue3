@@ -33,20 +33,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useAuthStore } from 'src/stores/auth';
+import { ref } from 'vue';
 import { useWebChat } from 'src/services';
 import WebChatItem from './WebChatItem.vue';
-const authStore = useAuthStore();
-const uid = computed(() => {
-  return authStore.loginUser?.uid || null;
-});
 const bottom = ref(null);
 const scrollToBottom = () => {
   bottom.value.scrollIntoView({ behavior: 'smooth' });
 };
 const guestChat = ref('');
-const webSocket = useWebChat(uid.value);
+const webSocket = useWebChat();
 const saveGuestChat = () => {
   webSocket.send(
     JSON.stringify({
@@ -56,6 +51,7 @@ const saveGuestChat = () => {
   guestChat.value = '';
   scrollToBottom();
 };
+console.log('webchatasfsaf');
 </script>
 
 <style lang="scss" scoped></style>

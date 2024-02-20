@@ -1,24 +1,30 @@
 import { useWebSocket } from '@vueuse/core';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { jwtApi } from 'src/boot/axios-config';
-
+import { useAuthStore } from 'src/stores/auth';
 export async function getChats() {
   return await jwtApi.get('webchat/');
 }
 
-export const useWebChat = uid => {
+export const useWebChat = () => {
+  const authStore = useAuthStore();
   const messages = ref([]);
+  const uid = computed(() => {
+    return authStore.loginUser?.uid || null;
+  });
 
-  if (uid) {
+  if (uid.value) {
     const { execute } = useAsyncState(getChats, [], {
       immediate: false,
       throwError: true,
-      onSuccess: response => {},
+      onSuccess: response => {
+        console.log('chat', response);
+      },
       onError: err => {},
     });
     const { send, close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000/webchat?uid=${uid}`,
+      `ws://127.0.0.1:8000/webchat?uid=${uid.value}`,
       {
         onConnected: async ws => {
           try {
@@ -47,7 +53,6 @@ export const useWebChat = uid => {
       open,
       close,
       error,
-      uid,
     };
   }
 };
