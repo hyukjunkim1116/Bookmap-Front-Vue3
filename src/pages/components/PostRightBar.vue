@@ -34,14 +34,26 @@
       <span class="text-weight-bold">방명록남기기</span>
       <WebChat v-if="authStore.isLogin" v-model="dialogVisible" />
     </q-btn>
+    <q-btn
+      padding="8px 12px 8px 8px"
+      unelevated
+      color="primary"
+      text-color="white"
+      class="full-width"
+      @click.prevent="getRefresh"
+    >
+      <span class="text-weight-bold">토큰재발급</span>
+    </q-btn>
   </StickySideBar>
 </template>
 <script setup>
+import { refresh } from 'src/services';
 import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth';
 import { useQuasar } from 'quasar';
 import StickySideBar from 'src/components/StickySideBar.vue';
 import WebChat from 'src/components/apps/chat/WebChat.vue';
+import { useCookies } from 'vue3-cookies';
 const $q = useQuasar();
 const authStore = useAuthStore();
 const emit = defineEmits(['openWriteDialog']);
@@ -52,6 +64,11 @@ const showChatDialog = () => {
     return;
   }
   dialogVisible.value = true;
+};
+const getRefresh = () => {
+  const { cookies } = useCookies();
+  const accessToken = cookies.get('refresh');
+  console.log(refresh(accessToken));
 };
 </script>
 

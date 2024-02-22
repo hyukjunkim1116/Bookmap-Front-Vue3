@@ -3,7 +3,6 @@ import { boot } from 'quasar/wrappers';
 import { useCookies } from 'vue3-cookies';
 import { useAuthStore } from 'src/stores/auth';
 import { logout } from 'src/services';
-
 const djangoApi = 'http://localhost:8000';
 const springApi = 'http://localhost:8080';
 const isServerRunning = async () => {
@@ -57,47 +56,35 @@ const setupjwtApi = async () => {
       }
       return config;
     });
-    let refreshing = false;
+
     jwtApi.interceptors.response.use(
       response => response,
       async error => {
         if (error.config && error.response && error.response.status === 401) {
-          if (!refreshing) {
-            try {
-              const { cookies } = useCookies();
-
-              refreshing = true;
-              const originalRequest = error.config;
-              originalRequest._retry = true;
-              const refreshToken = cookies.get('refresh');
-
-              if (!refreshToken) {
-                throw new Error('Refresh token not found');
-              }
-              const response = await jwtApi.post('users/token/refresh/', {
-                refresh: refreshToken,
-              });
-
-              const authStore = useAuthStore();
-              const newAccessToken = response.data.access;
-              authStore.setUserToken(newAccessToken, refreshToken);
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-              return api(originalRequest);
-            } catch {
-              await logout();
-              window.location.replace('/');
-              alert('다시 로그인 하세요!!');
-              return;
+          try {
+            console.log('jwtapi');
+            const refreshApi = await isServerRunning();
+            const { cookies } = useCookies();
+            const authStore = useAuthStore();
+            const originalRequest = error.config;
+            const refreshToken = cookies.get('refresh');
+            originalRequest._retry = true;
+            if (!refreshToken) {
+              throw new Error('Refresh token not found');
             }
-          } else {
+            const response = await refreshApi.post(`users/token/refresh/`, {
+              refresh: refreshToken,
+            });
+            const newAccessToken = response.data.access;
+            console.log('accrefre', newAccessToken);
+            authStore.setUserToken(newAccessToken, refreshToken);
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return jwtApi(originalRequest);
+          } catch (e) {
+            console.log(e, error);
             await logout();
-            window.location.replace('/');
-            alert('다시 로그인 하세요!!');
-            return;
+            return Promise.reject(e);
           }
-        } else {
-          return;
         }
       },
     );
@@ -118,47 +105,34 @@ const setupformApi = async () => {
       }
       return config;
     });
-    let refreshing = false;
     formApi.interceptors.response.use(
       response => response,
       async error => {
         if (error.config && error.response && error.response.status === 401) {
-          if (!refreshing) {
-            try {
-              const { cookies } = useCookies();
-
-              refreshing = true;
-              const originalRequest = error.config;
-              originalRequest._retry = true;
-              const refreshToken = cookies.get('refresh');
-
-              if (!refreshToken) {
-                throw new Error('Refresh token not found');
-              }
-              const response = await jwtApi.post('users/token/refresh/', {
-                refresh: refreshToken,
-              });
-
-              const authStore = useAuthStore();
-              const newAccessToken = response.data.access;
-              authStore.setUserToken(newAccessToken, refreshToken);
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-              return api(originalRequest);
-            } catch {
-              await logout();
-              window.location.replace('/');
-              alert('다시 로그인 하세요!!');
-              return;
+          try {
+            console.log('formApi');
+            const refreshApi = await isServerRunning();
+            const { cookies } = useCookies();
+            const authStore = useAuthStore();
+            const originalRequest = error.config;
+            const refreshToken = cookies.get('refresh');
+            originalRequest._retry = true;
+            if (!refreshToken) {
+              throw new Error('Refresh token not found');
             }
-          } else {
+            const response = await refreshApi.post(`users/token/refresh/`, {
+              refresh: refreshToken,
+            });
+            const newAccessToken = response.data.access;
+            console.log('accrefre', newAccessToken);
+            authStore.setUserToken(newAccessToken, refreshToken);
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return formApi(originalRequest);
+          } catch (e) {
+            console.log(e, error);
             await logout();
-            window.location.replace('/');
-            alert('다시 로그인 하세요!!');
-            return;
+            return Promise.reject(e);
           }
-        } else {
-          return;
         }
       },
     );

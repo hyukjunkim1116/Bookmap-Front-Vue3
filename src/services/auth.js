@@ -2,7 +2,7 @@ import { api, formApi, jwtApi } from 'src/boot/axios-config';
 import { useJwt } from '@vueuse/integrations/useJwt';
 import { useAuthStore } from 'src/stores/auth';
 import { useCookies } from 'vue3-cookies';
-
+import axios from 'axios';
 const DEFAULT_PHOTO_URL =
   'https://api.dicebear.com/6.x/adventurer-neutral/svg?seed=';
 export function generateDefaultPhotoURL(uid) {
@@ -75,4 +75,13 @@ export async function logout() {
   cookies.remove('refresh');
   localStorage.removeItem('auth/user');
   return;
+}
+
+export async function refresh(refreshToken) {
+  const djangoApi = 'http://localhost:8000';
+  const response = await axios.post(`${djangoApi}/api/users/token/refresh/`, {
+    refresh: refreshToken,
+  });
+  console.log(response.data.access);
+  return response.data.access;
 }
