@@ -48,8 +48,6 @@ watch(
     immediate: true,
   },
 );
-console.log('isread', isRead.value);
-console.log('imported');
 </script>
 <style scoped>
 .is-read {

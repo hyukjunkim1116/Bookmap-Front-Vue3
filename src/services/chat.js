@@ -18,9 +18,7 @@ export const useWebChat = () => {
     const { execute } = useAsyncState(getChats, [], {
       immediate: false,
       throwError: true,
-      onSuccess: response => {
-        console.log('chat', response);
-      },
+      onSuccess: response => {},
       onError: err => {},
     });
     const { send, close, open, error, status } = useWebSocket(

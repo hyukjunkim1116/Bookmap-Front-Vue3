@@ -57,7 +57,6 @@ const saveGuestChat = () => {
   guestChat.value = '';
   scrollToBottom();
 };
-console.log('webchatimported');
 </script>
 
 <style lang="scss" scoped></style>

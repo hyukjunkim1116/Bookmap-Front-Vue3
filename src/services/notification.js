@@ -23,9 +23,7 @@ export const useNotification = () => {
     const { execute } = useAsyncState(getNotifications, [], {
       immediate: false,
       throwError: true,
-      onSuccess: response => {
-        console.log('notifications', response);
-      },
+      onSuccess: response => {},
       onError: err => {},
     });
     const { close, open, error, status } = useWebSocket(
