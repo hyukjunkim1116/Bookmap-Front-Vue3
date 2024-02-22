@@ -1,4 +1,4 @@
-import { api, jwtApi } from 'src/boot/axios-config';
+import { jwtApi } from 'src/boot/axios-config';
 
 export async function getPosts(params) {
   let url = `posts/?`;
@@ -11,6 +11,7 @@ export async function getPosts(params) {
   if (params.search) {
     url += `search=${params.search}`;
   }
+
   return await jwtApi.get(url);
 }
 export async function createPost(data) {

@@ -29,15 +29,30 @@
       color="primary"
       text-color="white"
       class="full-width"
-      @click="$emit('openChatViewDialog')"
+      @click.prevent="showChatDialog"
     >
       <span class="text-weight-bold">방명록남기기</span>
+      <WebChat v-if="authStore.isLogin" v-model="dialogVisible" />
     </q-btn>
   </StickySideBar>
 </template>
 <script setup>
+import { ref } from 'vue';
+import { useAuthStore } from 'src/stores/auth';
+import { useQuasar } from 'quasar';
 import StickySideBar from 'src/components/StickySideBar.vue';
-const emit = defineEmits(['openWriteDialog', 'openChatViewDialog']);
+import WebChat from 'src/components/apps/chat/WebChat.vue';
+const $q = useQuasar();
+const authStore = useAuthStore();
+const emit = defineEmits(['openWriteDialog']);
+const dialogVisible = ref(false);
+const showChatDialog = () => {
+  if (!authStore.isLogin) {
+    $q.notify('로그인 후 이용 가능합니다!');
+    return;
+  }
+  dialogVisible.value = true;
+};
 </script>
 
 <style lang="scss" scoped></style>

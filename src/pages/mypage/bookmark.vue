@@ -7,7 +7,6 @@
 <script setup>
 import PostList from 'src/components/apps/post/PostList.vue';
 import { useQuasar } from 'quasar';
-
 import { getErrorMessage } from 'src/utils/error-message';
 import { getPosts } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
@@ -22,6 +21,7 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    console.log(response.data, 'bookresdata');
     items.value = response?.data.results;
   },
   onError: err => {

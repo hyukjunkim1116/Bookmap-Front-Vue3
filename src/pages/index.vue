@@ -11,17 +11,12 @@
         <div v-intersection-observer="handleIntersectionObserver"></div>
       </section>
       <!-- 오른쪽 사이드바 컴포넌트 -->
-      <PostRightBar
-        class="col-3"
-        @open-write-dialog="openWriteDialog"
-        @open-chat-view-dialog="openChatViewDialog"
-      />
+      <PostRightBar class="col-3" @open-write-dialog="openWriteDialog" />
     </div>
     <PostWriteDialog
       v-model="postDialog"
       @complete="completeRegistrationPost"
     />
-    <WebChat v-model="chatDialog" />
   </q-page>
 </template>
 <script setup>
@@ -34,6 +29,7 @@ import { useAsyncState } from '@vueuse/core';
 import { vIntersectionObserver } from '@vueuse/components';
 import { getErrorMessage } from 'src/utils/error-message';
 import { usePostQuery } from 'src/composables/usePostQuery';
+
 import PostHeader from './components/PostHeader.vue';
 import WebChat from 'src/components/apps/chat/WebChat.vue';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
@@ -51,7 +47,7 @@ const params = computed(() => ({
 }));
 const page = ref(1);
 const postDialog = ref(false);
-const chatDialog = ref(false);
+
 const isParamsChanged = ref(false);
 const isLoadMore = ref(true);
 
@@ -85,6 +81,7 @@ const openWriteDialog = () => {
     $q.notify('로그인 후 이용 가능합니다!');
     return;
   }
+
   postDialog.value = true;
 };
 
@@ -113,15 +110,6 @@ watch(
 const loadMore = () => {
   isParamsChanged.value = false;
   execute(getPosts, { ...params.value, page: page.value });
-};
-const openChatViewDialog = () => {
-  if (!authStore.isLogin) {
-    $q.notify('로그인 후 이용 가능합니다!');
-    return;
-  }
-  if (authStore.loginUser.uid) {
-    chatDialog.value = true;
-  }
 };
 
 const handleIntersectionObserver = ([{ isIntersecting }]) => {

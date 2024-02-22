@@ -8,25 +8,30 @@
       <q-separator />
       <div style="height: 300px; overflow-y: auto">
         <WebChatItem
-          v-for="data in webSocket?.messages?.value"
+          v-for="data in webSocket.messages.value"
           :key="data.id"
           v-bind="data"
         />
-        <div ref="bottom"></div>
+        <span ref="bottom"></span>
       </div>
       <q-separator />
-      <q-input v-model="guestChat" filled label="방명록 입력" />
+      <q-input
+        v-model="guestChat"
+        filled
+        label="방명록 입력"
+        @keyup.enter.prevent="saveGuestChat"
+      />
       <q-btn
         class="q-mt-md"
         color="primary"
         label="저장"
-        @click="saveGuestChat"
+        @click.prevent="saveGuestChat"
       />
       <q-btn
         class="q-mt-md"
         color="primary"
         label="맨밑으로 내리기"
-        @click="scrollToBottom"
+        @click.prevent="scrollToBottom"
       />
     </q-card>
   </q-dialog>
@@ -36,12 +41,13 @@
 import { ref } from 'vue';
 import { useWebChat } from 'src/services';
 import WebChatItem from './WebChatItem.vue';
+const webSocket = useWebChat();
+const guestChat = ref('');
 const bottom = ref(null);
 const scrollToBottom = () => {
   bottom.value.scrollIntoView({ behavior: 'smooth' });
 };
-const guestChat = ref('');
-const webSocket = useWebChat();
+
 const saveGuestChat = () => {
   webSocket.send(
     JSON.stringify({
@@ -51,7 +57,7 @@ const saveGuestChat = () => {
   guestChat.value = '';
   scrollToBottom();
 };
-console.log('webchatasfsaf');
+console.log('webchatimported');
 </script>
 
 <style lang="scss" scoped></style>

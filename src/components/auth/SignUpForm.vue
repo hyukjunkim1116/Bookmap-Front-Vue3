@@ -96,31 +96,24 @@ const form = ref({
   passwordConfirm: passwordConfirm,
 });
 
-const { isLoading, execute } = useAsyncState(
-  async () => {
-    // signUpWithEmail 함수에 form 데이터를 전달
-    await signUpWithEmail(form.value);
+const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
+  immediate: false,
+  onSuccess: () => {
+    // 회원가입 성공 시 알림
+    $q.notify('가입을 환영합니다 :)');
+    emit('changeView', 'SignInForm');
   },
-  null,
-  {
-    immediate: false,
-    onSuccess: () => {
-      // 회원가입 성공 시 알림
-      $q.notify('가입을 환영합니다 :)');
-      emit('changeView', 'SignInForm');
-    },
-    // onError 주석은 오류 처리 관련 주석입니다.
-    onError: err => {
-      $q.notify({
-        type: 'negative',
-        message: getErrorMessage(err.response.data),
-      });
-    },
+  // onError 주석은 오류 처리 관련 주석입니다.
+  onError: err => {
+    $q.notify({
+      type: 'negative',
+      message: getErrorMessage(err.response.data),
+    });
   },
-);
+});
 
 // 폼 제출 처리 함수
-const handleSubmit = () => execute(form.value);
+const handleSubmit = () => execute(signUpWithEmail, form.value);
 </script>
 
 <style lang="scss" scoped></style>

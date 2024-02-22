@@ -4,7 +4,6 @@ import { useAuthStore } from 'src/stores/auth';
 
 function requiresAuth(to) {
   const authStore = storeToRefs(useAuthStore());
-
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     !authStore.isLogin.value

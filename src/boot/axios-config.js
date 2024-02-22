@@ -135,7 +135,7 @@ const setupformApi = async () => {
               if (!refreshToken) {
                 throw new Error('Refresh token not found');
               }
-              const response = await formApi.post('users/token/refresh/', {
+              const response = await jwtApi.post('users/token/refresh/', {
                 refresh: refreshToken,
               });
 

@@ -73,23 +73,20 @@
             !isNotificationsRead ? 'notifications_active' : 'notifications'
           "
         >
-          <NotificationList @isread="receiveDataFromChild" />
+          <NotificationList @isread="isReadDataFromChild" />
         </q-btn>
       </q-toolbar>
     </q-header>
     <q-page-container :style="pageContainerStyles">
       <router-view />
     </q-page-container>
-
-    <!-- 인증 관련 다이얼로그 컴포넌트 -->
     <AuthDialog v-model="authDialog" />
   </q-layout>
 </template>
-
 <script setup>
 import { useQuasar } from 'quasar';
 import { computed, ref, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import {
   logout,
   generateDefaultPhotoURL,
@@ -99,16 +96,7 @@ import { useNotification, useWebChat } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 import NotificationList from 'src/components/apps/chat/NotificationList.vue';
-const pageContainerStyles = computed(() => ({
-  maxWidth: route.meta?.width || '1080px',
-  margin: '0 auto',
-}));
-const isNotificationsRead = ref(true);
-const receiveDataFromChild = bool => {
-  console.log(bool, 'bool');
-  isNotificationsRead.value = bool;
-  console.log(isNotificationsRead.value, 'inoredvadlue');
-};
+
 const $q = useQuasar();
 const route = useRoute();
 const authStore = useAuthStore();
@@ -116,6 +104,14 @@ const authDialog = ref(false);
 const openAuthDialog = () => (authDialog.value = true);
 const displayName = ref('');
 const userImage = ref('');
+const isNotificationsRead = ref(true);
+const pageContainerStyles = computed(() => ({
+  maxWidth: route.meta?.width || '1080px',
+  margin: '0 auto',
+}));
+const isReadDataFromChild = bool => {
+  isNotificationsRead.value = bool;
+};
 const handleLogout = async () => {
   const notifications = useNotification();
   const webSocket = useWebChat();
@@ -125,7 +121,6 @@ const handleLogout = async () => {
   authStore.setAuthentication(false);
   $q.notify('로그아웃 되었습니다.');
 };
-
 const verifyEmail = async () => {
   await sendVerificationEmail(authStore.loginUser.uid);
   $q.notify('이메일을 확인해주세요!');

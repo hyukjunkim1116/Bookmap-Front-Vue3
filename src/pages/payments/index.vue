@@ -1,6 +1,6 @@
 <template>
   <q-page class="items-center column">
-    <q-container class="q-gutter">
+    <q-list class="q-gutter">
       <h1>아임포트 결제</h1>
       <q-form
         class="column justify-center"
@@ -58,24 +58,18 @@
             left-label
           />
         </div>
-        <q-form-item label="입금기한" v-if="vbankDueVisible">
+        <q-form label="입금기한" v-if="vbankDueVisible">
           <q-input
             v-model="formData.vbankDue"
             placeholder="YYYYMMDDhhmm"
-            size="large"
             type="number"
             label="입금기한"
           />
-        </q-form-item>
+        </q-form>
 
-        <q-form-item label="사업자번호" v-if="bizNumVisible">
-          <q-input
-            v-model="formData.bizNum"
-            size="large"
-            type="number"
-            label="사업자번호"
-          />
-        </q-form-item>
+        <q-form label="사업자번호" v-if="bizNumVisible">
+          <q-input v-model="formData.bizNum" type="number" label="사업자번호" />
+        </q-form>
 
         <div class="q-pa-md" v-if="quotaVisible">
           <div class="q-gutter-y-md column" style="max-width: 300px">
@@ -104,62 +98,48 @@
           </div>
         </div>
 
-        <q-form-item label="주문번호">
-          <q-input
-            v-model="formData.merchantUid"
-            size="large"
-            label="주문번호"
-          />
-        </q-form-item>
+        <q-form label="주문번호">
+          <q-input v-model="formData.merchantUid" label="주문번호" />
+        </q-form>
 
-        <q-form-item label="주문명">
-          <q-input v-model="formData.name" size="large" label="주문명" />
-        </q-form-item>
+        <q-form label="주문명">
+          <q-input v-model="formData.name" label="주문명" />
+        </q-form>
 
-        <q-form-item label="결제금액">
-          <q-input
-            v-model="formData.amount"
-            size="large"
-            type="number"
-            label="결제금액"
-          />
-        </q-form-item>
+        <q-form label="결제금액">
+          <q-input v-model="formData.amount" type="number" label="결제금액" />
+        </q-form>
 
-        <q-form-item label="이름">
-          <q-input v-model="formData.buyerName" size="large" label="이름" />
-        </q-form-item>
+        <q-form label="이름">
+          <q-input v-model="formData.buyerName" label="이름" />
+        </q-form>
 
-        <q-form-item label="연락처">
-          <q-input
-            v-model="formData.buyerPhone"
-            size="large"
-            type="number"
-            label="연락처"
-          />
-        </q-form-item>
+        <q-form label="연락처">
+          <q-input v-model="formData.buyerPhone" type="number" label="연락처" />
+        </q-form>
 
-        <q-form-item label="이메일">
-          <q-input v-model="formData.buyerEmail" size="large" label="이메일" />
-        </q-form-item>
+        <q-form label="이메일">
+          <q-input v-model="formData.buyerEmail" label="이메일" />
+        </q-form>
 
-        <q-form-item label="주소">
-          <q-input v-model="formData.buyerAddr" size="large" label="주소" />
-        </q-form-item>
+        <q-form label="주소">
+          <q-input v-model="formData.buyerAddr" label="주소" />
+        </q-form>
 
-        <q-form-item label="우편번호">
+        <q-form label="우편번호">
           <q-input
             label="우편번호"
             v-model="formData.buyerPostcode"
-            size="large"
             type="number"
           />
-        </q-form-item>
+        </q-form>
         <div class="flex justify-center items-center q-gutter-md q-mt-md">
-          <q-btn size="large" @click="handleGoBack"> 뒤로가기 </q-btn>
-          <q-btn type="submit" label="결제하기" size="large" />
+          <q-btn @click="handleGoBack"> 뒤로가기 </q-btn>
+          <q-btn type="submit" label="결제하기" />
+          <q-btn to="/payments/certification" label="인증하기" />
         </div>
       </q-form>
-    </q-container>
+    </q-list>
   </q-page>
 </template>
 
@@ -297,9 +277,9 @@ const handleGoBack = () => {
   router.push('/');
 };
 
-const callback = async response => {
+const callback = response => {
   // 본인인증 종료 후 result 페이지로 이동
-
+  console.log(response, 'asd');
   const query = {
     ...response,
     type: 'payment',
@@ -313,7 +293,7 @@ const callback = async response => {
     };
     execute(payToPortOne, data);
   }
-  await router.push({ path: '/payments/result', query });
+  router.push({ path: '/payments/result', query });
 };
 </script>
 <route lang="yaml">

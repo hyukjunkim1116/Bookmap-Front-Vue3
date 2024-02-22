@@ -29,7 +29,6 @@ export const useWebChat = () => {
         onConnected: async ws => {
           try {
             const chats = await execute();
-
             messages.value = chats.data;
           } catch (error) {
             console.log(error);
@@ -44,6 +43,7 @@ export const useWebChat = () => {
           const newData = JSON.parse(msg.data);
           messages.value = [...messages.value, newData.new_message];
         },
+        onError: (ws, msg) => {},
       },
     );
     return {
