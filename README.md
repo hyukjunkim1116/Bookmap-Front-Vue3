@@ -1,5 +1,7 @@
 # FoodMap
 
+- [백엔드 바로가기](https://github.com/hyukjunkim1116/foodmap-backend)
+
 ## 배포 주소
 
 ## 팀 소개
@@ -78,7 +80,7 @@ $ npm run dev
 
 ### [채팅]
 
-### [신고]
+### [결제]
 
 ### [댓글]
 
