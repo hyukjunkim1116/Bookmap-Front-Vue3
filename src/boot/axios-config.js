@@ -62,7 +62,6 @@ const setupjwtApi = async () => {
       async error => {
         if (error.config && error.response && error.response.status === 401) {
           try {
-            console.log('jwtapi');
             const refreshApi = await isServerRunning();
             const { cookies } = useCookies();
             const authStore = useAuthStore();
@@ -76,12 +75,12 @@ const setupjwtApi = async () => {
               refresh: refreshToken,
             });
             const newAccessToken = response.data.access;
-            console.log('accrefre', newAccessToken);
+
             authStore.setUserToken(newAccessToken, refreshToken);
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return jwtApi(originalRequest);
           } catch (e) {
-            console.log(e, error);
+            console.log(e);
             await logout();
             return Promise.reject(e);
           }
@@ -124,12 +123,12 @@ const setupformApi = async () => {
               refresh: refreshToken,
             });
             const newAccessToken = response.data.access;
-            console.log('accrefre', newAccessToken);
+
             authStore.setUserToken(newAccessToken, refreshToken);
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return formApi(originalRequest);
           } catch (e) {
-            console.log(e, error);
+            console.log(e);
             await logout();
             return Promise.reject(e);
           }
