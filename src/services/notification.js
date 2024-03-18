@@ -27,7 +27,7 @@ export const useNotification = () => {
       onError: err => {},
     });
     const { close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000/notification?uid=${uid.value}`,
+      `ws://localhost:8080/notification?uid=${uid.value}`,
       {
         onConnected: async ws => {
           try {
@@ -43,8 +43,10 @@ export const useNotification = () => {
           }
         },
         onMessage: (ws, msg) => {
+          console.log(msg.data);
           const newData = JSON.parse(msg.data);
-          messages.value = [newData.data, ...messages.value];
+          console.log(newData);
+          messages.value = [newData, ...messages.value];
         },
         onError: (ws, msg) => {},
       },

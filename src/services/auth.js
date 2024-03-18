@@ -67,7 +67,7 @@ export async function deleteUser(uid) {
   return await jwtApi.delete(`users/${uid}/`);
 }
 export async function updateUserImage(data, uid) {
-  return await formApi.patch(`users/${uid}/image`, data);
+  return await formApi.patch(`users/${uid}/image/`, data);
 }
 export async function logout() {
   const { cookies } = useCookies();
@@ -78,10 +78,9 @@ export async function logout() {
 }
 
 export async function refresh(refreshToken) {
-  const djangoApi = 'http://localhost:8000';
-  const response = await axios.post(`${djangoApi}/api/users/token/refresh/`, {
+  const response = await api.post(`users/token/refresh/`, {
     refresh: refreshToken,
   });
-  console.log(response.data.access);
-  return response.data.access;
+  console.log(response.data);
+  return response.data;
 }

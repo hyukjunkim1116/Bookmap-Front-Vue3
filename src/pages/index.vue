@@ -21,7 +21,6 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-
 import { useQuasar } from 'quasar';
 import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
@@ -29,9 +28,7 @@ import { useAsyncState } from '@vueuse/core';
 import { vIntersectionObserver } from '@vueuse/components';
 import { getErrorMessage } from 'src/utils/error-message';
 import { usePostQuery } from 'src/composables/usePostQuery';
-
 import PostHeader from './components/PostHeader.vue';
-import WebChat from 'src/components/apps/chat/WebChat.vue';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 import PostList from 'src/components/apps/post/PostList.vue';
@@ -39,7 +36,6 @@ import PostListSkeleton from 'src/components/skeletons/PostListSkeleton.vue';
 const { sort, search } = usePostQuery();
 const $q = useQuasar();
 const authStore = useAuthStore();
-
 const items = ref([]);
 const params = computed(() => ({
   sort: sort.value,
@@ -47,14 +43,13 @@ const params = computed(() => ({
 }));
 const page = ref(1);
 const postDialog = ref(false);
-
 const isParamsChanged = ref(false);
 const isLoadMore = ref(true);
-
 const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    console.log(response.data)
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;
@@ -75,16 +70,13 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
     });
   },
 });
-
 const openWriteDialog = () => {
   if (!authStore.isLogin) {
     $q.notify('로그인 후 이용 가능합니다!');
     return;
   }
-
   postDialog.value = true;
 };
-
 const completeRegistrationPost = () => {
   postDialog.value = false;
   isParamsChanged.value = true;
@@ -111,7 +103,6 @@ const loadMore = () => {
   isParamsChanged.value = false;
   execute(getPosts, { ...params.value, page: page.value });
 };
-
 const handleIntersectionObserver = ([{ isIntersecting }]) => {
   if (isIntersecting && isLoadMore.value) {
     loadMore();

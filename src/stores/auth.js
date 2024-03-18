@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
       return null;
     },
     hasOwnContent(contentUid) {
-      return !!this.isLogin && this.loginUser?.uid === contentUid;
+      return !!this.isLogin && this.loginUser?.uid == contentUid;
     },
   },
 });

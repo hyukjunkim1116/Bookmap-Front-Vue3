@@ -3,36 +3,16 @@ import { boot } from 'quasar/wrappers';
 import { useCookies } from 'vue3-cookies';
 import { useAuthStore } from 'src/stores/auth';
 import { logout } from 'src/services';
-const djangoApi = 'http://localhost:8000';
 const springApi = 'http://localhost:8080';
 const isServerRunning = async () => {
-  try {
-    const response = await axios.get(`${djangoApi}/health-check`);
-    if (response.status === 200) {
-      console.log('Django 서버 설정. 서버 응답:', response.status);
-      const axiosInstance = axios.create({
-        baseURL: `${djangoApi}/api/`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      });
-      return axiosInstance;
-    }
-  } catch (error) {
-    console.log(
-      'Django 서버가 응답하지 않으므로 스프링 서버로 연결됩니다. 서버 응답:',
-      error.status || '200',
-    );
-    const axiosInstance = axios.create({
-      baseURL: `${springApi}/api/`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true,
-    });
-    return axiosInstance;
-  }
+  const axiosInstance = axios.create({
+    baseURL: `${springApi}/api/`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+  return axiosInstance;
 };
 
 let api = null;
@@ -62,7 +42,6 @@ const setupjwtApi = async () => {
       async error => {
         if (error.config && error.response && error.response.status === 401) {
           try {
-            const refreshApi = await isServerRunning();
             const { cookies } = useCookies();
             const authStore = useAuthStore();
             const originalRequest = error.config;
@@ -71,12 +50,13 @@ const setupjwtApi = async () => {
             if (!refreshToken) {
               throw new Error('Refresh token not found');
             }
-            const response = await refreshApi.post(`users/token/refresh/`, {
+            const response = await api.post(`users/token/refresh/`, {
               refresh: refreshToken,
             });
+            console.log('jwtResponse', response);
             const newAccessToken = response.data.access;
-
-            authStore.setUserToken(newAccessToken, refreshToken);
+            const newRefreshToken = response.data.refresh || refreshToken;
+            authStore.setUserToken(newAccessToken, newRefreshToken);
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return jwtApi(originalRequest);
           } catch (e) {
@@ -109,8 +89,6 @@ const setupformApi = async () => {
       async error => {
         if (error.config && error.response && error.response.status === 401) {
           try {
-            console.log('formApi');
-            const refreshApi = await isServerRunning();
             const { cookies } = useCookies();
             const authStore = useAuthStore();
             const originalRequest = error.config;
@@ -119,12 +97,12 @@ const setupformApi = async () => {
             if (!refreshToken) {
               throw new Error('Refresh token not found');
             }
-            const response = await refreshApi.post(`users/token/refresh/`, {
+            const response = await api.post(`users/token/refresh/`, {
               refresh: refreshToken,
             });
             const newAccessToken = response.data.access;
-
-            authStore.setUserToken(newAccessToken, refreshToken);
+            const newRefreshToken = response.data.refresh || refreshToken;
+            authStore.setUserToken(newAccessToken, newRefreshToken);
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return formApi(originalRequest);
           } catch (e) {

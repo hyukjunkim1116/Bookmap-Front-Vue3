@@ -22,7 +22,7 @@ export const useWebChat = () => {
       onError: err => {},
     });
     const { send, close, open, error, status } = useWebSocket(
-      `ws://127.0.0.1:8000/webchat?uid=${uid.value}`,
+      `ws://localhost:8080/webchat?uid=${uid.value}`,
       {
         onConnected: async ws => {
           try {
@@ -39,9 +39,12 @@ export const useWebChat = () => {
         },
         onMessage: (ws, msg) => {
           const newData = JSON.parse(msg.data);
-          messages.value = [...messages.value, newData.new_message];
+          console.log(msg.data);
+          messages.value = [...messages.value, newData];
         },
-        onError: (ws, msg) => {},
+        onError: (ws, msg) => {
+          console.log(msg);
+        },
       },
     );
     return {

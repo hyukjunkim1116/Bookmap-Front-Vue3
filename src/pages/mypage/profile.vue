@@ -82,12 +82,15 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
   null,
   {
     immediate: false,
-    onSuccess: () => {
+    onSuccess: async() => {
       $q.notify('프로필 수정 완료!');
       authStore.setUserData({
         username: displayName.value,
         email: email.value,
       });
+      await logout();
+      authStore.setAuthentication(false);
+      $q.notify('로그아웃 되었습니다.');
     },
     onError: err => {
       console.log(err);

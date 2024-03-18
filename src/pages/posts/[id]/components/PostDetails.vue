@@ -136,7 +136,10 @@ const { error } = useAsyncState(
   {
     immediate: true,
     onSuccess: response => {
+      console.log(response);
+      console.log(response.data);
       post.value = response.data;
+      console.log(post.value, 'pstvalue');
     },
     onError: err => {
       $q.notify({
