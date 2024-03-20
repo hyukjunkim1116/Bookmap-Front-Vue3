@@ -40,9 +40,9 @@
       color="primary"
       text-color="white"
       class="full-width"
-      @click.prevent="getRefresh"
+      to="/books"
     >
-      <span class="text-weight-bold">토큰재발급</span>
+      <span class="text-weight-bold">책 검색</span>
     </q-btn>
   </StickySideBar>
 </template>

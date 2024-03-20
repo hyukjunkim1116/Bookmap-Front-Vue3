@@ -85,12 +85,13 @@
 </template>
 <script setup>
 import { useQuasar } from 'quasar';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   logout,
   generateDefaultPhotoURL,
   sendVerificationEmail,
+  getBooks,
 } from 'src/services';
 import { useNotification, useWebChat } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
@@ -136,4 +137,5 @@ watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
   userImage.value = authStore.loginUser?.image;
 });
+
 </script>

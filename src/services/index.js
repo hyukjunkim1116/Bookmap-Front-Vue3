@@ -6,3 +6,4 @@ export * from './report';
 export * from './payment';
 export * from './chat';
 export * from './notification';
+export * from './book';

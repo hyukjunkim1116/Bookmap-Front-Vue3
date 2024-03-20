@@ -2,7 +2,6 @@ import { api, formApi, jwtApi } from 'src/boot/axios-config';
 import { useJwt } from '@vueuse/integrations/useJwt';
 import { useAuthStore } from 'src/stores/auth';
 import { useCookies } from 'vue3-cookies';
-import axios from 'axios';
 const DEFAULT_PHOTO_URL =
   'https://api.dicebear.com/6.x/adventurer-neutral/svg?seed=';
 export function generateDefaultPhotoURL(uid) {

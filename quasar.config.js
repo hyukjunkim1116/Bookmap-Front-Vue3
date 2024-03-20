@@ -7,11 +7,13 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-
 const { configure } = require('quasar/wrappers');
-
 module.exports = configure(function (/* ctx */) {
   return {
+    env: {
+      KAKAO_REST_API_KEY: process.env.VITE_KAKAO_REST_API_KEY,
+      KAKAO_JAVASCRIPT_KEY: process.env.VITE_KAKAO_JAVASCRIPT_KEY,
+    },
     eslint: {
       // fix: true,
       // include: [],
