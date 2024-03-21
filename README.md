@@ -1,6 +1,5 @@
 # FoodMap
 
-- [백엔드 바로가기(Django)](https://github.com/hyukjunkim1116/foodmap-backend)
 - [백엔드 바로가기(Spring)](https://github.com/Kimheojin/backspring)
 
 ## 배포 주소
