@@ -66,7 +66,7 @@ import {
 } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { compressImage } from 'src/services';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import BaseCard from 'src/components/base/BaseCard.vue';
 const authStore = useAuthStore();
 const $q = useQuasar();
@@ -82,7 +82,7 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
   null,
   {
     immediate: false,
-    onSuccess: async() => {
+    onSuccess: async () => {
       $q.notify('프로필 수정 완료!');
       authStore.setUserData({
         username: displayName.value,
@@ -96,7 +96,7 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
       console.log(err);
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },
@@ -111,7 +111,7 @@ const { execute: executeDeleteUser } = useAsyncState(deleteUser, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -151,7 +151,7 @@ const { execute: executeUploadImage } = useAsyncState(updateUserImage, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
     image.value = null;
     uploader.value.reset();

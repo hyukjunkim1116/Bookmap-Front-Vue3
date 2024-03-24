@@ -50,7 +50,7 @@ const { execute } = useAsyncState(deletePostImage, null, {
     console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });

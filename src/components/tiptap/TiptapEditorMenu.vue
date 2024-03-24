@@ -129,7 +129,7 @@ import { ref } from 'vue';
 import { uploadPostImage, compressImage } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
 import { useQuasar } from 'quasar';
-import { getErrorMessage } from 'src/utils/error-message';
+
 const fileRef = ref(null);
 const $q = useQuasar();
 const props = defineProps({
@@ -187,7 +187,7 @@ const { execute: executeUploadPostImage } = useAsyncState(
       console.log(err);
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },

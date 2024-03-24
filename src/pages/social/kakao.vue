@@ -5,7 +5,7 @@
 <script setup>
 import { useQuasar } from 'quasar';
 import { onMounted, computed } from 'vue';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { useAsyncState } from '@vueuse/core';
 import { signInWithKakao, useNotification, useWebChat } from 'src/services';
 import { useRoute, useRouter } from 'vue-router';

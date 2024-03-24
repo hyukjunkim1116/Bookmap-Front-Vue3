@@ -26,7 +26,6 @@ import { getPosts } from 'src/services';
 import { useAuthStore } from 'src/stores/auth';
 import { useAsyncState } from '@vueuse/core';
 import { vIntersectionObserver } from '@vueuse/components';
-import { getErrorMessage } from 'src/utils/error-message';
 import { usePostQuery } from 'src/composables/usePostQuery';
 import PostHeader from './components/PostHeader.vue';
 import PostRightBar from 'src/pages/components/PostRightBar.vue';
@@ -49,7 +48,7 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response.data)
+    console.log(response.data);
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;
@@ -66,7 +65,7 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
     console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.message,
     });
   },
 });

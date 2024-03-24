@@ -33,7 +33,7 @@
 import { vIntersectionObserver } from '@vueuse/components';
 import { ref, onMounted } from 'vue';
 import { useAsyncState } from '@vueuse/core';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { getBooks } from 'src/services';
 import BookList from 'src/components/book/BookList.vue';
 import { useQuasar } from 'quasar';

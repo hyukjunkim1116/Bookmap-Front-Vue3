@@ -101,7 +101,7 @@ import { date, useQuasar } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from 'stores/auth';
 import { useAsyncState } from '@vueuse/core';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import {
   deletePost,
   getPostDetails,
@@ -144,7 +144,7 @@ const { error } = useAsyncState(
     onError: err => {
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },
@@ -158,7 +158,7 @@ const { execute: executeDeletePost } = useAsyncState(deletePost, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });

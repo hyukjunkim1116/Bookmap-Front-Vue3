@@ -27,7 +27,7 @@ import { ref } from 'vue';
 import { useAsyncState } from '@vueuse/core';
 import { useAuthStore } from 'src/stores/auth';
 import { createPost } from 'src/services';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { useQuasar } from 'quasar';
 import PostForm from 'src/components/apps/post/PostForm.vue';
 const $q = useQuasar();

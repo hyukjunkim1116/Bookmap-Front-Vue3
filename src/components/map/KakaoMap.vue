@@ -32,7 +32,6 @@ onMounted(() => {
     if (window.kakao && window.kakao.maps) {
       initMap();
     } else {
-      console.log(import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY);
       const script = document.createElement('script');
       script.onload = () => kakao.maps.load(initMap);
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${

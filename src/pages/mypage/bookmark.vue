@@ -7,7 +7,7 @@
 <script setup>
 import PostList from 'src/components/apps/post/PostList.vue';
 import { useQuasar } from 'quasar';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { getPosts } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
 import BaseCard from 'src/components/base/BaseCard.vue';

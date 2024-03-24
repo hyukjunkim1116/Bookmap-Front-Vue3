@@ -38,7 +38,7 @@
 import KakaoMap from 'src/components/map/KakaoMap.vue';
 import { ref, onMounted } from 'vue';
 import { useAsyncState } from '@vueuse/core';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { getBookDetail } from 'src/services';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';

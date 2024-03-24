@@ -14,7 +14,7 @@
 import { useAsyncState } from '@vueuse/core';
 import { deleteComment, editComment } from 'src/services';
 import { useQuasar } from 'quasar';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import CommentItem from './CommentItem.vue';
 const $q = useQuasar();
 defineProps({
@@ -32,7 +32,7 @@ const { execute: executeDeleteComment } = useAsyncState(deleteComment, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -44,7 +44,7 @@ const { execute: executeEditComment } = useAsyncState(editComment, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });

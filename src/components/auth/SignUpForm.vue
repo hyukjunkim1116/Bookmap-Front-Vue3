@@ -76,7 +76,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signUpWithEmail } from 'src/services';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import {
   validateRequired,
   validateEmail,
@@ -107,7 +107,7 @@ const { isLoading, execute } = useAsyncState(signUpWithEmail, null, {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response.data),
+      message: err.response.data.message,
     });
   },
 });

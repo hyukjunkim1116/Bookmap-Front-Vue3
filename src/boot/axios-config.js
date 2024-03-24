@@ -40,7 +40,12 @@ const setupjwtApi = async () => {
     jwtApi.interceptors.response.use(
       response => response,
       async error => {
-        if (error.config && error.response && error.response.status === 401) {
+        console.log('axioserror', error);
+        if (
+          error.config &&
+          error.response &&
+          error.response.data.status === 401
+        ) {
           try {
             const { cookies } = useCookies();
             const authStore = useAuthStore();

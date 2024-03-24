@@ -36,7 +36,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getPostDetails, updatePost } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import BaseCard from 'src/components/base/BaseCard.vue';
 import PostForm from 'src/components/apps/post/PostForm.vue';
 const router = useRouter();
@@ -54,7 +54,7 @@ useAsyncState(
     onError: err => {
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },
@@ -76,7 +76,7 @@ const { isLoading, execute: executeUpdatePost } = useAsyncState(
     onError: err => {
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },

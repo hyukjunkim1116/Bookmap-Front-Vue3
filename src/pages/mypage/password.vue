@@ -61,7 +61,7 @@ import {
   validatePassword,
   validatePasswordConfirm,
 } from 'src/utils/validate-rules';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { useAuthStore } from 'src/stores/auth';
 const authStore = useAuthStore();
 const $q = useQuasar();
@@ -96,7 +96,7 @@ const { isLoading, execute } = useAsyncState(
     onError: err => {
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },

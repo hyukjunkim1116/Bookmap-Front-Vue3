@@ -68,7 +68,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAsyncState } from '@vueuse/core';
 import { signInWithEmail } from 'src/services';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { useAuthStore } from 'src/stores/auth';
 const emit = defineEmits(['changeView', 'closeDialog', 'openWebsocket']);
 const $q = useQuasar();
@@ -90,7 +90,7 @@ const { isLoading, execute } = useAsyncState(
       console.log(err);
       $q.notify({
         type: 'negative',
-        message: getErrorMessage(err.response.data),
+        message: err.response.data.message,
       });
     },
   },

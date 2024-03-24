@@ -12,7 +12,7 @@
 <script setup>
 import PaymentsHistory from 'src/components/apps/payment/PaymentsHistory.vue';
 import { useQuasar } from 'quasar';
-import { getErrorMessage } from 'src/utils/error-message';
+
 import { getPaymentsHistory } from 'src/services';
 import { useAsyncState } from '@vueuse/core';
 import BaseCard from 'src/components/base/BaseCard.vue';
