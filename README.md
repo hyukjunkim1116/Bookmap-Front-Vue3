@@ -1,7 +1,7 @@
-# FoodMap
+# BookMap
 
 - [백엔드 바로가기(허진)](https://github.com/Kimheojin/backspring)
-- [백엔드 바로가기(김혁준)](https://github.com/hyukjunkim1116/foodmap-Spring)
+- [백엔드 바로가기(김혁준)](https://github.com/hyukjunkim1116/Bookmap-Back-Spring)
 
 ## 배포 주소
 
