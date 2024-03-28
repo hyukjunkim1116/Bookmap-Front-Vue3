@@ -3,11 +3,14 @@ import { jwtApi } from 'src/boot/axios-config';
 import axios from 'axios';
 export async function getBooks(data) {
   const { start, query } = data;
-
-  return await jwtApi.get(`books?start=${start}&query=${query}`);
+  const result = await jwtApi.get(`books?start=${start}&query=${query}`);
+  console.log(result);
+  return result;
 }
 export async function getBookDetail(isbn) {
-  return await jwtApi.get(`books/detail?isbn=${isbn}`);
+  const result = await jwtApi.get(`books/detail?isbn=${isbn}`);
+  console.log(result);
+  return result;
 }
 export async function getBookCrawling(data) {
   const result = await jwtApi.get(
