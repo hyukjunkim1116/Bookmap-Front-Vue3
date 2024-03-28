@@ -136,10 +136,9 @@ const { error } = useAsyncState(
   {
     immediate: true,
     onSuccess: response => {
-      console.log(response);
-      console.log(response.data);
+
       post.value = response.data;
-      console.log(post.value, 'pstvalue');
+
     },
     onError: err => {
       $q.notify({
@@ -187,10 +186,9 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
     post.value.is_liked = response.data.is_liked;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -201,10 +199,9 @@ const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
     post.value.is_disliked = response.data.is_disliked;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -215,10 +212,9 @@ const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
     post.value.is_bookmarked = response.data.is_bookmarked;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });

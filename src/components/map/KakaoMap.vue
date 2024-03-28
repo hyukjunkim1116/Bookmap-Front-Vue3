@@ -28,7 +28,7 @@ onMounted(() => {
     };
     const response = await getBookCrawling(data);
     storeData.value = response.data;
-    console.log(storeData.value);
+
     if (window.kakao && window.kakao.maps) {
       initMap();
     } else {
@@ -52,10 +52,8 @@ const initMap = () => {
   };
   map = new kakao.maps.Map(container, options);
   storeData.value.map(async store => {
-    console.log(store);
     const storeName = `교보문고 ${store.store}점`;
     const response = await getStoreSearch(storeName);
-    console.log(response.data.documents[0].id);
     var markerPosition = new kakao.maps.LatLng(store.latitude, store.longitude);
     var marker = new kakao.maps.Marker({
       position: markerPosition,

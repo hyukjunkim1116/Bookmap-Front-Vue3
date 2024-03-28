@@ -21,13 +21,13 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response.data, 'bookresdata');
+    
     items.value = response?.data.results;
   },
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });

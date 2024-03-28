@@ -3,8 +3,8 @@ import { jwtApi } from 'src/boot/axios-config';
 import axios from 'axios';
 export async function getBooks(data) {
   const { start, query } = data;
-  console.log(start, query);
-  return await jwtApi.get(`books/?start=${start}&query=${query}`);
+
+  return await jwtApi.get(`books?start=${start}&query=${query}`);
 }
 export async function getBookDetail(isbn) {
   return await jwtApi.get(`books/detail?isbn=${isbn}`);
@@ -13,7 +13,7 @@ export async function getBookCrawling(data) {
   const result = await jwtApi.get(
     `books/crawling?isbn=${data.isbn}&currentLatitude=${data.currentLatitude}&currentLongitude=${data.currentLongitude}`,
   );
-  console.log(result);
+
   return result;
 }
 export async function getStoreSearch(query) {

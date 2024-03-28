@@ -40,7 +40,7 @@ import { useQuasar } from 'quasar';
 const $q = useQuasar();
 const books = ref([]);
 const start = ref(1);
-const query = ref(null);
+const query = ref('검색');
 const isLoadMore = ref(true);
 const { execute } = useAsyncState(getBooks, [], {
   immediate: false,
@@ -55,21 +55,19 @@ const { execute } = useAsyncState(getBooks, [], {
     } else {
       books.value = response.data.items;
     }
-    console.log(response.data);
-    console.log(isLoadMore.value);
+
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.message,
     });
   },
 });
 const loadMore = () => {
   start.value += 10;
   execute(getBooks, { start: start.value, query: query.value });
-  console.log('loadmore');
+
 };
 const handleIntersectionObserver = ([{ isIntersecting }]) => {
   if (isIntersecting && isLoadMore.value) {
@@ -78,7 +76,7 @@ const handleIntersectionObserver = ([{ isIntersecting }]) => {
 };
 const bookSearch = () => {
   start.value = 1;
-  console.log(query.value);
+  
   execute(getBooks, { start: start.value, query: query.value });
 };
 onMounted(() => {

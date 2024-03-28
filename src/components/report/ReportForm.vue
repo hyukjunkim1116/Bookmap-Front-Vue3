@@ -68,7 +68,6 @@ const { isLoading, error, execute } = useAsyncState(reportPost, null, {
     emit('update:modelValue', false);
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: err.response.data.message,

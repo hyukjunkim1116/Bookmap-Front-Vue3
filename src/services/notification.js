@@ -43,9 +43,9 @@ export const useNotification = () => {
           }
         },
         onMessage: (ws, msg) => {
-          console.log(msg.data);
+
           const newData = JSON.parse(msg.data);
-          console.log(newData);
+         
           messages.value = [newData, ...messages.value];
         },
         onError: (ws, msg) => {},

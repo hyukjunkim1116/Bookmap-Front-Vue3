@@ -184,7 +184,6 @@ const { execute: executeUploadPostImage } = useAsyncState(
       props.editor.chain().focus().setImage({ src: downloadURL }).run();
     },
     onError: err => {
-      console.log(err);
       $q.notify({
         type: 'negative',
         message: err.response.data.message,

@@ -33,7 +33,6 @@ const { isLoading, error, execute } = useAsyncState(signInWithKakao, null, {
     router.push('/');
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: 'Something went Wrong(요청 두번 보냄)',

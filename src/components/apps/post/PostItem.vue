@@ -125,10 +125,9 @@ const { execute: executeHandleLike } = useAsyncState(handleLike, [], {
     likeCount.value = response.data.likes_count;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -141,7 +140,7 @@ const { execute: executeHandleDislike } = useAsyncState(handleDislike, [], {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -152,10 +151,9 @@ const { execute: executeHandleBookmark } = useAsyncState(handleBookmark, [], {
     isBookmarked.value = response.data.is_bookmarked;
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });

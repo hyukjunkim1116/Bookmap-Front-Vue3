@@ -52,13 +52,12 @@ const { execute } = useAsyncState(getBookDetail, [], {
   throwError: true,
   onSuccess: response => {
     book.value = response.data.items[0];
-    console.log(response.data.items);
+
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });

@@ -48,7 +48,6 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
-    console.log(response.data);
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;
@@ -62,7 +61,6 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
     }
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: err.response.message,

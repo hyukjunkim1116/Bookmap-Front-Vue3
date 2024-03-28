@@ -68,7 +68,7 @@ const showChatDialog = () => {
 const getRefresh = () => {
   const { cookies } = useCookies();
   const accessToken = cookies.get('refresh');
-  console.log(refresh(accessToken));
+
 };
 </script>
 

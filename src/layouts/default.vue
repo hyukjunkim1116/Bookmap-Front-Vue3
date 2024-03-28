@@ -9,7 +9,7 @@
           <q-avatar>
             <img src="/logo.png" />
           </q-avatar>
-          <q-toolbar-title> FoodMap </q-toolbar-title>
+          <q-toolbar-title> BookMap </q-toolbar-title>
         </q-btn>
         <!-- 툴바 우측 공간 -->
         <q-space />
@@ -137,5 +137,4 @@ watchEffect(() => {
   displayName.value = authStore.loginUser?.username;
   userImage.value = authStore.loginUser?.image;
 });
-
 </script>

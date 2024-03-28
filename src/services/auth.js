@@ -80,6 +80,6 @@ export async function refresh(refreshToken) {
   const response = await api.post(`users/token/refresh/`, {
     refresh: refreshToken,
   });
-  console.log(response.data);
+
   return response.data;
 }

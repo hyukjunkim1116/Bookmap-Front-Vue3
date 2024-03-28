@@ -39,7 +39,7 @@ export const useWebChat = () => {
         },
         onMessage: (ws, msg) => {
           const newData = JSON.parse(msg.data);
-          console.log(msg.data);
+        
           messages.value = [...messages.value, newData];
         },
         onError: (ws, msg) => {

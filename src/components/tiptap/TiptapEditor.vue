@@ -47,7 +47,6 @@ const { execute } = useAsyncState(deletePostImage, null, {
   immediate: false,
   onSuccess: response => {},
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
       message: err.response.data.message,

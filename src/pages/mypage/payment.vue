@@ -28,7 +28,7 @@ const { execute, isLoading } = useAsyncState(getPaymentsHistory, [], {
   onError: err => {
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });

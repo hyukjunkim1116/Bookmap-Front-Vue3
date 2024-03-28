@@ -93,7 +93,6 @@ const { isLoading: isLoadingProfile, execute: executeProfile } = useAsyncState(
       $q.notify('로그아웃 되었습니다.');
     },
     onError: err => {
-      console.log(err);
       $q.notify({
         type: 'negative',
         message: err.response.data.message,
@@ -171,7 +170,7 @@ const uploadFactory = async () => {
   const data = await compressImage(image.value);
   const formData = new FormData();
   formData.append('image', data);
-  console.log('upload');
+
   executeUploadImage(updateUserImage, formData, uid);
 };
 watchEffect(() => {

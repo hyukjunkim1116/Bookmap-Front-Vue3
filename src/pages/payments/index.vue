@@ -171,10 +171,9 @@ const { execute, isLoading } = useAsyncState(payToPortOne, [], {
     });
   },
   onError: err => {
-    console.log(err);
     $q.notify({
       type: 'negative',
-      message: getErrorMessage(err.response?.data),
+      message: err.response.data.message,
     });
   },
 });
@@ -278,8 +277,7 @@ const handleGoBack = () => {
 };
 
 const callback = response => {
-  // 본인인증 종료 후 result 페이지로 이동
-  console.log(response, 'asd');
+  
   const query = {
     ...response,
     type: 'payment',
