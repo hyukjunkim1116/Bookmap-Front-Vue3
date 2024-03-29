@@ -112,50 +112,116 @@ $ npm run dev
 ### 디렉토리 구조
 
 ```
-foodmap-Vue3
-├─ README.md
-├─ index.html
-├─ jsconfig.json
-├─ package-lock.json
-├─ package.json
-├─ postcss.config.cjs
-├─ public
-├─ quasar.config.js
-└─ src
-   ├─ App.vue
-   ├─ assets
-   ├─ boot
-   ├─ components
-   │  ├─ StickySideBar.vue
-   │  ├─ apps
-   │  │  ├─ chat
-   │  │  ├─ comment
-   │  │  ├─ payment
-   │  │  └─ post
-   │  ├─ auth
-   │  ├─ base
-   │  ├─ report
-   │  ├─ skeletons
-   │  └─ tiptap
-   ├─ composables
-   ├─ css
-   ├─ layouts
-   ├─ pages
-   │  ├─ [...path].vue
-   │  ├─ index.vue
-   │  ├─ mypage.vue
-   │  ├─ components
-   │  ├─ mypage
-   │  ├─ payments
-   │  ├─ posts
-   │  │  └─ [id]
-   │  ├─ social
-   │  └─ verify
-   │     └─ [token]
-   ├─ router
-   ├─ services
-   ├─ stores
-   └─ utils
+├── App.vue
+├── assets
+│   └── quasar-logo-vertical.svg
+├── boot
+│   ├── axios-config.js
+│   ├── darkmode.js
+│   └── navigation-guard.js
+├── components
+│   ├── StickySideBar.vue
+│   ├── apps
+│   │   ├── chat
+│   │   │   ├── NotificationList.vue
+│   │   │   ├── WebChat.vue
+│   │   │   └── WebChatItem.vue
+│   │   ├── comment
+│   │   │   ├── CommentItem.vue
+│   │   │   └── CommentList.vue
+│   │   ├── payment
+│   │   │   └── PaymentsHistory.vue
+│   │   └── post
+│   │       ├── PostForm.vue
+│   │       ├── PostIcon.vue
+│   │       ├── PostItem.vue
+│   │       ├── PostList.vue
+│   │       └── PostWriteDialog.vue
+│   ├── auth
+│   │   ├── AuthDialog.vue
+│   │   ├── FindPasswordForm.vue
+│   │   ├── SignInForm.vue
+│   │   ├── SignUpForm.vue
+│   │   └── SuccessFindPassword.vue
+│   ├── base
+│   │   └── BaseCard.vue
+│   ├── book
+│   │   ├── BookItem.vue
+│   │   └── BookList.vue
+│   ├── map
+│   │   └── KakaoMap.vue
+│   ├── report
+│   │   └── ReportForm.vue
+│   ├── skeletons
+│   │   ├── PostItemSkeleton.vue
+│   │   └── PostListSkeleton.vue
+│   └── tiptap
+│       ├── TiptapEditor.vue
+│       ├── TiptapEditorMenu.vue
+│       └── TiptapViewer.vue
+├── composables
+│   └── usePostQuery.js
+├── css
+│   ├── app.scss
+│   ├── quasar.variables.scss
+│   └── tiptap.scss
+├── layouts
+│   └── default.vue
+├── pages
+│   ├── [...path].vue
+│   ├── books
+│   │   ├── [isbn]
+│   │   │   └── index.vue
+│   │   └── index.vue
+│   ├── components
+│   │   ├── PostHeader.vue
+│   │   └── PostRightBar.vue
+│   ├── index.vue
+│   ├── mypage
+│   │   ├── bookmark.vue
+│   │   ├── password.vue
+│   │   ├── payment.vue
+│   │   └── profile.vue
+│   ├── mypage.vue
+│   ├── payments
+│   │   ├── certification.vue
+│   │   ├── index.vue
+│   │   └── result.vue
+│   ├── posts
+│   │   └── [id]
+│   │       ├── components
+│   │       │   ├── PostComments.vue
+│   │       │   └── PostDetails.vue
+│   │       ├── edit.vue
+│   │       └── index.vue
+│   ├── social
+│   │   └── kakao.vue
+│   └── verify
+│       └── [token]
+│           └── index.vue
+├── router
+│   └── index.js
+├── services
+│   ├── auth.js
+│   ├── book.js
+│   ├── chat.js
+│   ├── comment.js
+│   ├── image.js
+│   ├── index.js
+│   ├── notification.js
+│   ├── payment.js
+│   ├── post.js
+│   └── report.js
+├── stores
+│   ├── auth.js
+│   ├── index.js
+│   └── store-flag.d.ts
+└── utils
+    ├── payments
+    │   ├── constants.js
+    │   └── util.js
+    ├── relative-time-format.js
+    └── validate-rules.js
 ```
 
 ---
