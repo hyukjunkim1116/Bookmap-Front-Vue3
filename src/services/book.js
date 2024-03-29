@@ -16,7 +16,7 @@ export async function getBookCrawling(data) {
   const result = await jwtApi.get(
     `books/crawling?isbn=${data.isbn}&currentLatitude=${data.currentLatitude}&currentLongitude=${data.currentLongitude}`,
   );
-
+  console.log(result);
   return result;
 }
 export async function getStoreSearch(query) {

@@ -29,10 +29,14 @@ const setupjwtApi = async () => {
     const { cookies } = useCookies();
     jwtApi = await isServerRunning();
     jwtApi.interceptors.request.use(async config => {
-      if (!config.headers) return config;
+      if (!config.headers) {
+        return config;
+      }
       const accessToken = cookies.get('access');
       if (accessToken && config.headers) {
+        config.withCredentials = true;
         config.headers.Authorization = `Bearer ${accessToken}`;
+        config.headers['Content-Type'] = 'application/json';
       }
       return config;
     });
@@ -41,7 +45,6 @@ const setupjwtApi = async () => {
       response => response,
       async error => {
         console.log('axioserror', error);
-
         if (
           error.config &&
           error.response &&

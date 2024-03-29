@@ -5,7 +5,7 @@ import { jwtApi } from 'src/boot/axios-config';
 import { useAuthStore } from 'src/stores/auth';
 
 async function getNotifications() {
-  return await jwtApi.get('notification/');
+  return await jwtApi.get('notification');
 }
 
 export async function putReadNotification(notId) {
@@ -45,7 +45,7 @@ export const useNotification = () => {
         onMessage: (ws, msg) => {
 
           const newData = JSON.parse(msg.data);
-         
+
           messages.value = [newData, ...messages.value];
         },
         onError: (ws, msg) => {},

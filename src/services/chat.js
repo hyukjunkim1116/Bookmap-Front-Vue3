@@ -4,7 +4,7 @@ import { useAsyncState } from '@vueuse/core';
 import { jwtApi } from 'src/boot/axios-config';
 import { useAuthStore } from 'src/stores/auth';
 export async function getChats() {
-  return await jwtApi.get('webchat/');
+  return await jwtApi.get('webchat');
 }
 
 export const useWebChat = () => {
@@ -39,7 +39,7 @@ export const useWebChat = () => {
         },
         onMessage: (ws, msg) => {
           const newData = JSON.parse(msg.data);
-        
+
           messages.value = [...messages.value, newData];
         },
         onError: (ws, msg) => {

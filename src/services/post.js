@@ -1,7 +1,7 @@
 import { jwtApi,api } from 'src/boot/axios-config';
 
 export async function getPosts(params) {
-  let url = `posts/?`;
+  let url = `posts?`;
   if (params.page) {
     url += `page=${params.page}&`;
   }
@@ -14,7 +14,7 @@ export async function getPosts(params) {
   return await jwtApi.get(url);
 }
 export async function createPost(data) {
-  return await jwtApi.post('posts/', data);
+  return await jwtApi.post('posts', data);
 }
 export async function getPostDetails(postId) {
   return await jwtApi.get(`posts/${postId}`);

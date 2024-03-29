@@ -48,6 +48,7 @@ const { execute, isLoading } = useAsyncState(getPosts, [], {
   immediate: false,
   throwError: true,
   onSuccess: response => {
+    console.log(response);
     if (response.data.next) {
       isLoadMore.value = true;
       page.value += 1;

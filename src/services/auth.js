@@ -8,11 +8,11 @@ export function generateDefaultPhotoURL(uid) {
   return `${DEFAULT_PHOTO_URL}${uid}`;
 }
 export async function signUpWithEmail(data) {
-  return await api.post('users/', data);
+  return await api.post('users', data);
 }
 export async function signInWithKakao(data) {
   const authStore = useAuthStore();
-  const response = await api.post(`users/kakao/`, data);
+  const response = await api.post(`users/kakao`, data);
 
   const { access, refresh, email, username, image, social, is_verified } =
     response.data;
@@ -32,7 +32,7 @@ export async function signInWithKakao(data) {
 export async function signInWithEmail(data) {
   const authStore = useAuthStore();
 
-  const response = await api.post('users/login/', data);
+  const response = await api.post('users/login', data);
 
   const { access, refresh, email, username, image, social, is_verified } =
     response.data;
@@ -50,23 +50,23 @@ export async function signInWithEmail(data) {
   authStore.setUserData(userData);
 }
 export async function updateUserPassword(data) {
-  return await jwtApi.put(`users/change-password/`, data);
+  return await jwtApi.put(`users/change-password`, data);
 }
 export async function sendVerificationEmail(uid) {
-  return await jwtApi.post(`users/${uid}/verify/`);
+  return await jwtApi.post(`users/${uid}/verify`);
 }
 
 export async function findPasswordWithEmail(data) {
-  return await jwtApi.put(`users/find-password/`, data);
+  return await jwtApi.put(`users/find-password`, data);
 }
 export async function updateUserProfile(data, uid) {
-  return await jwtApi.put(`users/${uid}/`, data);
+  return await jwtApi.put(`users/${uid}`, data);
 }
 export async function deleteUser(uid) {
-  return await jwtApi.delete(`users/${uid}/`);
+  return await jwtApi.delete(`users/${uid}`);
 }
 export async function updateUserImage(data, uid) {
-  return await formApi.patch(`users/${uid}/image/`, data);
+  return await formApi.patch(`users/${uid}/image`, data);
 }
 export async function logout() {
   const { cookies } = useCookies();
@@ -77,7 +77,7 @@ export async function logout() {
 }
 
 export async function refresh(refreshToken) {
-  const response = await api.post(`users/token/refresh/`, {
+  const response = await api.post(`users/token/refresh`, {
     refresh: refreshToken,
   });
 
